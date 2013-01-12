@@ -27,10 +27,6 @@ else
 fi
 ```
 
-```haskell
-load "posts/foo.markdown" :: Compiler (Item String)
-```
-
 where k0 is my desktop and k1 is my laptop.
 `cfg-k0` looks like this:
 
