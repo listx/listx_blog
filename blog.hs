@@ -11,6 +11,10 @@ main = hakyll $ do
 		compile copyFileCompiler
 		-}
 
+	match "favicon.png" $ do
+		route idRoute
+		compile copyFileCompiler
+
 	match "css/*.css" $ do
 		route   idRoute
 		compile compressCssCompiler
