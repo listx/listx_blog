@@ -15,9 +15,9 @@ main = hakyll $ do
 		route   idRoute
 		compile compressCssCompiler
 
-	match "css/*.sass" $ do
+	match "css/*.hs" $ do
 		route $ setExtension "css"
-		compile $ getResourceString >>= withItemBody (unixFilter "sass" ["--stdin", "--trace"])
+		compile $ getResourceString >>= withItemBody (unixFilter "runghc" [])
 
 	match (fromList ["about.md"]) $ do
 		route   $ setExtension "html"
