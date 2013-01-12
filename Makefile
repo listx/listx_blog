@@ -1,5 +1,7 @@
 all:
 	ghc -O2 -Wall -fno-spec-constr-count -threaded --make blog
+	./blog rebuild
+	./sync.sh
 
 prod:
 	ghc -O2 -Wall -Werror -fno-spec-constr-count -threaded --make blog
