@@ -22,14 +22,14 @@ main = hakyll $ do
 	match (fromList ["about.md"]) $ do
 		route   $ setExtension "html"
 		compile $ pandocCompiler
-			>>= loadAndApplyTemplate "templates/default.html" defaultContext
+			>>= loadAndApplyTemplate "template/default.html" defaultContext
 			>>= relativizeUrls
 
 	match "post/*" $ do
 		route $ setExtension "html"
 		compile $ pandocCompiler
-			>>= loadAndApplyTemplate "templates/post.html"    postCtx
-			>>= loadAndApplyTemplate "templates/default.html" postCtx
+			>>= loadAndApplyTemplate "template/post.html"    postCtx
+			>>= loadAndApplyTemplate "template/default.html" postCtx
 			>>= relativizeUrls
 
 	create ["archive.html"] $ do
@@ -42,8 +42,8 @@ main = hakyll $ do
 					defaultContext
 
 			makeItem ""
-				>>= loadAndApplyTemplate "templates/archive.html" archiveCtx
-				>>= loadAndApplyTemplate "templates/default.html" archiveCtx
+				>>= loadAndApplyTemplate "template/archive.html" archiveCtx
+				>>= loadAndApplyTemplate "template/default.html" archiveCtx
 				>>= relativizeUrls
 
 
@@ -55,10 +55,10 @@ main = hakyll $ do
 
 			getResourceBody
 				>>= applyAsTemplate indexCtx
-				>>= loadAndApplyTemplate "templates/default.html" postCtx
+				>>= loadAndApplyTemplate "template/default.html" postCtx
 				>>= relativizeUrls
 
-	match "templates/*" $ compile templateCompiler
+	match "template/*" $ compile templateCompiler
 
 postCtx :: Context String
 postCtx =
@@ -68,6 +68,6 @@ postCtx =
 postList :: ([Item String] -> [Item String]) -> Compiler String
 postList sortFilter = do
 	posts <- sortFilter <$> loadAll "post/*"
-	itemTpl <- loadBody "templates/post-item.html"
+	itemTpl <- loadBody "template/post-item.html"
 	list <- applyTemplateList itemTpl postCtx posts
 	return list
