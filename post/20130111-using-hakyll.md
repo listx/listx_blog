@@ -1,0 +1,127 @@
+---
+title: Using Hakyll with GitHub Pages
+tags: linux, hakyll, github
+---
+
+I decided to ditch wordpress.com, because:
+
+- I cringe every time I have to use their web GUI for adding new posts.
+- I don't *really* need to use all of the features that come with a free wordpress blog.
+- Wordpress automatically puts in hard line breaks... this is so annoying.
+  For one thing, I like to type one sentence per line in plain text, because then if I do a revision, the (git) diff looks very, very clear and sexy.
+  In fact, this is how I write all of my LaTeX files.
+  But with Wordpress's forced line breaks, I have to manually join all the lines before submitting it into the New Post text dialog box.
+  Annoying.
+- I want to use git to track my blog posts because they are quite valuable to me and a lot of other people.
+
+Now, why choose [Hakyll][hakyll]?
+I chose it because it's the only Haskell static site generator out there with real users and active development.
+Granted, the road to using Hakyll was very difficult, because right now actually it is in a transition stage to the new Hakyll version 4.
+However, the hurdles were well worth it.
+
+My system is Arch Linux.
+
+Install cabal
+-------------
+
+First, we need to install the `cabal-install` package from the [extra] repo.
+
+```
+sudo pacman -S cabal-install
+```
+
+Install hsenv with cabal
+------------------------
+
+Now we need to install `hsenv`.
+`hsenv` is neat because it allows you to have a sandboxed cabal/haskell/ghc environment on a per-shell-session basis.
+The biggest dependency is `pandoc`, which actually fails to install using plain `cabal`; not to worry, because [extra] already has the `haskell-pandoc` package.
+
+```
+sudo pacman -S haskell-pandoc
+```
+
+Now we install `hsenv`.
+We use the forked version from [tmhedberg's repo][tmhedberg-hsenv] because the [original maintainer's repo][orig-hsenv] has been suffering from bitrot for a few months now (the original maintainer has disappeared).
+
+```
+git clone --depth 1 git://github.com/tmhedberg/hsenv.git
+cd hsenv
+cabal install
+```
+
+Download hakyll and install it with hsenv for your new blog
+-----------------------------------------------------------
+
+Now we need to get the latest `hakyll`.
+I decided to check out the `hakyll4` branch because from what I can tell this version allows you to do painless syntax highlighting with `pandoc`.
+You could just use the regular `master` branch (hakyll 3.x) but syntax highlighting support on code blocks is a pain; plus, you're going to have to migrate to hakyll 4 later anyway, so just use hakyll4.
+
+```
+git clone --depth 1 -b hakyll4 http://github.com/jaspervdj/hakyll.git
+```
+
+The hakyll4 repo has several working sample blog sites.
+Now go into the just-clone hakyll repo, and copy the contents of the `data/example` folder to your new blog's directory.
+
+```
+cp ~/hakyll/data/example ~/myblog
+```
+
+Now go to your `myblog` folder and instantiate a `hsenv` sandbox, and then install `hakyll` into this sandbox.
+
+```
+cd ~/myblog
+~/.cabal/bin/hsenv
+source .hsenv_myblog/bin/activate
+cd ~/hakyll
+cabal install
+cd ~/myblog
+```
+
+The `hsenv` basically changes your shell's path parameters and also installs everything into the `.hsenv_myblog` folder, thus giving your shell a different "vision", so to speak, of what packages are installed.
+We use the sandbox environment inside `hsenv` whenever we want to generate our blog's static generator binary (remember, `hakyll` is just a library; we need to write a static site generator program that makes use of it to generate the static html/css).
+
+To deactivate the sandbox, invoke `deactivate_hsenv` or just close your shell.
+Just remember to call `source .hsenv_myblog/bin/activate` when you want to make changes to your blog or edit your blog's binary.
+A sample creating/edition session would look something like this:
+
+```
+cd ~/myblog
+source .hsenv_myblog/bin/activate
+# edit some files, including site.hs, the static generator binary
+# compile site.hs
+./site rebuild
+./site preview
+...
+deactivate_hsenv
+```
+
+Your static site will be available at `~/myblog/_site`.
+
+Create and upload your site to GitHub
+-------------------------------------
+
+At your GitHub site/account, create a repo named `username.github.com`.
+Now link it up with your static site:
+
+```
+cd ~/myblog/_site
+git init
+git add *.html # add css, etc.
+git commit -m "initial import"
+git remote add origin https://github.com/username/username.github.com.git
+git push -u origin master
+```
+
+Source
+------
+
+This site's source code is available [here][site-source].
+This site's static code is available [here][site-static].
+
+[hakyll]: http://jaspervdj.be/hakyll/
+[tmhedberg-hsenv]: https://github.com/tmhedberg/hsenv
+[orig-hsenv]: https://github.com/Paczesiowa/hsenv
+[site-source]: https://github.com/listx/listx_blog
+[site-static]: https://github.com/listx/listx.github.com
