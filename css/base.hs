@@ -32,6 +32,8 @@ myStylesheet = do
 			h2 ? do
 				textDecoration underline
 		"#footer" & do
+			color (grayish 100)
+			fontSize (pt 12)
 			textAlign $ alignSide sideCenter
 	code ? do
 		backgroundColor $ rgb 230 230 250
