@@ -12,16 +12,20 @@ myStylesheet = do
 	html ? do
 		margin (px 0) (px 0) (px 0) (px 0)
 		padding (px 0) (px 0) (px 0) (px 0)
-		fontFamily ["dejavu sans condensed", "sans-serif"]
 		fontSize (pt 14)
+		backgroundColor (grayish 200)
+		color (grayish 30)
 		overflowY scroll
 	E.em ? do
 		fontWeight bold
 	body ? do
 		width (px 700)
 		margin (px 5) auto (px 20) auto
-	"h1, h2, h3" ? do
+	"h2, h3" ? do
 		fontWeight bold
+	h1 ? do
+		fontSize (pt 30)
+		fontWeight normal
 	E.div ? do
 		"#header" & do
 			textAlign $ alignSide sideCenter
@@ -36,13 +40,15 @@ myStylesheet = do
 			fontSize (pt 12)
 			textAlign $ alignSide sideCenter
 	code ? do
+		fontSize (pt 10)
 		backgroundColor $ rgb 230 230 250
-		border solid (px 1) (rgb 200 200 200)
+		border solid (px 1) (rgb 170 170 200)
+		borderRadius (px 3)
 		padding 0 (px 4) 0 (px 4)
 	pre ? do
 		code ? do
 			display block
-			fontSize (pt 12)
+			overflow auto
 	a ? do
 		":hover" & do
 			textDecoration none
