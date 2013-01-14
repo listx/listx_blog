@@ -55,14 +55,14 @@ Download hakyll and install it with hsenv for your new blog
 
 Now we need to get the latest `hakyll`.
 I decided to check out the `hakyll4` branch because from what I can tell this version allows you to do painless syntax highlighting with `pandoc`.
-You could just use the regular `master` branch (hakyll 3.x) but syntax highlighting support on code blocks is a pain; plus, you're going to have to migrate to hakyll 4 later anyway, so just use hakyll4.
+You could just use the regular `master` branch (hakyll 3.x) but syntax highlighting support on code blocks is a pain; plus, you're going to have to migrate to hakyll 4 later anyway, so just use `hakyll4`.
 
 ```
 git clone --depth 1 -b hakyll4 http://github.com/jaspervdj/hakyll.git
 ```
 
 The hakyll4 repo has several working sample blog sites.
-Now go into the just-clone hakyll repo, and copy the contents of the `data/example` folder to your new blog's directory.
+Now go into the just-cloned hakyll repo, and copy the contents of the `data/example` folder to your new blog's directory.
 
 ```
 cp ~/hakyll/data/example ~/myblog
