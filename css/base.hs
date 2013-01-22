@@ -19,6 +19,9 @@ myStylesheet = do
 	body ? do
 		width (px 700)
 		margin (px 5) auto (px 20) auto
+		sup ? do
+			"vertical-align" -: "top"
+			fontSize (Clay.em 0.6)
 	"h2, h3" ? do
 		fontWeight bold
 	h1 ? do
