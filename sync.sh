@@ -12,5 +12,3 @@ elif [[ ! -d $dest ]]; then
 fi
 
 rsync -ahP --no-whole-file --inplace $targ $dest
-cd $dest
-git clean -dxf
