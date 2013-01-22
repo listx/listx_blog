@@ -16,8 +16,6 @@ myStylesheet = do
 		backgroundColor (grayish 200)
 		color (grayish 30)
 		overflowY scroll
-	E.em ? do
-		fontWeight bold
 	body ? do
 		width (px 700)
 		margin (px 5) auto (px 20) auto
