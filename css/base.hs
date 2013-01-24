@@ -1,42 +1,59 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+import Data.Bits
 import qualified Data.Text.Lazy.IO	as Lazy
 import Clay
-import Clay.Elements as E
 
 main :: IO ()
 main = Lazy.putStr $ renderWith compact [] myStylesheet
 
+div' = Clay.div
+
+rgbHex :: Int -> Color
+rgbHex rgb'
+	| rgb' > 0xffffff || rgb' < 0 = error "invalid hex range"
+	| otherwise = rgb r g b
+	where
+	r = fromIntegral $ (shiftR rgb' 16) .&. 0xFF
+	g = fromIntegral $ (shiftR rgb' 8) .&. 0xFF
+	b = fromIntegral $ rgb' .&. 0xFF
+
 myStylesheet :: Css
 myStylesheet = do
 	html ? do
-		margin (px 0) (px 0) (px 0) (px 0)
-		padding (px 0) (px 0) (px 0) (px 0)
+		margin 0 0 0 0
+		padding 0 0 0 0
 		fontSize (pt 14)
-		backgroundColor (grayish 200)
+		backgroundColor (rgb 200 200 210)
 		color (grayish 30)
 		overflowY scroll
 	body ? do
 		width (px 700)
-		margin (px 5) auto (px 20) auto
+		margin 0 auto 0 auto
 		sup ? do
 			"vertical-align" -: "top"
-			fontSize (Clay.em 0.6)
+			fontSize (em 0.6)
 	"h2, h3" ? do
 		fontWeight bold
 	h1 ? do
 		fontSize (pt 30)
 		fontWeight normal
-	E.div ? do
+	div' ? do
 		"#header" & do
+			margin (em 0.5) 0 (em 0.5) 0
 			textAlign $ alignSide sideCenter
 		"#content" & do
+			padding (em 1) (em 2) (em 1) (em 2)
+			borderRadius (px 3)
+			backgroundColor (rgbHex 0xeeeed4)
+			boxShadow (px 0) (px 0) (px 3) (rgbHex 0x666666)
 			h1 ? do
 				margin (px 2) 0 (px 10) 0
 				borderBottom solid (px 4) (rgb 0 0 0)
 			h2 ? do
 				textDecoration underline
 		"#footer" & do
+			margin (em 0.5) 0 (em 0.8) 0
 			color (grayish 100)
 			fontSize (pt 12)
 			textAlign $ alignSide sideCenter
