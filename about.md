@@ -58,3 +58,9 @@ I also program some pet projects in [C][c].
 
 [haskell]: http://en.wikipedia.org/wiki/Haskell_(programming_language)
 [c]: http://en.wikipedia.org/wiki/C_(programming_language)
+
+This Site
+---------
+
+Everything except links on this site will be self-contained and safely accessible forever.
+In the future I will probably write a hyperlink scraper and run it against all pages on this blog to check for dead external links (maybe such a tool exists already?).
