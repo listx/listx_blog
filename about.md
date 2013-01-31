@@ -21,6 +21,7 @@ Here are some of them I heartily recommend.
 - [Vim][vim] - an advanced text editor
 - [Emacs][emacs] - an even more advanced text editor
 - [evil][evil] - an Emacs addon that makes it behave like Vim
+- [git][git] - distributed data versioning
 - [GnuPG][gpg] (aka `gpg`) - a way to ensure secure communications
 - [Firefox][firefox] - the most mature and stable *customizable* web browser
 - [Pentadactyl][penta] - addon to make Firefox behave like Vim
@@ -37,6 +38,7 @@ Here are some of them I heartily recommend.
 [vim]: https://www.archlinux.org/packages/extra/x86_64/gvim/
 [emacs]: https://www.archlinux.org/packages/extra/x86_64/emacs/
 [evil]: https://aur.archlinux.org/packages/emacs-evil-git/
+[git]: https://www.archlinux.org/packages/extra/x86_64/git/
 [gpg]: https://www.archlinux.org/packages/core/x86_64/gnupg/
 [firefox]: https://www.archlinux.org/packages/extra/x86_64/firefox/
 [penta]: http://5digits.org/pentadactyl/
