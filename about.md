@@ -63,4 +63,4 @@ This Site
 ---------
 
 Everything except links on this site will be self-contained and safely accessible forever.
-In the future I will probably write a hyperlink scraper and run it against all pages on this blog to check for dead external links (maybe such a tool exists already?).
+Hakyll comes with a link checker for the entire site so dead links should be a non-issue.
