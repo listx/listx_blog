@@ -45,7 +45,7 @@ myStylesheet = do
 		"#content" & do
 			padding (em 1) (em 2) (em 1) (em 2)
 			borderRadius (px 3)
-			backgroundColor (rgbHex 0xeeeed4)
+			backgroundColor (rgbHex 0xeeeeee)
 			boxShadow (px 0) (px 0) (px 3) (rgbHex 0x666666)
 			h1 ? do
 				margin (px 2) 0 (px 10) 0
