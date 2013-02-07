@@ -59,14 +59,16 @@ myStylesheet = do
 			textAlign $ alignSide sideCenter
 	code ? do
 		fontSize (pt 10)
-		backgroundColor $ rgb 230 230 250
-		border solid (px 1) (rgb 170 170 200)
+		color (grayish 51)
+		backgroundColor $ grayish 248
+		border solid (px 1) (grayish 204)
 		borderRadius (px 3)
 		padding 0 (px 4) 0 (px 4)
 	pre ? do
 		code ? do
 			display block
 			overflow auto
+			padding (px 6) (px 10) (px 6) (px 10)
 	a ? do
 		":hover" & do
 			textDecoration none
