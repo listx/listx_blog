@@ -49,7 +49,7 @@ myStylesheet = do
 			boxShadow (px 0) (px 0) (px 3) (rgbHex 0x666666)
 			h1 ? do
 				margin (px 2) 0 (px 10) 0
-				borderBottom solid (px 4) (rgb 0 0 0)
+				borderBottom solid (px 2) (rgb 0 0 0)
 			h2 ? do
 				textDecoration underline
 		"#footer" & do
