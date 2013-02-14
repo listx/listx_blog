@@ -23,7 +23,7 @@ main = hakyll $ do
 		route $ setExtension "css"
 		compile $ getResourceString >>= withItemBody (unixFilter "runghc" [])
 
-	match (fromList ["about.md"]) $ do
+	match (fromList ["about.md", "code.md"]) $ do
 		route   $ setExtension "html"
 		compile $ pandocCompiler
 			>>= loadAndApplyTemplate "template/default.html" defaultContext
