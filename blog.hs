@@ -1,8 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
-import Control.Applicative ((<$>))
+
 import Data.Monoid (mappend)
 import Hakyll
-import Blog.Custom (dateField')
 
 main :: IO ()
 main = hakyll $ do
@@ -55,7 +54,7 @@ main = hakyll $ do
 		route idRoute
 		compile $ do
 			let
-				indexCtx = field "post" $ \_ -> postList (take 3 . recentFirst)
+				indexCtx = field "post" $ \_ -> postList $ fmap (take 3) . recentFirst
 
 			getResourceBody
 				>>= applyAsTemplate indexCtx
@@ -69,9 +68,9 @@ postCtx =
 	dateField "date" "%B %e, %Y" `mappend`
 	defaultContext
 
-postList :: ([Item String] -> [Item String]) -> Compiler String
+postList :: ([Item String] -> Compiler [Item String]) -> Compiler String
 postList sortFilter = do
-	posts <- sortFilter <$> loadAll "post/*"
+	posts <- sortFilter =<< loadAll "post/*"
 	itemTpl <- loadBody "template/post-item.html"
 	list <- applyTemplateList itemTpl postCtx posts
 	return list
