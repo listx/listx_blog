@@ -13,6 +13,19 @@ You can always use a live CD anywhere to load up a barebone Linux system to your
 
 If you want to look up the manpages for these commands, use `ALT+F2`, `ALT+F3`, etc. to log into and switch between independent TTY screens.
 
+Be sure to wipe the drive with
+```
+dd if=/dev/urandom of=/dev/sdX
+```
+before doing anything.
+This way, your new Linux install will blend into the random noise data resulting from the command above, making it virtually impossible to detect which portions of the drive contain actual data.
+If the disk you want to wipe is a secondary device to an existing Linux installation, you can try using [`frandom`][frandom] to generate a faster stream of pseudorandom bytes.
+If you get `frandom` working, you can just do
+```
+dd if=/dev/frandom of=/dev/sdX
+```
+and it will be roughly 10 to 50 times faster than using `/dev/urandom` --- which is a real time saver if your disk is larger than 16 GiB.
+
 ```
 # Put in the Arch Linux live CD and run the following commands...
 
@@ -192,3 +205,4 @@ umount /mnt/{boot,home}
 swapoff
 reboot
 ```
+[frandom]: http://www.billauer.co.il/frandom.html
