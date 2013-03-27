@@ -67,9 +67,16 @@ lvcreate -l +100%FREE vg0 --name home
 # here. The vg0-root, vg0-home, and vg0-swap volumes should
 # appear under /dev/mapper as you create them with the lvcreate command.
 
+mkfs.ext4 /dev/sda1 # the boot partition
 mkfs.ext4 /dev/mapper/vg0-root
 mkfs.ext4 /dev/mapper/vg0-home
 mkswap /dev/mapper/vg0-swap
+
+# Mount /dev/sda1 to the /boot partition. This will ensure proper installation
+# of the bootloader.
+
+mkdir /mnt/boot
+mount /dev/sda1 /mnt/boot
 
 # Mount the logical volumes. Why? Because we need to install Arch Linux onto
 # it! You probably don't need to mount the "home" volume but it couldn't
@@ -163,9 +170,18 @@ pacman -S zsh
 # Add your regular user, and set up your password. This is your normal
 # username. We use the "-s /bin/zsh" option to tell useradd that we want to
 # log in with zsh.
+#
+# If you want, you can add a new group that will only have your username as its
+# only "member", with `groupadd -g 1000 MYGROUPNAME`, and then you can use this
+# group name for the `-g` flag's argument in the `useradd` command below. I like
+# to have 1-character usernames for my machines to keep things simple and short,
+# as I will be the exclusive user of the system anyway, so I also use the same
+# character for my group as well, so that, in particular, the `ls` command's
+# full listing of my files looks very succinct, as I like to live in the
+# terminal and use `ls` daily.
 
-# useradd -m -g users -G wheel,storage,power -s /bin/zsh MYUSERNAME
-# passwd MYUSERNAME
+useradd -m -g users -G wheel,storage,power -s /bin/zsh MYUSERNAME
+passwd MYUSERNAME
 
 # VERY IMPORTANT: Add in the filesystem type that /root partition (LVM) is
 # using (for this tutorial, it is "ext4") into the MODULES variable and also
@@ -183,12 +199,15 @@ mkinitcpio -p linux
 # Install boot loader. I like SYSLINUX because of the saner/easier-looking
 # boot configuration file, compared to GRUB 2. Be sure to add in
 #     "APPEND cryptdevice=/dev/disk/by-uuid/xxxxxxxxxx:luks root=/dev/mapper/vg0-root resume=/dev/mapper/vg0-swap ro"
-# under the "LABEL arch" entries, so that SYSLINUX tells the kernel to look
-# for the encrypted LVM partition. Otherwise, your system won't boot! Don't
-# forget to actually look up the UUID of your LVM partition (/dev/sda2 in
-# this tutorial). You don't need to tell the kernel about your vg0-home
-# volume because that will get mounted by /etc/fstab when it is read later in
-# the boot process.
+# under the "LABEL arch" entries, so that SYSLINUX tells the kernel to look for
+# the encrypted LVM partition. Otherwise, your system won't boot! Don't forget
+# to actually look up the UUID of your LVM partition (/dev/sda2 in this
+# tutorial). To easily add in the long UUID of the disk, just concatenate it
+# into the syslinux.cfg file with `blkid -o list >>
+# /boot/syslinux/syslinux.cfg`, and edit as needed.
+#
+# You don't need to tell the kernel about your vg0-home volume because that will
+# get mounted by /etc/fstab when it is read later in the boot process.
 
 pacman -S syslinux
 syslinux-install_update -i -a -m
@@ -201,7 +220,9 @@ exit
 # Unmount volumes, and reboot. Remove your Arch Linux live CD when your
 # computer powers on again.
 
-umount /mnt/{boot,home}
+umount /mnt/boot
+umount /mnt/home
+umount /mnt
 swapoff
 reboot
 ```
