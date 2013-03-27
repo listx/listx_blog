@@ -3,6 +3,10 @@ all:
 	./blog rebuild
 	./sync.sh
 
+nosync:
+	ghc -O2 -Wall -fno-spec-constr-count -threaded --make blog
+	./blog rebuild
+
 prod:
 	ghc -O2 -Wall -Werror -fno-spec-constr-count -threaded --make blog
 
