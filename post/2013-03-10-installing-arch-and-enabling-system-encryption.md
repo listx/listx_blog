@@ -142,14 +142,16 @@ hwclock --systohc --utc
 
 echo MYHOSTNAME > /etc/hostname
 
-# Enable DHCPCD... aka "acquire dynamic ip address from your router/switch".
-# Be sure to choose the right eth0 or eth1 (eth2, if you have 3 ethernet
-# ports) port. If you choose the wrong "eth" number, just go to
-# /etc/systemd/system/multi-user.target.wants/ and rename the symlink; e.g.,
-# rename /etc/systemd/system/multi-user.target.wants/dhcpcd@eth0.service to
+# Enable DHCPCD... aka "acquire dynamic ip address from your router/switch".  Be
+# sure to choose the right device name (typically eth0 or eth1 (eth2, if you
+# have 3 ethernet ports)); you can find out the correct device name with `ip
+# link` (look for the device under the first entry, `lo`.). If you choose the
+# wrong "eth" number, just go to /etc/systemd/system/multi-user.target.wants/
+# and rename the symlink; e.g., rename
+# /etc/systemd/system/multi-user.target.wants/dhcpcd@eth0.service to
 # /etc/systemd/system/multi-user.target.wants/dhcpcd@eth1.service.
 
-systemctl enable dhcpcd@eth0.service
+systemctl enable dhcpcd@DEVICENAME.service
 
 # Disable unused package repos. You will want to disable the [testing] repo
 # unless you want to test unstable packages and engage in the package
