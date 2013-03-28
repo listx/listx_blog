@@ -28,7 +28,7 @@ myStylesheet = do
 		color (grayish 30)
 		overflowY scroll
 	body ? do
-		width (px 700)
+		width (px 750)
 		margin 0 auto 0 auto
 		sup ? do
 			"vertical-align" -: "top"
