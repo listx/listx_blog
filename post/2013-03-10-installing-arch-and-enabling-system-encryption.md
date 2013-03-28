@@ -201,9 +201,10 @@ vi /etc/mkinitcpio.conf
 
 mkinitcpio -p linux
 
-# Install boot loader. I like SYSLINUX because of the saner/easier-looking
-# boot configuration file, compared to GRUB 2. Be sure to add in
-#     "APPEND cryptdevice=/dev/disk/by-uuid/xxxxxxxxxx:luks root=/dev/mapper/vg0-root resume=/dev/mapper/vg0-swap ro"
+# Install boot loader. I like SYSLINUX because of the saner/easier-looking boot
+# configuration file, compared to GRUB 2. Be sure to add in (as a single line)
+#     "APPEND cryptdevice=/dev/disk/by-uuid/xxxxxxxxxx:luks
+#           root=/dev/mapper/vg0-root resume=/dev/mapper/vg0-swap ro"
 # under the "LABEL arch" entries, so that SYSLINUX tells the kernel to look for
 # the encrypted LVM partition. Otherwise, your system won't boot! Don't forget
 # to actually look up the UUID of your LVM partition (/dev/sda2 in this
