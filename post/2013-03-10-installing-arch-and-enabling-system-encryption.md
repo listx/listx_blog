@@ -72,19 +72,22 @@ mkfs.ext4 /dev/mapper/vg0-root
 mkfs.ext4 /dev/mapper/vg0-home
 mkswap /dev/mapper/vg0-swap
 
-# Mount /dev/sda1 to the /boot partition. This will ensure proper installation
-# of the bootloader.
+# Mount the logical volumes. Why? Because we need to install Arch Linux onto
+# it! You probably don't need to mount the "home" volume but it couldn't
+# hurt. Besides, it's nice to test that all volumes can be mounted OK anyway.
+#
+# NOTE: Mount order is important! YOU MUST FIRST MOUNT THE ROOT PARTITION into
+# /mnt before creating more directories such as /mnt/boot, /mnt/home, etc. to
+# mount the /boot, /home, and any other partitions.
+
+mount /dev/mapper/vg0-root /mnt # /mnt is our system's "/" root   directory
 
 mkdir /mnt/boot
 mount /dev/sda1 /mnt/boot
 
-# Mount the logical volumes. Why? Because we need to install Arch Linux onto
-# it! You probably don't need to mount the "home" volume but it couldn't
-# hurt. Besides, it's nice to test that all volumes can be mounted OK anyway.
-
-mount /dev/mapper/vg0-root /mnt # /mnt is our system's "/" root   directory
 mkdir /mnt/home
 mount /dev/mapper/vg0-home /mnt/home
+
 swapon /dev/mapper/vg0-swap
 
 # Set up package download mirrors. The kernel mirror is generally a good one
