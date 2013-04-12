@@ -44,7 +44,7 @@ myStylesheet = do
 			textAlign $ alignSide sideCenter
 		"#content" & do
 			padding (em 1) (em 2) (em 1) (em 2)
-			borderRadius (px 3)
+			borderRadius' (px 3)
 			backgroundColor (rgbHex 0xeeeeee)
 			boxShadow (px 0) (px 0) (px 3) (rgbHex 0x666666)
 			h1 ? do
@@ -62,7 +62,7 @@ myStylesheet = do
 		color (grayish 51)
 		backgroundColor $ grayish 248
 		border solid (px 1) (grayish 204)
-		borderRadius (px 3)
+		borderRadius' (px 3)
 		padding 0 (px 4) 0 (px 4)
 	pre ? do
 		code ? do
@@ -72,3 +72,6 @@ myStylesheet = do
 	a ? do
 		":hover" & do
 			textDecoration none
+
+borderRadius' :: Size a -> Css
+borderRadius' a = borderRadius a a a a
