@@ -44,7 +44,7 @@ myStylesheet = do
 			textAlign $ alignSide sideCenter
 		"#content" & do
 			padding (em 1) (em 2) (em 1) (em 2)
-			borderRadius' (px 3)
+			ev (px 3) borderRadius
 			backgroundColor (rgbHex 0xeeeeee)
 			boxShadow (px 0) (px 0) (px 3) (rgbHex 0x666666)
 			h1 ? do
@@ -62,7 +62,7 @@ myStylesheet = do
 		color (grayish 51)
 		backgroundColor $ grayish 248
 		border solid (px 1) (grayish 204)
-		borderRadius' (px 3)
+		ev (px 3) borderRadius
 		padding 0 (px 4) 0 (px 4)
 	pre ? do
 		code ? do
@@ -73,5 +73,15 @@ myStylesheet = do
 		":hover" & do
 			textDecoration none
 
-borderRadius' :: Size a -> Css
-borderRadius' a = borderRadius a a a a
+-- | A horizontal/vertical size helper function. It accepts a function and two
+-- sizes for the horizontal and vertical parts. E.g., instead of calling
+-- 		padding (px 6) (px 10) (px 6) (px 10)
+-- you can simply do
+--		hv padding (px 6) (px 10)
+-- to save some keystrokes and decrease the chance of typos.
+hv :: Size a -> Size a -> (Size a -> Size a -> Size a -> Size a -> Css) -> Css
+hv a b f = f a b a b
+
+-- | Like "hv", but uses the same size for *everything*.
+ev :: Size a -> (Size a -> Size a -> Size a -> Size a -> Css) -> Css
+ev a f = f a a a a
