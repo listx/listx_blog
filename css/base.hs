@@ -1,11 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 import Data.Bits
-import qualified Data.Text.Lazy.IO	as Lazy
+import qualified Data.Text.Lazy.IO as T
 import Clay
 
 main :: IO ()
-main = Lazy.putStr $ renderWith compact [] myStylesheet
+main = T.putStr $ renderWith compact [] myStylesheet
 
 div' = Clay.div
 
