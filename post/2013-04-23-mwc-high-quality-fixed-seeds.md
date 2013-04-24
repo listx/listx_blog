@@ -51,7 +51,7 @@ import Data.Word
 import System.Random.MWC
 
 	...
-	gen <- initialize' $ year' * month' * day'
+	gen <- initialize' $ year' + month' + day'
 	...
 
 -- | Given a Word32 'num' generate a growing ByteString 'x' by repeatedly
