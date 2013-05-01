@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-dest='listx.github.com/'
+dest='listx.github.io/'
 targ='_site/'
 
 if [[ ! -d $targ ]]; then
