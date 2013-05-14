@@ -22,7 +22,7 @@ By default nox comments text, and the `-l c` option sets it to C-styled comments
 I use [evil-mode][evil-mode] with Emacs.
 Here is my relevant `.emacs` to set up `nox` correctly:
 
-```commonlisp
+```{.commonlisp .numberLines}
 (defun my-addrem-comment-region (b e f)
   "Use the `nox' command to comment the current region."
   (interactive)

@@ -14,7 +14,7 @@ I've discovered that using a simple list of 3 small numbers representing the yea
 I have a program that needs to be seeded on a day-by-day basis, and it must use the current date (year, month, and day only) as the seed; however, I need the seed to be random enough to make the MWC state spit out substantially different random numbers on different, yet similar days.
 In essence, I need to change
 
-```haskell
+```{.haskell .numberLines}
 import qualified Data.Vector as V
 import System.Random.MWC
 
@@ -41,7 +41,7 @@ The result is that I get much better seed-vs-similar-seed randomness with MWC.
 
 Here is the code:
 
-```haskell
+```{.haskell .numberLines}
 import Data.Bits
 import qualified Data.ByteString.Lazy as B
 import Data.Digest.Pure.SHA

@@ -28,7 +28,7 @@ myStylesheet = do
 		color (grayish 30)
 		overflowY scroll
 	body ? do
-		width (px 750)
+		width (px cPageWidth)
 		hv margin 0 auto
 		sup ? do
 			"vertical-align" -: "top"
@@ -57,14 +57,35 @@ myStylesheet = do
 			color (grayish 100)
 			fontSize (pt 12)
 			textAlign $ alignSide sideCenter
-	code ? do
+	code ? do -- single-line `code`
 		fontSize (pt 10)
 		color (grayish 51)
 		backgroundColor $ grayish 248
 		border solid (px 1) (grayish 204)
 		ev borderRadius (px 3)
 		hv padding 0 (px 4)
-	pre ? do
+	table ? do -- code with line numbers
+		backgroundColor $ grayish 248
+		ev borderRadius (px 3)
+		".sourceCode" & do
+			tr ? do
+				td ? do
+					".lineNumbers" & do
+						pre ? do
+							textAlign $ alignSide sideRight
+							fontSize (pt 10)
+							color (grayish 51)
+							hv padding (px 7) (px 0)
+				td ? do
+					".sourceCode" & do
+						pre ? do
+							code ? do
+--								hv padding (px 0) (px 4)
+								"border-style" -: "none"
+						minWidth . px $ cPageWidth - 100
+						maxWidth . px $ cPageWidth - 100
+		ev borderRadius (px 3)
+	pre ? do -- <pre><code> is generated if there is multiline (``` ... ```) code
 		code ? do
 			display block
 			overflow auto
@@ -72,6 +93,9 @@ myStylesheet = do
 	a ? do
 		":hover" & do
 			textDecoration none
+	where
+	cPageWidth :: Integer
+	cPageWidth = 750
 
 -- | A horizontal/vertical size helper. It accepts a function and two sizes for
 -- the horizontal and vertical parts. E.g., instead of calling
