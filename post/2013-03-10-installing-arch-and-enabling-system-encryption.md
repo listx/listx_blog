@@ -26,7 +26,7 @@ dd if=/dev/frandom of=/dev/sdX
 ```
 and it will be roughly 10 to 50 times faster than using `/dev/urandom` --- which is a real time saver if your disk is larger than 16 GiB.
 
-```
+```{.bash .numberLines}
 # Put in the Arch Linux live CD and run the following commands...
 
 # Set up 2 partitions; the first one is the boot 100MB partition (be sure
@@ -232,4 +232,5 @@ umount /mnt
 swapoff
 reboot
 ```
+
 [frandom]: http://www.billauer.co.il/frandom.html

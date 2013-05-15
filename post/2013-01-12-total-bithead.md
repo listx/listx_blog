@@ -13,7 +13,7 @@ The Setup
 We need to manually call a script every time the Total Bithead is connected.
 The script, called `switch_audio.sh`, looks like this:
 
-```bash
+```{.bash .numberLines}
 #!/bin/zsh
 
 if [[ -e /proc/asound/card1 ]]; then

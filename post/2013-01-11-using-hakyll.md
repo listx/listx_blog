@@ -44,7 +44,7 @@ sudo pacman -S haskell-pandoc
 Now we install `hsenv`.
 We use the forked version from [tmhedberg's repo][tmhedberg-hsenv] because the [original maintainer's repo][orig-hsenv] has been suffering from bitrot for a few months now (the original maintainer has disappeared).
 
-```
+```{.bash .numberLines}
 git clone --depth 1 git://github.com/tmhedberg/hsenv.git
 cd hsenv
 cabal install
@@ -70,7 +70,7 @@ cp ~/hakyll/data/example ~/myblog
 
 Now go to your `myblog` folder and instantiate a `hsenv` sandbox, and then install `hakyll` into this sandbox.
 
-```
+```{.bash .numberLines}
 cd ~/myblog
 ~/.cabal/bin/hsenv
 source .hsenv_myblog/bin/activate
@@ -86,7 +86,7 @@ To deactivate the sandbox, invoke `deactivate_hsenv` or just close your shell.
 Just remember to call `source .hsenv_myblog/bin/activate` when you want to make changes to your blog or edit your blog's binary.
 A sample creating/edition session would look something like this:
 
-```
+```{.bash .numberLines}
 cd ~/myblog
 source .hsenv_myblog/bin/activate
 # edit some files, including site.hs, the static generator binary
@@ -105,7 +105,7 @@ Create and upload your site to GitHub
 At your GitHub site/account, create a repo named `username.github.com`.
 Now link it up with your static site:
 
-```
+```{.bash .numberLines}
 cd ~/myblog/_site
 git init
 git add *.html # add css, etc.

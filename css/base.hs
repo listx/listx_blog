@@ -29,7 +29,7 @@ myStylesheet = do
 		overflowY scroll
 	body ? do
 		width (px cPageWidth)
-		hv margin 0 auto
+		vh margin 0 auto
 		sup ? do
 			"vertical-align" -: "top"
 			fontSize (em 0.6)
@@ -40,10 +40,10 @@ myStylesheet = do
 		fontWeight normal
 	div' ? do
 		"#header" & do
-			hv margin (em 0.5) 0
+			vh margin (em 0.5) 0
 			textAlign $ alignSide sideCenter
 		"#content" & do
-			hv padding (em 1) (em 2)
+			vh padding (em 1) (em 2)
 			ev borderRadius (px 3)
 			backgroundColor (rgbHex 0xeeeeee)
 			boxShadow (px 0) (px 0) (px 3) (rgbHex 0x666666)
@@ -63,33 +63,39 @@ myStylesheet = do
 		backgroundColor $ grayish 248
 		border solid (px 1) (grayish 204)
 		ev borderRadius (px 3)
-		hv padding 0 (px 4)
+		vh padding 0 (px 4)
 	table ? do -- code with line numbers
-		backgroundColor $ grayish 248
-		ev borderRadius (px 3)
+		display block
+		overflow auto
 		".sourceCode" & do
+			backgroundColor $ grayish 248
+			border solid (px 1) (grayish 204)
+			ev borderRadius (px 3)
 			tr ? do
 				td ? do
 					".lineNumbers" & do
+						vh padding 0 (px 4)
 						pre ? do
+							ev margin 0
 							textAlign $ alignSide sideRight
 							fontSize (pt 10)
 							color (grayish 51)
-							hv padding (px 7) (px 0)
 				td ? do
 					".sourceCode" & do
+						ev padding 0
 						pre ? do
+							ev margin 0
 							code ? do
---								hv padding (px 0) (px 4)
+								display block
+								overflow auto
+								vh padding (px 4) (px 2)
 								"border-style" -: "none"
-						minWidth . px $ cPageWidth - 100
-						maxWidth . px $ cPageWidth - 100
 		ev borderRadius (px 3)
 	pre ? do -- <pre><code> is generated if there is multiline (``` ... ```) code
 		code ? do
 			display block
 			overflow auto
-			hv padding (px 6) (px 10)
+			vh padding (px 6) (px 10)
 	a ? do
 		":hover" & do
 			textDecoration none
@@ -101,11 +107,11 @@ myStylesheet = do
 -- the horizontal and vertical parts. E.g., instead of calling
 -- 		padding (px 6) (px 10) (px 6) (px 10)
 -- you can simply do
---		hv padding (px 6) (px 10)
+--		vh padding (px 6) (px 10)
 -- to save some keystrokes and decrease the chance of typos.
-hv :: (Size a -> Size a -> Size a -> Size a -> Css) -> Size a -> Size a -> Css
-hv f a b = f a b a b
+vh :: (Size a -> Size a -> Size a -> Size a -> Css) -> Size a -> Size a -> Css
+vh f a b = f a b a b
 
--- | Like "hv", but uses the same size for *everything*.
+-- | Like "vh", but uses the same size for *everything*.
 ev :: (Size a -> Size a -> Size a -> Size a -> Css) -> Size a -> Css
 ev f a = f a a a a

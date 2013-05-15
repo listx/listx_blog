@@ -9,10 +9,9 @@ This is very useful for doing bulk transformations quickly.
 I coded up a very stupid commenting program called [`nox`][nox] that comments/uncomments text.
 Here is how you'd use it straight from the terminal:
 
-```
+```{.bash .numberLines}
 $ echo "hi" | nox -l c
 //hi
-
 ```
 
 By default nox comments text, and the `-l c` option sets it to C-styled comments, `//`.
