@@ -102,7 +102,7 @@ Your static site will be available at `~/myblog/_site`.
 Create and upload your site to GitHub
 -------------------------------------
 
-At your GitHub site/account, create a repo named `username.github.com`.
+At your GitHub site/account, create a repo named `username.github.io`.
 Now link it up with your static site:
 
 ```{.bash .numberLines}
@@ -110,7 +110,7 @@ cd ~/myblog/_site
 git init
 git add *.html # add css, etc.
 git commit -m "initial import"
-git remote add origin https://github.com/username/username.github.com.git
+git remote add origin https://github.com/username/username.github.io.git
 git push -u origin master
 ```
 
@@ -124,4 +124,4 @@ This site's static code is available [here][site-static].
 [tmhedberg-hsenv]: https://github.com/tmhedberg/hsenv
 [orig-hsenv]: https://github.com/Paczesiowa/hsenv
 [site-source]: https://github.com/listx/listx_blog
-[site-static]: https://github.com/listx/listx.github.com
+[site-static]: https://github.com/listx/listx.github.io
