@@ -24,7 +24,7 @@ myStylesheet = do
 		ev margin 0
 		ev padding 0
 		fontSize (pt 14)
-		backgroundColor (rgb 200 200 210)
+		backgroundColor (rgbHex bgHex)
 		color (grayish 30)
 		overflowY scroll
 	body ? do
@@ -79,7 +79,7 @@ myStylesheet = do
 							ev margin 0
 							textAlign $ alignSide sideRight
 							fontSize (pt 10)
-							color (grayish 51)
+							color (rgbHex $ bgHex - 0x151515)
 				td ? do
 					".sourceCode" & do
 						ev padding 0
@@ -102,6 +102,8 @@ myStylesheet = do
 	where
 	cPageWidth :: Integer
 	cPageWidth = 750
+	bgHex :: Int
+	bgHex = 0xc8c8d2
 
 -- | A horizontal/vertical size helper. It accepts a function and two sizes for
 -- the horizontal and vertical parts. E.g., instead of calling
