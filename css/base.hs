@@ -7,8 +7,6 @@ import Clay
 main :: IO ()
 main = T.putStr $ renderWith compact [] myStylesheet
 
-div' = Clay.div
-
 rgbHex :: Int -> Color
 rgbHex rgb'
 	| rgb' > 0xffffff || rgb' < 0 = error "invalid hex range"
@@ -27,84 +25,88 @@ myStylesheet = do
 		backgroundColor (rgbHex bgHex)
 		color (grayish 30)
 		overflowY scroll
-	body ? do
-		width (px cPageWidth)
-		vh margin 0 auto
-		sup ? do
-			"vertical-align" -: "top"
-			fontSize (em 0.6)
-	"h2, h3" ? do
-		fontWeight bold
-	h1 ? do
-		fontSize (pt 30)
-		fontWeight normal
-	div' ? do
-		"#header" & do
-			vh margin (em 0.5) 0
-			textAlign $ alignSide sideCenter
-		"#content" & do
-			vh padding (em 1) (em 2)
-			ev borderRadius (px 3)
-			backgroundColor (rgbHex 0xeeeeee)
-			boxShadow (px 0) (px 0) (px 3) (rgbHex 0x666666)
-			h1 ? do
-				margin (px 2) 0 (px 10) 0
-				borderBottom solid (px 2) (rgb 0 0 0)
-			h2 ? do
-				textDecoration underline
-			ul ? do
-				"#flushLeft" & do
-					margin 0 0 0 (px (-20))
-		"#footer" & do
-			margin (em 0.5) 0 (em 0.8) 0
-			color (grayish 100)
-			fontSize (pt 12)
-			textAlign $ alignSide sideCenter
-	code ? do -- single-line `code`
-		fontSize (pt 10)
-		color (grayish 51)
-		backgroundColor $ grayish 248
-		border solid (px 1) (grayish 204)
-		ev borderRadius (px 3)
-		vh padding 0 (px 4)
-	table ? do -- code with line numbers
-		display block
-		overflow auto
-		".sourceCode" & do
-			backgroundColor $ grayish 248
-			border solid (px 1) (grayish 204)
-			ev borderRadius (px 3)
-			boxShadow (px 0) (px 0) (px 3) (rgbHex shadowHex)
-			tr ? do
-				td ? do
-					".lineNumbers" & do
+		body ? do
+			width (px cPageWidth)
+			vh margin 0 auto
+			a ? do
+				":hover" & do
+					textDecoration none
+					textShadow (px 0) (px 0) (px 2) (rgbHex $ shadowHex - 0x222222)
+			sup ? do
+				"vertical-align" -: "top"
+				fontSize (em 0.6)
+			div' ? do
+				"#header" & do
+					vh margin (em 0.5) 0
+					textAlign $ alignSide sideCenter
+				"#content" & do
+					vh padding (em 1) (em 2)
+					ev borderRadius (px 3)
+					backgroundColor (rgbHex 0xeeeeee)
+					boxShadow (px 0) (px 0) (px 3) (rgbHex 0x666666)
+					h1 ? do
+						fontSize (pt 30)
+						fontWeight normal
+						margin (px 2) 0 (px 10) 0
+						borderBottom solid (px 2) (rgb 0 0 0)
+					h2 ? do
+						fontWeight bold
+						textDecoration underline
+					h3 ? do
+						fontWeight bold
+					ul ? do
+						"#flushLeft" & do
+							margin 0 0 0 (px (-20))
+					p ? do
+						"#taglist" & do
+							fontSize (pt 12)
+					code ? do -- single-line `code`
+						fontSize (pt 10)
+						color (grayish 51)
+						backgroundColor $ grayish 248
+						border solid (px 1) (grayish 204)
+						ev borderRadius (px 3)
 						vh padding 0 (px 4)
-						pre ? do
-							ev margin 0
-							textAlign $ alignSide sideRight
-							fontSize (pt 10)
-							color (rgbHex $ bgHex - 0x151515)
-				td ? do
-					".sourceCode" & do
-						ev padding 0
-						pre ? do
-							ev margin 0
-							code ? do
-								display block
-								overflow auto
-								vh padding (px 4) (px 2)
-								"border-style" -: "none"
-		ev borderRadius (px 3)
-	pre ? do -- <pre><code> is generated if there is multiline (``` ... ```) code
-		code ? do
-			display block
-			overflow auto
-			vh padding (px 6) (px 10)
-	a ? do
-		":hover" & do
-			textDecoration none
-			textShadow (px 0) (px 0) (px 2) (rgbHex $ shadowHex - 0x222222)
+					table ? do -- code with line numbers
+						display block
+						overflow auto
+						".sourceCode" & do
+							backgroundColor $ grayish 248
+							border solid (px 1) (grayish 204)
+							ev borderRadius (px 3)
+							boxShadow (px 0) (px 0) (px 3) (rgbHex shadowHex)
+							tr ? do
+								td ? do
+									".lineNumbers" & do
+										vh padding 0 (px 4)
+										pre ? do
+											ev margin 0
+											textAlign $ alignSide sideRight
+											fontSize (pt 10)
+											color (rgbHex $ bgHex - 0x151515)
+								td ? do
+									".sourceCode" & do
+										ev padding 0
+										pre ? do
+											ev margin 0
+											code ? do
+												display block
+												overflow auto
+												vh padding (px 4) (px 2)
+												"border-style" -: "none"
+						ev borderRadius (px 3)
+					pre ? do -- <pre><code> is generated if there is multiline (``` ... ```) code
+						code ? do
+							display block
+							overflow auto
+							vh padding (px 6) (px 10)
+				"#footer" & do
+					margin (em 0.5) 0 (em 0.8) 0
+					color (grayish 100)
+					fontSize (pt 12)
+					textAlign $ alignSide sideCenter
 	where
+	div' = Clay.div
 	cPageWidth :: Integer
 	cPageWidth = 750
 	bgHex :: Int
