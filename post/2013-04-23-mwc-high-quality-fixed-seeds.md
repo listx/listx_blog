@@ -1,6 +1,6 @@
 ---
 title: Haskell: System.Random.MWC: High Quality Fixed Seeds
-tags: haskell rng
+tags: haskell, rng
 ---
 
 I use Bryan O'Sullivan's [`mwc-random`][mwc-random] package for my PRNG (pseudorandom number generator) needs in my Haskell projects.
