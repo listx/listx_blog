@@ -52,6 +52,9 @@ myStylesheet = do
 				borderBottom solid (px 2) (rgb 0 0 0)
 			h2 ? do
 				textDecoration underline
+			ul ? do
+				"#flushLeft" & do
+					margin 0 0 0 (px (-20))
 		"#footer" & do
 			margin (em 0.5) 0 (em 0.8) 0
 			color (grayish 100)
