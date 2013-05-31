@@ -23,15 +23,15 @@ I recommend trying out user-friendly ones like Ubuntu first, and then once you a
 
 I strongly recommend a Linux environment for doing all of your programming for the following reasons:
 
-- Linux is the best place to learn shell scripting ([bash][bash], [zsh][zsh])--- which will allow you to program your computing experience
+- Linux is the best place to learn shell scripting ([bash], [zsh])--- which will allow you to program your computing experience
 - Linux distros give you easy access to powerful development tools, such as:
-	- [urxvt][urxvt]
-	- [ack][ack]
-	- [diff][diff]
-	- [git][git]
+	- [urxvt]
+	- [ack]
+	- [diff]
+	- [git]
 	- [od][od-hexdump], [hexdump][od-hexdump]
-	- [ssh][ssh]
-	- [rsync][rsync]
+	- [ssh]
+	- [rsync]
 
 Actually, writing shell scripts is probably one of the best ways to get familiar with programming concepts, because you end up writing scripts that you will actually use.
 
@@ -43,10 +43,10 @@ Now that you have Linux knowledge, you have access to all of the nice tools that
 And, since you are now familiar with some of these tools (especially `git`, I hope), the only thing stopping you from becoming a brilliant programmer is knowledge of programming languages and algorithms/mathematics.
 You will find yourself looking at formal academic papers for the latest research into computer science --- good stuff!
 
-If you have not learned [Vim][vim] or [Emacs][emacs] yet, you should do so now.
+If you have not learned [vim] or [emacs] yet, you should do so now.
 These editors are very powerful and Emacs especially is infinitely customizable --- *programmable*.
 You will use these editors for decades, probably, because they are that good at what they do.
-I personally use Emacs with [Evil][evil], because I like Emacs' configuration/customization system better.
+I personally use Emacs with [evil], because I like Emacs' configuration/customization system better.
 
 ## Final Thoughts
 
