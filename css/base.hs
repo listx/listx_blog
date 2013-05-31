@@ -71,6 +71,7 @@ myStylesheet = do
 			backgroundColor $ grayish 248
 			border solid (px 1) (grayish 204)
 			ev borderRadius (px 3)
+			boxShadow (px 0) (px 0) (px 3) (rgbHex shadowHex)
 			tr ? do
 				td ? do
 					".lineNumbers" & do
@@ -99,11 +100,14 @@ myStylesheet = do
 	a ? do
 		":hover" & do
 			textDecoration none
+			textShadow (px 0) (px 0) (px 2) (rgbHex $ shadowHex - 0x222222)
 	where
 	cPageWidth :: Integer
 	cPageWidth = 750
 	bgHex :: Int
 	bgHex = 0xc8c8d2
+	shadowHex :: Int
+	shadowHex = 0xdcdcd0
 
 -- | A horizontal/vertical size helper. It accepts a function and two sizes for
 -- the horizontal and vertical parts. E.g., instead of calling
