@@ -10,7 +10,7 @@ main = hakyll $ do
 
 	tagsRules tags $ \tag pattern -> do
 		let
-			title = "posts tagged " ++ tag
+			title = "Posts tagged &ldquo;" ++ tag ++ "&rdquo;"
 		route idRoute
 		compile $ do
 			list <- postList tags pattern recentFirst
