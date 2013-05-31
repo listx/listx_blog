@@ -11,4 +11,4 @@ elif [[ ! -d $dest ]]; then
     exit 1
 fi
 
-rsync -ahP --no-whole-file --inplace $targ $dest
+rsync -ahP --no-whole-file --inplace --delete --exclude=.git $targ $dest
