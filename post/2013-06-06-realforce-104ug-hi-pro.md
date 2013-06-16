@@ -67,7 +67,7 @@ When you do brush your fingers across the keys on the 104UG, you hear a flurry o
 
 ## Volume
 
-The 104UG less loud than the Unicomp when I press the keys, so that is a plus.
+The 104UG is less loud than the Unicomp when I press the keys, so that is a plus.
 I can also silently press the keys if I am careful enough --- great if you need to type something at night but don't want to wake your neighbors.
 On the Unicomp, you cannot register a keypress without an audible click of the metal spring underneath each key; even if you press a key ever so slowly, you will still get a clicking sound.
 
