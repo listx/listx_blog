@@ -63,7 +63,7 @@ For this reason, I am very tempted to try out Topre's 55g weighted keys, and if 
 The keycaps feel wiggly because of their extra tall height; you can readily feel this when you wiggle your finger on the top of the keycap without pressing down on it.
 The wiggle is nearly absent for the "regular" height keys on the bottom row --- the `CTRL`, Windows key, `ALT`, spacebar, etc.; I wonder if the non-high-profile Realforce keyboards feel this way as well (and I am tempted to buy another Realforce just to see).
 To give you some perspective the Unicomp keys hardly wiggle at all (except for the spacebar), and I actually prefer the feel and sound of the Unicomp keys as my fingers run across them.
-When you do brush your fingers across the keys on the 104UG, you hear a flurry of very thin springs touching against plastic and honestly it does a disservice to the RF because this sound makes the keyboard appear like it's been used for 5 years.
+When you do brush your fingers across the keys on the 104UG, you hear a flurry of very thin springs touching against plastic and honestly it does a disservice because this sound makes the keyboard appear like it's been used for 5 years.
 
 ## Volume
 
@@ -82,7 +82,7 @@ I have no qualms about the bottom of the keyboard becoming scratched or whatnot,
 In fact, if I do somehow manage to remove the rubber feet, neither the cable nor the official Realforce product label would become scratched because the former is already set well inside the cord inlay, and the latter rests on the part of the keyboard that already enjoys about 0.5cm of clearance from the desk (the 104UG, like other Realforce models, has a concave underside design).
 
 The Unicomp also has rubber feet, but they are less rubbery and not as thick, and I like that.
-The Unicomp's underbody does not have a concave design like the RF, and the official Unicomp sticker on the back has obvious wear-and-tear damage on it as I've used it for the past 3.5 years.
+The Unicomp's underbody does not have a concave design like the 104UG, and the official Unicomp sticker on the back has obvious wear-and-tear damage on it as I've used it for the past 3.5 years.
 But again, I don't really care about this kind of damage, because, well, I care about the keyboard's performance, not its sticker.
 
 ## Plastic Swivel Feet
