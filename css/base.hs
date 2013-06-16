@@ -5,7 +5,7 @@ import qualified Data.Text.Lazy.IO as T
 import Clay
 
 main :: IO ()
-main = T.putStr $ renderWith compact [] myStylesheet
+main = T.putStr $ renderWith compact myStylesheet
 
 rgbHex :: Int -> Color
 rgbHex rgb'
