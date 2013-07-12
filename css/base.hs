@@ -65,7 +65,7 @@ myStylesheet = do
 					div' ? do
 						".figure" & do
 							-- center images
-							"displky" -: "table"
+							"display" -: "table"
 							vh margin 0 auto
 					code ? do -- single-line `code`
 						fontSize (pt 10)
