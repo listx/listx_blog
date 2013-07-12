@@ -4,8 +4,6 @@ tags: c, rng, programming
 mathjax: on
 ---
 
-Summary: If `(RAND_MAX + 1) % n != 0`, you have modulo bias. Fix it!
-
 Let's say you need a random number from 0 to 2 (0, 1, or 2). If you do this:
 
 ```{.c .numberLines}
