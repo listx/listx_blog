@@ -62,6 +62,11 @@ myStylesheet = do
 					p ? do
 						"#taglist" & do
 							fontSize (pt 12)
+					div' ? do
+						".figure" & do
+							-- center images
+							"displky" -: "table"
+							vh margin 0 auto
 					code ? do -- single-line `code`
 						fontSize (pt 10)
 						color (grayish 51)
