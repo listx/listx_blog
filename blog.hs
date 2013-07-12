@@ -89,9 +89,10 @@ main = hakyll $ do
 	pandocOptions = defaultHakyllWriterOptions { writerHTMLMathMethod = MathJax "" }
 
 postCtx :: Context String
-postCtx =
-	dateField "date" "%Y-%m-%d" `mappend`
-	defaultContext
+postCtx = mconcat
+	[ dateField "date" "%Y-%m-%d"
+	, defaultContext
+	]
 
 archiveCtx :: Context String
 archiveCtx =
@@ -99,7 +100,10 @@ archiveCtx =
 	defaultContext
 
 tagsCtx :: Tags -> Context String
-tagsCtx tags = tagsField "prettytags" tags `mappend` postCtx
+tagsCtx tags = mconcat
+	[ tagsField "prettytags" tags
+	, postCtx
+	]
 
 homeCtx :: Tags -> String -> Context String
 homeCtx tags list =
