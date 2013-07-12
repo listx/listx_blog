@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-import Data.Monoid (mappend)
+import Data.Monoid (mappend, mconcat)
+import Text.Pandoc (WriterOptions (..), HTMLMathMethod (MathJax))
 import Hakyll
 
 main :: IO ()
@@ -46,9 +47,14 @@ main = hakyll $ do
 			>>= loadAndApplyTemplate "template/default.html" defaultContext
 			>>= relativizeUrls
 
+	-- Add images
+	match "img/*" $ do
+		route idRoute
+		compile copyFileCompiler
+
 	match "post/*" $ do
 		route $ setExtension "html"
-		compile $ pandocCompiler
+		compile $ pandocCompilerWith defaultHakyllReaderOptions pandocOptions
 			>>= loadAndApplyTemplate "template/post.html"    (tagsCtx tags)
 			>>= loadAndApplyTemplate "template/default.html" (tagsCtx tags)
 			>>= relativizeUrls
@@ -78,6 +84,9 @@ main = hakyll $ do
 				>>= relativizeUrls
 
 	match "template/*" $ compile templateCompiler
+	where
+	pandocOptions :: WriterOptions
+	pandocOptions = defaultHakyllWriterOptions { writerHTMLMathMethod = MathJax "" }
 
 postCtx :: Context String
 postCtx =
