@@ -1,6 +1,6 @@
 ---
 title: Installing Arch Linux and Enabling System Encryption
-tags: linux
+tags: linux, arch
 ---
 
 The follow list of commands is what you need to execute in order to set up Arch Linux with system-level encryption.
