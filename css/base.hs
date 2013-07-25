@@ -77,6 +77,7 @@ myStylesheet = do
 					table ? do -- code with line numbers
 						display block
 						overflow auto
+						vh margin (em 1) 0
 						".sourceCode" & do
 							backgroundColor $ grayish 248
 							border solid (px 1) (grayish 204)
