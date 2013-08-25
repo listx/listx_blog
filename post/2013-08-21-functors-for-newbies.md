@@ -10,7 +10,7 @@ It is inspired by the already-excellently written article [here][tut-with-pics].
 ## What is a Functor?
 
 In Haskell, there is a **Functor** type class.
-If a type is an instance of the **Functor** class, it is essentially a container type that add *context* to any value.
+If a type is an instance of the **Functor** class, it is essentially a container type that adds *context* to any value.
 
 The **Functor** class is defined as follows:
 
@@ -72,7 +72,7 @@ map makeStatement [] -- same as []
 
 Let's look at the **Maybe** type just to prove that they are also functors.
 
-**Maybe** is a container, except that it can only contain just 1 element (unlike **List** which can hold more than 1 element).
+**Maybe** is a container, except that it can only contain just 1 element (unlike **List** which can hold multiple elements).
 **Maybe** has two constructors: `Just` and `Nothing`; you can use `Just` to put a value into the **Maybe** type, like how you can use the `(:[])` function to put a single item into a list.
 Alternatively, you can use `Nothing` to denote the empty **Maybe** container (like `[]` for lists).
 
@@ -101,7 +101,7 @@ class Functor box where
 	fmap :: (apples -> oranges) -> box apples -> box oranges
 ```
 . Notice that the container must contain a single type `apples` --- tuples by their nature have arbitrary numbers of *different* types (they have apples *and* oranges in them already).
-This is the reason why we don't (and can't) have a `map` function for tuples.
+This is the reason why we don't (and can't) have an `fmap` function for tuples.
 
 ## Conclusion
 
