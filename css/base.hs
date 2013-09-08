@@ -50,12 +50,13 @@ myStylesheet = do
 						margin (px 2) 0 (px 10) 0
 						borderBottom solid (px 2) (rgb 0 0 0)
 					h2 ? do
-						margin 0 0 0 (em (-0.4))
-						fontWeight bold
+						margin (em 1) (em 1) (em 1) (em (-0.4))
+						fontWeight normal
 						textDecoration underline
 					h3 ? do
 						margin 0 0 0 (em (-0.4))
-						fontWeight bold
+						fontWeight normal
+						fontStyle italic
 					ul ? do
 						"#flushLeft" & do
 							margin 0 0 0 (px (-20))
