@@ -6,7 +6,7 @@ mathjax: off
 
 This is a summary of the article [*Best Practices for Scientific Computing* (Greg Wilson et. al, 2012)][paper].
 I think the points raised have importance in software development practices in general.
-Alot of the material resonated with me as a developer, and I recommend you read it or my condensed version (with my embedded comments) below.
+A lot of the material resonated with me as a developer, and I recommend you read it or my condensed version (with my embedded comments) below.
 
 ## Write Programs for People, Not Computers
 
