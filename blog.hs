@@ -25,8 +25,8 @@ main = hakyll $ do
 						defaultContext)
 				>>= relativizeUrls
 
-	-- Add favicon
-	match "favicon.png" $ do
+	-- Add images
+	match "*.png" $ do
 		route idRoute
 		compile copyFileCompiler
 

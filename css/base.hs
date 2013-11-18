@@ -22,7 +22,7 @@ myStylesheet = do
 		ev margin 0
 		ev padding 0
 		fontSize (pt 14)
-		backgroundColor (rgbHex bgHex)
+		backgroundImage $ url "/xv_lasma.png"
 		color (grayish 30)
 		overflowY scroll
 		body ? do
@@ -42,7 +42,7 @@ myStylesheet = do
 				"#content" & do
 					vh padding (em 1) (em 2)
 					ev borderRadius (px 3)
-					backgroundColor (rgbHex 0xeeeeee)
+					backgroundImage $ url "/lightpaperfibers_JorgeFuentes.png"
 					boxShadow (px 0) (px 0) (px 3) (rgbHex 0x666666)
 					h1 ? do
 						fontSize (pt 30)
