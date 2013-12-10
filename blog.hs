@@ -52,6 +52,11 @@ main = hakyll $ do
 		route idRoute
 		compile copyFileCompiler
 
+	-- Add files
+	match "file/*" $ do
+		route idRoute
+		compile copyFileCompiler
+
 	match "post/*" $ do
 		route $ setExtension "html"
 		compile $ pandocCompilerWith defaultHakyllReaderOptions pandocOptions
