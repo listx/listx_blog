@@ -144,7 +144,6 @@ A simple `HACKAGE_PACKAGES_FILE` (perhaps named `hackage_pkgs`) might look somet
 bindings-DSL
 bindings-GLFW
 GLFW-b
-bloxorz
 ```
 
 Here is sample output from the command `./maintain_cblrepo.sh hackage_pkgs initdb`:
