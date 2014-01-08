@@ -13,6 +13,16 @@ Simtic (C/Linux) is a text-based, dead-simple tic-tac-toe game with an AI that u
 
 - [Git repository](https://github.com/listx/simtic)
 
+## Libraries
+
+### ZTile
+
+ZTile (Haskell) is a library for dealing with square or hexagon tiles in a game map.
+
+- [Git repository](https://github.com/listx/ztile)
+- The latest source code in [zip](https://github.com/listx/ztile/zipball/master) or [tar](https://github.com/listx/ztile/tarball/master)
+- [Manual](file/ztile-0.1.0-8-ge9c05fd.pdf)[^gendoc]
+
 ## Utilities
 
 ### auca
@@ -21,7 +31,8 @@ Auca (Haskell/Linux) watches for file modifications and execute a given external
 The name comes from a contraction of "auto" and "call".
 
 - [Git repository](https://github.com/listx/auca)
-- [Source manual](file/auca-0.1.1-5-g655f518.pdf)[^gendoc]
+- The latest source code in [zip](https://github.com/listx/auca/zipball/master) or [tar](https://github.com/listx/auca/tarball/master)
+- [Manual](file/auca-0.1.1-5-g655f518.pdf)
 
 ### nox
 
@@ -29,8 +40,8 @@ Nox (Haskell/Linux) comments/uncomments text from STDIN and prints the result to
 The name comes from "no *x*", where *x* is a chunk of source code that you'd want to comment out.
 
 - [Git repository](https://github.com/listx/nox)
-- [Source manual](file/nox-0.1.0-4-gf123c9e.pdf)
+- The latest source code in [zip](https://github.com/listx/nox/zipball/master) or [tar](https://github.com/listx/nox/tarball/master)
+- [Manual](file/nox-0.1.0-4-gf123c9e.pdf)
 - [Sample use case](post/2013-04-30-emacs-unix-filter.html)
 
-[^gendoc]: The source manual can be generated from the development sources if you have [TexLive](http://www.tug.org/texlive/) installed on your system.
-The manual is provided here as a convenience for those who do not have TexLive.
+[^gendoc]: The manual, provided here as a convenience, can be generated from a cloned git repository of the development sources if you have [TexLive](http://www.tug.org/texlive/) installed on your system.
