@@ -78,8 +78,16 @@ case $mode in
 
 	# Add packages installed by the user from [haskell-core] or some other Arch Linux repository
 	installed=($(pacman -Qq | grep "^haskell-" | sed 's/^haskell-//'))
+	# Filter out those packages that were installed from Hackage using this very
+	# same script (in Arch Linux, the hackage packages, once installed, are in
+	# the format `haskell-<lowercased_package_name>'). This way, we avoid
+	# duplicate definitions and the packages added with --distro-pkg will really
+	# be those packages available from the distribution's official haskell
+	# repository.
+	hackage_lowercased=($hackage_packages_file:l)
+	installed_filtered=(${installed:|hackage_lowercased})
 
-	for p in $installed; do
+	for p in $installed_filtered; do
 		version=$(pacman -Q haskell-$p | cut -d " " -f2 | sed 's/-/,/')
 		command="cblrepo add --distro-pkg $p,$version"
 		echo $command
@@ -94,7 +102,7 @@ case $mode in
 	fi
 
 	# Add packages from Hackage
-	for hp in ${hackage_packages_file}; do
+	for hp in $hackage_packages_file; do
 		# Grab latest version of package
 		cabal_file=$(curl -s $hackage_url/package/$hp | grep -ioE "Cabal source package[)<>/lia href=\"]+\/package\/.+\.cabal" | grep -ioE "\/package.+")
 		command="cblrepo add --cbl-url $hackage_url$cabal_file"
@@ -144,6 +152,7 @@ A simple `HACKAGE_PACKAGES_FILE` (perhaps named `hackage_pkgs`) might look somet
 bindings-DSL
 bindings-GLFW
 GLFW-b
+rosezipper
 ```
 
 Here is sample output from the command `./maintain_cblrepo.sh hackage_pkgs initdb`:
@@ -178,8 +187,6 @@ cblrepo add --distro-pkg attoparsec,0.10.4.0,4
 cblrepo add --distro-pkg base-unicode-symbols,0.2.2.4,27
 cblrepo add --distro-pkg base64-bytestring,1.0.0.1,2
 cblrepo add --distro-pkg binary,0.7.1.0,1
-cblrepo add --distro-pkg bindings-dsl,1.0.20,1
-cblrepo add --distro-pkg bindings-glfw,3.0.3.2,1
 cblrepo add --distro-pkg blaze-builder,0.3.3.2,1
 cblrepo add --distro-pkg blaze-html,0.6.1.2,2
 cblrepo add --distro-pkg blaze-markup,0.5.1.6,2
@@ -203,7 +210,6 @@ cblrepo add --distro-pkg dlist,0.6.0.1,1
 cblrepo add --distro-pkg entropy,0.2.2.4,1
 cblrepo add --distro-pkg extensible-exceptions,0.1.1.4,27
 cblrepo add --distro-pkg fgl,5.4.2.4,27
-cblrepo add --distro-pkg glfw-b,1.4.6,1
 cblrepo add --distro-pkg glib,0.12.5.0,1
 cblrepo add --distro-pkg gluraw,1.4.0.0,2
 cblrepo add --distro-pkg glut,2.5.0.2,1
@@ -214,6 +220,7 @@ cblrepo add --distro-pkg haskell-src-exts,1.14.0,1
 cblrepo add --distro-pkg highlighting-kate,0.5.5.1,3
 cblrepo add --distro-pkg hinotify,0.3.6,1
 cblrepo add --distro-pkg hlint,1.8.55,1
+cblrepo add --distro-pkg hostname,1.0,27
 cblrepo add --distro-pkg hs-bibutils,5.0,3
 cblrepo add --distro-pkg hscolour,1.20.3,27
 cblrepo add --distro-pkg hslua,0.3.10,1
@@ -263,6 +270,8 @@ cblrepo add --distro-pkg system-filepath,0.4.8,1
 cblrepo add --distro-pkg tagged,0.7,1
 cblrepo add --distro-pkg tagsoup,0.13,1
 cblrepo add --distro-pkg temporary,1.1.2.4,3
+cblrepo add --distro-pkg test-framework,0.8.0.3,3
+cblrepo add --distro-pkg test-framework-quickcheck2,0.3.0.2,3
 cblrepo add --distro-pkg texmath,0.6.5.2,3
 cblrepo add --distro-pkg text,0.11.3.1,1
 cblrepo add --distro-pkg transformers,0.3.0.0,27
@@ -286,6 +295,7 @@ cblrepo add --distro-pkg zlib,0.5.4.1,2
 cblrepo add --cbl-url http://hackage.haskell.org/package/bindings-DSL-1.0.20/bindings-DSL.cabal
 cblrepo add --cbl-url http://hackage.haskell.org/package/bindings-GLFW-3.0.3.2/bindings-GLFW.cabal
 cblrepo add --cbl-url http://hackage.haskell.org/package/GLFW-b-1.4.6/GLFW-b.cabal
+cblrepo add --cbl-url http://hackage.haskell.org/package/rosezipper-0.2/rosezipper.cabal
 ```
 
 This is infinitely faster than adding each package by hand.
