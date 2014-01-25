@@ -4,6 +4,8 @@ tags: arch, linux, haskell, cblrepo
 mathjax: off
 ---
 
+UPDATE 2014-01-24: See [this post](2014-01-24-cblrepo2pkgbuild.html).
+
 The [cblrepo](https://github.com/magthe/cblrepo) command line utility helps to maintain a set of Haskell packages, and is used as the de facto Hackage package manager in Arch Linux.
 
 At least in Arch Linux, the idea is to first install the base set of available Haskell packages from the [[haskell-core]](https://wiki.archlinux.org/index.php/Haskell_Package_Guidelines) repo.

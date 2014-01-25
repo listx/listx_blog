@@ -1,0 +1,14 @@
+---
+title: cblrepo2pkgbuild: A Replacement for `cabal2arch`
+tags: arch, linux, haskell, cblrepo
+mathjax: off
+---
+
+I have open-sourced the `maintain_cblrepo.sh` script I originally published [in this post](2014-01-06-using-cblrepo-in-arch-linux.html).
+You can find the repository [here](https://github.com/listx/cabal2pkgbuild).
+
+The script is under the BSD 2-clause license.
+I was thinking of putting it in the public domain, but I think it's much easier to just use the BSD license.[^sqlite]
+
+[^sqlite]: SQLite, perhaps the most influential public domain project, has a practice of requiring all contributors to write a statement explicitly declaring that they knowingly submit their patches/improvements into the public domain.
+I am too lazy to do the same, so BSD license it is.
