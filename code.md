@@ -12,6 +12,7 @@ Let me know if any of them suffers from bit rot.
 Simtic (C/Linux) is a text-based, dead-simple tic-tac-toe game with an AI that uses minimax search.
 
 - [Git repository](https://github.com/listx/simtic)
+- The latest source code in [zip](https://github.com/listx/simtic/zipball/master) or [tar](https://github.com/listx/simtic/tarball/master)
 
 ## Libraries
 
