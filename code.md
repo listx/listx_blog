@@ -40,6 +40,7 @@ cabal2pkgbuild (Haskell/Arch Linux) is an Arch Linux wrapper around [cblrepo](ht
 
 - [Git repository](https://github.com/listx/cabal2pkgbuild)
 - The latest source code in [zip](https://github.com/listx/cabal2pkgbuild/zipball/master) or [tar](https://github.com/listx/cabal2pkgbuild/tarball/master)
+- [AUR](https://aur.archlinux.org/packages/cabal2pkgbuild-git/)
 
 ### nox
 
