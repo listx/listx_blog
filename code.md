@@ -45,3 +45,10 @@ The name comes from "no *x*", where *x* is a chunk of source code that you'd wan
 - [Sample use case](post/2013-04-30-emacs-unix-filter.html)
 
 [^gendoc]: The manual, provided here as a convenience, can be generated from a cloned git repository of the development sources if you have [TexLive](http://www.tug.org/texlive/) installed on your system.
+
+### cabal2pkgbuild
+
+cabal2pkgbuild (Haskell/Arch Linux) is an Arch Linux wrapper around [cblrepo](https://github.com/magthe/cblrepo) which lets you generate PKGBUILD files from [Hackage packages](http://hackage.haskell.org/packages/).
+
+- [Git repository](https://github.com/listx/cabal2pkgbuild)
+- The latest source code in [zip](https://github.com/listx/cabal2pkgbuild/zipball/master) or [tar](https://github.com/listx/cabal2pkgbuild/tarball/master)
