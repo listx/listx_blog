@@ -22,7 +22,7 @@ ZTile (Haskell) is a library for dealing with square or hexagon tiles in a game 
 
 - [Git repository](https://github.com/listx/ztile)
 - The latest source code in [zip](https://github.com/listx/ztile/zipball/master) or [tar](https://github.com/listx/ztile/tarball/master)
-- [Manual](file/ztile-0.1.0-8-ge9c05fd.pdf)[^gendoc]
+- [Manual](file/ztile-0.1.0-10-g6211a7c.pdf)[^gendoc]
 
 ## Utilities
 
