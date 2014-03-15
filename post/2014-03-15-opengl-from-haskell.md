@@ -4,14 +4,17 @@ tags: haskell, opengl
 mathjax: off
 ---
 
-The following is my translation/adaptation of [tutorial #2](http://www.opengl-tutorial.org/beginners-tutorials/tutorial-2-the-first-triangle/) at http://www.opengl-tutorial.org.
+The following is my translation/adaptation of [tutorial #2](http://www.opengl-tutorial.org/beginners-tutorials/tutorial-2-the-first-triangle/) at [http://www.opengl-tutorial.org](http://www.opengl-tutorial.org).
 It draws a single red triangle on the screen with a dark blue background.
 It takes quite a bit of boilerplate code just to get something on the screen!
 
-My version uses the code from (https://github.com/YPares/Haskell-OpenGL3.1-Tutos), but does not use `Control.Applicative` and also does not put the shaders containing GLSL in a separate text file.
-Everything is self-contained in one file, and it only really uses the `PackageImports` and `RecordWildCards` GHC extensions.
-The `PackageImports` is only necessary if you have both `GLFW` and `GLFW-b` Hackage packages installed in your system (as they have a name clash of `Graphics.UI.GLFW`, you need to disambiguate this import by specifying the package name).
+My version uses the code from [https://github.com/YPares/Haskell-OpenGL3.1-Tutos](https://github.com/YPares/Haskell-OpenGL3.1-Tutos), but does not use `Control.Applicative` and also does not put the shaders containing GLSL in a separate text file.
+Everything is self-contained in one file, and it only uses the `PackageImports` and `RecordWildCards` GHC extensions.
+The `PackageImports` is only necessary if you have both [GLFW](http://hackage.haskell.org/package/GLFW) and [GLFW-b](http://hackage.haskell.org/package/GLFW-b) Hackage packages installed in your system (as they have a name clash of `Graphics.UI.GLFW`, you need to disambiguate this import by specifying the package name).
 The `RecordWildCards` extension is pretty standard and exists purely for syntactic sugar (no type-level hoops and such) --- if you don't know about it you should google it.
+
+I went ahead and added type signatures for all top-level functions --- something that many Haskell tutorial writers hate doing for some strange, unknown reason.[^1]
+Also, I ran the code through `ghc --make -Wall` and silenced all warnings.
 
 I hereby release it into the Public Domain.
 From what I can tell, YPares's code doesn't have a license... I think this should be OK.
@@ -43,7 +46,7 @@ initialize :: IO GLFW.Window
 initialize = do
 	ok <- GLFW.init
 	when (not ok) $ do
-		fail "Failed to initialize GLFW"
+		_ <- fail "Failed to initialize GLFW"
 		exitFailure
 	mapM_ GLFW.windowHint
 		[ GLFW.WindowHint'Samples 4 -- 4x antialiasing
@@ -55,7 +58,7 @@ initialize = do
 
 	win <- GLFW.createWindow 800 600 "Window Title" Nothing Nothing
 	when (isNothing win) $ do
-		fail "Failed to create OpenGL window"
+		_ <- fail "Failed to create OpenGL window"
 		GLFW.terminate
 		exitFailure
 	let
@@ -85,9 +88,9 @@ freeResources GLIDs{..} = do
 
 newVAO :: IO GLuint
 newVAO = do
-	id <- withNewPtr (glGenVertexArrays 1)
-	glBindVertexArray id
-	return id
+	vaId <- withNewPtr (glGenVertexArrays 1)
+	glBindVertexArray vaId
+	return vaId
 
 fillNewBuffer :: [GLfloat] -> IO GLuint
 fillNewBuffer xs = do
@@ -96,9 +99,9 @@ fillNewBuffer xs = do
 	withArrayLen xs func -- give given vertices to OpenGL
 	return bufId
 	where
-	func length ptr = glBufferData
+	func len ptr = glBufferData
 		gl_ARRAY_BUFFER
-		(fromIntegral (length * sizeOf (undefined :: GLfloat)))
+		(fromIntegral (len * sizeOf (undefined :: GLfloat)))
 		(ptr :: Ptr GLfloat)
 		gl_STATIC_DRAW
 
@@ -124,20 +127,22 @@ loadProgram vertShader fragShader = do
 	putStrLn "Linking program"
 	mapM_ (glAttachShader progId) shaderIds
 	glLinkProgram progId
-	checkStatus gl_LINK_STATUS glGetProgramiv glGetProgramInfoLog progId
+	_ <- checkStatus
+		gl_LINK_STATUS glGetProgramiv glGetProgramInfoLog progId
 	mapM_ glDeleteShader shaderIds
 	return progId
 
 loadShader :: GLenum -> String -> IO GLuint
 loadShader shaderTypeFlag code = do
-	id <- glCreateShader shaderTypeFlag
+	shaderId <- glCreateShader shaderTypeFlag
 	withCString code $ \codePtr ->
 		with codePtr $ \codePtrPtr ->
-			glShaderSource id 1 codePtrPtr nullPtr
+			glShaderSource shaderId 1 codePtrPtr nullPtr
 	putStrLn "Compiling shader..."
-	glCompileShader id
-	checkStatus gl_COMPILE_STATUS glGetShaderiv glGetShaderInfoLog id
-	return id
+	glCompileShader shaderId
+	_ <- checkStatus
+		gl_COMPILE_STATUS glGetShaderiv glGetShaderInfoLog shaderId
+	return shaderId
 
 checkStatus :: (Integral a1, Storable a1)
 	=> GLenum
@@ -145,14 +150,14 @@ checkStatus :: (Integral a1, Storable a1)
 	-> (t -> a1 -> Ptr a3 -> Ptr Foreign.C.Types.CChar -> IO a2)
 	-> t
 	-> IO Bool
-checkStatus statusFlag glGetFn glInfoLogFn id = do
+checkStatus statusFlag glGetFn glInfoLogFn componentId = do
 	let
-		fetch info = withNewPtr (glGetFn id info)
+		fetch info = withNewPtr (glGetFn componentId info)
 	status <- liftM toBool $ fetch statusFlag
 	logLength <- fetch gl_INFO_LOG_LENGTH
 	when (logLength > 0) $
 		allocaArray0 (fromIntegral logLength) $ \msgPtr -> do
-			glInfoLogFn id logLength nullPtr msgPtr
+			_ <- glInfoLogFn componentId logLength nullPtr msgPtr
 			msg <- peekCString msgPtr
 			(if status then putStrLn else fail) msg
 	return status
@@ -177,6 +182,7 @@ vertexShader1 = unlines
 		, "gl_Position.w = 1.0;"
 	, "}"
 	]
+
 
 vertexBufferData :: [GLfloat]
 vertexBufferData =
@@ -214,3 +220,5 @@ drawStuff GLIDs{..} = do
 	glDrawArrays gl_TRIANGLES 0 3 -- for attrib array 0, draw 3 vertices
 	glDisableVertexAttribArray 0 -- disable attrib array 0
 ```
+
+[^1]: Seriously, why do so many Haskell tutorials omit function type signatures?
