@@ -29,7 +29,7 @@ I strongly recommend a Linux environment for doing all of your programming for t
 	- [ack]
 	- [diff]
 	- [git]
-	- [od][od-hexdump], [hexdump][od-hexdump]
+	- [od], [hexdump]
 	- [ssh]
 	- [rsync]
 
@@ -61,7 +61,8 @@ Happy hacking!
 [ack]:http://beyondgrep.com/
 [diff]:http://en.wikipedia.org/wiki/Diff
 [git]:http://en.wikipedia.org/wiki/Git_(software)
-[od-hexdump]:http://en.wikipedia.org/wiki/Hex_dump
+[od]:http://en.wikipedia.org/wiki/Od_(Unix)
+[hexdump]:http://en.wikipedia.org/wiki/Hexdump
 [ssh]:http://en.wikipedia.org/wiki/Secure_Shell
 [rsync]:http://en.wikipedia.org/wiki/Rsync
 [urxvt]:http://en.wikipedia.org/wiki/Urxvt
