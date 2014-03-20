@@ -9,6 +9,7 @@ My [last post](2014-03-15-opengl-from-haskell.html) was a translation of tutoria
 The end result of this tutorial is a 3D triangle with 3 different colored vertices that are interpolated smoothly by OpenGL.
 
 My version again uses the code from [https://github.com/YPares/Haskell-OpenGL3.1-Tutos](https://github.com/YPares/Haskell-OpenGL3.1-Tutos).
+The `Data.Vec` import is for the [Vec](http://hackage.haskell.org/package/Vec) package.
 Like my last post, my code here does does not use `Control.Applicative` puts everything, including the GLSL shaders directly into the code.
 The `RankNTypes` and `TypeOperators` GHC extensions are only there to suppress warnings from using `ghc --make -Wall`; if you don't want to use these extensions, just remove the type signature for the `vec3` function near the bottom.
 
