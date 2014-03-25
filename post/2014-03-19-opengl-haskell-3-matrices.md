@@ -273,6 +273,6 @@ lookAt up eye target = x :. y :. (-z) :. h :. ()
 	u = cross s f
 	x = homVec s
 	y = homVec u
-	z = snoc s (-(dot f eye))
+	z = snoc f (-(dot f eye))
 	h = snoc (vec3 (-(dot s eye)) (-(dot u eye)) 0) 1
 ```
