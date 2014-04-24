@@ -16,6 +16,8 @@ The `RankNTypes` and `TypeOperators` GHC extensions are only there to suppress w
 I have also removed the use of backticks for Haskell's infix notation (`` `...` ``).
 It's not because I like using parentheses --- I just don't like using infix notation because it runs against the argument handling order of normal functions found everywhere else.
 
+Also, I have fixed YPares's original `lookAt` function which is actually [broken as of commit 7a027b927d061fbd26138cb7357c40c4cacbc927](https://github.com/YPares/Haskell-OpenGL3.1-Tutos/commit/7a027b927d061fbd26138cb7357c40c4cacbc927); you will need my version if you wish to pursue the later tutorials that actually test the validity of this function, such as the keyboard/mouse input tutorial #6 from [http://www.opengl-tutorial.org](http://www.opengl-tutorial.org).
+
 The code here is released into the Public Domain.
 
 ```{.haskell .numberLines}
