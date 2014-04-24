@@ -261,18 +261,21 @@ mvpMatrix :: Mat44 GLfloat
 mvpMatrix = multmm (multmm projection view) model
 	where
 	projection = perspective 0.1 100 (pi/4) (4/3)
-	view = lookAt (vec3 0 1 0) (vec3 4 3 3) (vec3 0 0 0)
+	view = lookAt (vec3 4 3 3) (vec3 0 0 0) (vec3 0 1 0)
 	model = identity
 
--- The closest relative to this function is Data.Vec's `rotationLookAt`.
+-- The closest relative to this function is Data.Vec's `rotationLookAt`. We just
+-- mirror the code found in the GLM library (glm.g-truc.net). An additional
+-- resource is Jeremiah van Oosten's "Understanding the View Matrix", found at
+-- http://3dgep.com/?p=1700.
 lookAt :: Floating a => Vec3 a -> Vec3 a -> Vec3 a -> Mat44 a
-lookAt up eye target = x :. y :. (-z) :. h :. ()
+lookAt eye target up = x :. y :. z :. h :. ()
 	where
-	f = normalize $ target - eye
-	s = normalize . cross f $ normalize up
-	u = cross s f
-	x = homVec s
-	y = homVec u
-	z = snoc f (-(dot f eye))
-	h = snoc (vec3 (-(dot s eye)) (-(dot u eye)) 0) 1
+	forward = normalize $ target - eye
+	right = normalize $ cross forward up
+	up' = cross right forward
+	x = snoc right (-(dot right eye))
+	y = snoc up' (-(dot up' eye))
+	z = snoc (-forward) (dot forward eye)
+	h = 0 :. 0 :. 0 :. 1 :. ()
 ```
