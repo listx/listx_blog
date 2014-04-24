@@ -1,8 +1,11 @@
 *.hi
 *.o
-.hsenv
+.cabal-sandbox/
 _cache/
 _site/
 blog
+cabal.sandbox.config
+dist/
 draft
 listx.github.io
+Setup.hs
