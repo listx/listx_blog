@@ -14,7 +14,7 @@ As for the stands, I just bought another dual monitor stand and put it next to m
 The fact that the stands are subject to differently weighted monitors (27" monitor on one arm and a 22" on another) does not really affect them negatively.
 The desk in the image below is 140mm wide, in case you want to have a sense of how tight two dual-monitor stands would fit on your own desk.
 
-<img src="../img/quad-monitors.jpg" alt="Quad monitor setup" width="674">
+<img src="../img/quad-monitor.jpg" alt="Quad monitor setup" width="674">
 
 Using four monitors sounds difficult, but it's a breeze with Xinerama and Xmonad.
 The hardest part was figuring out the correct `xorg.conf` configuration file.
