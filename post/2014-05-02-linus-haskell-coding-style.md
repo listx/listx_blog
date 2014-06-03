@@ -6,7 +6,7 @@ mathjax: off
 
 Haskell is my favorite programming language.
 However, unlike mainstream languages (C, Java, Ruby, etc.), there are no known "coding styles" for it.
-C has the venerable Linux Kernel Coding Style [https://www.kernel.org/doc/Documentation/CodingStyle](LKCS), among many others.
+C has the venerable Linux Kernel Coding Style [LKCS](https://www.kernel.org/doc/Documentation/CodingStyle), among many others.
 I really like LKCS because it is designed to be as readable as possible, and is actually pretty simple (no fancy indentation/brace rules).
 I just wish there was something like LKCS for Haskell, mainly because every time I open up Haskell code somebody else wrote, it is plagued with gargantuan amounts of indentation.
 It really has gotten out of hand.
