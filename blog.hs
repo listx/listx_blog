@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 import qualified Data.Map.Lazy as M
-import Data.Monoid (mappend, mconcat)
+import Data.Monoid (mconcat)
 import Text.Pandoc (WriterOptions (..), HTMLMathMethod (MathJax))
 import Hakyll
 
@@ -67,7 +67,10 @@ main = hakyll $ do
 		route $ setExtension "html"
 		compile $ pandocCompilerWith defaultHakyllReaderOptions pandocOptions
 			>>= loadAndApplyTemplate "template/post.html"    (tagsCtx tags)
-			>>= loadAndApplyTemplate "template/default.html" (mathCtx `mappend` tagsCtx tags)
+			>>= loadAndApplyTemplate "template/default.html" (mconcat
+				[ mathCtx
+				, tagsCtx tags
+				])
 			>>= relativizeUrls
 
 	create ["archive.html"] $ do
@@ -112,9 +115,10 @@ postCtx = mconcat
 	]
 
 archiveCtx :: Context String
-archiveCtx =
-	constField "title" "Archive" `mappend`
-	defaultContext
+archiveCtx = mconcat
+	[ constField "title" "Archive"
+	, defaultContext
+	]
 
 tagsCtx :: Tags -> Context String
 tagsCtx tags = mconcat
@@ -123,11 +127,12 @@ tagsCtx tags = mconcat
 	]
 
 homeCtx :: Tags -> String -> Context String
-homeCtx tags list =
-	constField "post" list `mappend`
-	constField "title" "Home" `mappend`
-	field "taglist" (\_ -> renderTagList tags) `mappend`
-	defaultContext
+homeCtx tags list = mconcat
+	[ constField "post" list
+	, constField "title" "Home"
+	, field "taglist" (\_ -> renderTagList tags)
+	, defaultContext
+	]
 
 mathCtx :: Context a
 mathCtx = field "mathjax" $ \item -> do
