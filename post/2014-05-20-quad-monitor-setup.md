@@ -1,7 +1,6 @@
 ---
 title: Quad Monitor Setup
 tags: linux, hardware, nvidia, xmonad
-mathjax: off
 ---
 
 I got my two QNIX QX2710 LED Evolution II SE Matte 27" 2560x1440 Samsung PLS WQHD monitors and incorporated them into my existing dual Acer X222W 22" 1680x1050 setup.

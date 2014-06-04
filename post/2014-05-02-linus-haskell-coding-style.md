@@ -1,7 +1,6 @@
 ---
 title: Linus's Haskell Coding Style (LHCS)
 tags: haskell, programming
-mathjax: off
 ---
 
 Haskell is my favorite programming language.

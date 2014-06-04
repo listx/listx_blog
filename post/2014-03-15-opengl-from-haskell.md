@@ -1,7 +1,6 @@
 ---
 title: OpenGL from Haskell
 tags: haskell, opengl
-mathjax: off
 ---
 
 The following is my translation/adaptation of [tutorial #2](http://www.opengl-tutorial.org/beginners-tutorials/tutorial-2-the-first-triangle/) at [http://www.opengl-tutorial.org](http://www.opengl-tutorial.org).

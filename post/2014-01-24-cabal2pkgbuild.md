@@ -1,7 +1,6 @@
 ---
 title: cabal2pkgbuild: A Replacement for `cabal2arch`
 tags: arch, linux, haskell, cblrepo
-mathjax: off
 ---
 
 I have open-sourced the `maintain_cblrepo.sh` script I originally published [in this post](2014-01-06-using-cblrepo-in-arch-linux.html).

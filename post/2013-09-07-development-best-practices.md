@@ -1,7 +1,6 @@
 ---
 title: Development Best Practices
 tags: programming
-mathjax: off
 ---
 
 This is a summary of the article [*Best Practices for Scientific Computing* (Greg Wilson et. al, 2012)][paper].

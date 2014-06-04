@@ -1,7 +1,6 @@
 ---
 title: OpenGL from Haskell (#3: Matrices)
 tags: haskell, opengl
-mathjax: off
 ---
 
 The following is my translation/adaptation of [tutorial #2](http://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/) at [http://www.opengl-tutorial.org](http://www.opengl-tutorial.org).

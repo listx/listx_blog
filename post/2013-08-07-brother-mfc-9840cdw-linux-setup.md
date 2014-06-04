@@ -1,7 +1,6 @@
 ---
 title: Brother MFC-9840CDW: Setup on Arch Linux
 tags: arch, linux, hardware, printer
-mathjax: off
 ---
 
 After more than a year of struggling with my Brother printer, I finally got it to print flawlessly.

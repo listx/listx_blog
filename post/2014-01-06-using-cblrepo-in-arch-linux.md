@@ -1,7 +1,6 @@
 ---
 title: Using cblrepo in Arch Linux
 tags: arch, linux, haskell, cblrepo
-mathjax: off
 ---
 
 UPDATE 2014-01-24: See [this post](2014-01-24-cabal2pkgbuild.html).

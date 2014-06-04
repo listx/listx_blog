@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+import qualified Data.Map.Lazy as M
 import Data.Monoid (mappend, mconcat)
 import Text.Pandoc (WriterOptions (..), HTMLMathMethod (MathJax))
 import Hakyll
@@ -16,13 +17,15 @@ main = hakyll $ do
 		compile $ do
 			list <- postList tags pattern recentFirst
 			makeItem ""
-				>>= loadAndApplyTemplate "template/archive.html"
-					(constField "title" title `mappend`
-						constField "body" list `mappend`
-						defaultContext)
-				>>= loadAndApplyTemplate "template/default.html"
-					(constField "title" title `mappend`
-						defaultContext)
+				>>= loadAndApplyTemplate "template/archive.html" (mconcat
+					[ constField "body" list
+					, defaultContext
+					])
+				>>= loadAndApplyTemplate "template/default.html" (mconcat
+					[ constField "title" title
+					, mathCtx
+					, defaultContext
+					])
 				>>= relativizeUrls
 
 	-- Add images
@@ -44,7 +47,10 @@ main = hakyll $ do
 	match (fromList ["about.md", "code.md"]) $ do
 		route   $ setExtension "html"
 		compile $ pandocCompiler
-			>>= loadAndApplyTemplate "template/default.html" defaultContext
+			>>= loadAndApplyTemplate "template/default.html" (mconcat
+				[ mathCtx
+				, defaultContext
+				])
 			>>= relativizeUrls
 
 	-- Add images
@@ -61,7 +67,7 @@ main = hakyll $ do
 		route $ setExtension "html"
 		compile $ pandocCompilerWith defaultHakyllReaderOptions pandocOptions
 			>>= loadAndApplyTemplate "template/post.html"    (tagsCtx tags)
-			>>= loadAndApplyTemplate "template/default.html" (tagsCtx tags)
+			>>= loadAndApplyTemplate "template/default.html" (mathCtx `mappend` tagsCtx tags)
 			>>= relativizeUrls
 
 	create ["archive.html"] $ do
@@ -73,7 +79,10 @@ main = hakyll $ do
 			list <- applyTemplateList itemTpl postCtx sorted
 			makeItem list
 				>>= loadAndApplyTemplate "template/archive.html" archiveCtx
-				>>= loadAndApplyTemplate "template/default.html" archiveCtx
+				>>= loadAndApplyTemplate "template/default.html" (mconcat
+					[ mathCtx
+					, archiveCtx
+					])
 				>>= relativizeUrls
 
 	create ["index.html"] $ do
@@ -85,7 +94,10 @@ main = hakyll $ do
 			list <- applyTemplateList itemTpl postCtx sorted
 			makeItem list
 				>>= loadAndApplyTemplate "template/index.html" (homeCtx tags list)
-				>>= loadAndApplyTemplate "template/default.html" (homeCtx tags list)
+				>>= loadAndApplyTemplate "template/default.html" (mconcat
+					[ mathCtx
+					, homeCtx tags list
+					])
 				>>= relativizeUrls
 
 	match "template/*" $ compile templateCompiler
@@ -116,6 +128,13 @@ homeCtx tags list =
 	constField "title" "Home" `mappend`
 	field "taglist" (\_ -> renderTagList tags) `mappend`
 	defaultContext
+
+mathCtx :: Context a
+mathCtx = field "mathjax" $ \item -> do
+	metadata <- getMetadata $ itemIdentifier item
+	return $ if (M.member "mathjax" metadata)
+		then "<script type=\"text/javascript\" src=\"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML\"></script>"
+		else ""
 
 postList
 	:: Tags

@@ -1,7 +1,6 @@
 ---
 title: Functors for Newbies
 tags: haskell, programming
-mathjax: off
 ---
 
 This is a tutorial on functors.

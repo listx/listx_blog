@@ -1,7 +1,6 @@
 ---
 title: Solving the "NVRM: API mismatch" Problem on Arch Linux
 tags: arch, linux, nvidia
-mathjax: off
 ---
 
 Sometimes when you do a system upgrade on Arch, Xorg will die on a reboot and you'll get this kernel error (available with `dmesg`):
