@@ -7,12 +7,18 @@ cabal install --only-dep
 ```
 
 . This will install Hakyll, Clay, and other dependencies.
-Run the `build.sh` script.
-
-A useful trick is to do
+Now just run either
 
 ```
-./blog clean && ./build.sh && ./blog watch
+make
 ```
 
 for a complete reset.
+
+If you don't want to create the static site directory itself into the `listx.github.io/` directory, just run
+
+```
+make nosync
+```
+
+instead.

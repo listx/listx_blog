@@ -1,18 +1,14 @@
-all:
-	ghc -O2 -Wall -fno-spec-constr-count -threaded --make blog
+OBJ = dist/build/blog/blog-tmp/Main.o dist/build/base/base-tmp/Main.o
+all: $(OBJ)
+	cabal build --ghc-options "-O2 -Wall" blog
+	cp dist/build/blog/blog .
 	./blog rebuild
 	./sync.sh
 
-nosync:
-	ghc -O2 -Wall -fno-spec-constr-count -threaded --make blog
+nosync: $(OBJ)
+	cabal build --ghc-options "-O2 -Wall" blog
+	cp dist/build/blog/blog .
 	./blog rebuild
-
-prod:
-	ghc -O2 -Wall -Werror -fno-spec-constr-count -threaded --make blog
-
-prof:
-	ghc -rtsopts -prof -auto-all -O2 -v -Wall -Werror --make blog
-	./blog +RTS -p
 
 srclist:
 	$(shell find -type f -regex ".*\.hs" > srclist)
