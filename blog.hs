@@ -138,7 +138,7 @@ mathCtx :: Context a
 mathCtx = field "mathjax" $ \item -> do
 	metadata <- getMetadata $ itemIdentifier item
 	return $ if (M.member "mathjax" metadata)
-		then "<script type=\"text/javascript\" src=\"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML\"></script>"
+		then "<script src=\"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML\"></script>"
 		else ""
 
 postList

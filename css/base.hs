@@ -36,6 +36,9 @@ myStylesheet = do
 				"vertical-align" -: "top"
 				fontSize (em 0.6)
 			div' ? do
+				".center" & do
+					textAlign $ alignSide sideCenter
+			div' ? do
 				"#header" & do
 					vh margin (em 0.5) 0
 					textAlign $ alignSide sideCenter
@@ -49,6 +52,8 @@ myStylesheet = do
 						fontWeight normal
 						margin (px 2) 0 (px 10) 0
 						borderBottom solid (px 2) (rgb 0 0 0)
+						".center" & do
+							textAlign $ alignSide sideCenter
 					h2 ? do
 						margin (em 1) (em 1) (em 1) (em (-0.4))
 						fontWeight normal
