@@ -103,6 +103,8 @@ myStylesheet = do
 												overflow auto
 												vh padding (px 4) (px 2)
 												"border-style" -: "none"
+												ev borderRadius (px 0)
+												boxShadow (px 0) (px 0) (px 0) (rgbHex shadowHex)
 						ev borderRadius (px 3)
 					pre ? do -- <pre><code> is generated if there is multiline (``` ... ```) code
 						code ? do
