@@ -41,7 +41,7 @@ main = hakyll $ do
 	-- Add Clay-based css
 	match "css/*.hs" $ do
 		route $ setExtension "css"
-		compile $ getResourceString >>= withItemBody (unixFilter "runghc" [])
+		compile $ getResourceString >>= withItemBody (unixFilter ".cabal-sandbox/bin/cabal" ["exec", "runghc"])
 
 	-- Add some default pages
 	match (fromList ["about.md", "code.md"]) $ do
