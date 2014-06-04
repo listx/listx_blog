@@ -10,11 +10,11 @@ main = T.putStr $ renderWith compact myStylesheet
 rgbHex :: Int -> Color
 rgbHex rgb'
 	| rgb' > 0xffffff || rgb' < 0 = error "invalid hex range"
-	| otherwise = rgb r g b
+	| otherwise = rgb rr gg bb
 	where
-	r = fromIntegral $ (shiftR rgb' 16) .&. 0xFF
-	g = fromIntegral $ (shiftR rgb' 8) .&. 0xFF
-	b = fromIntegral $ rgb' .&. 0xFF
+	rr = fromIntegral $ (shiftR rgb' 16) .&. 0xFF
+	gg = fromIntegral $ (shiftR rgb' 8) .&. 0xFF
+	bb = fromIntegral $ rgb' .&. 0xFF
 
 myStylesheet :: Css
 myStylesheet = do
@@ -130,8 +130,8 @@ myStylesheet = do
 --		vh padding (px 6) (px 10)
 -- to save some keystrokes and decrease the chance of typos.
 vh :: (Size a -> Size a -> Size a -> Size a -> Css) -> Size a -> Size a -> Css
-vh f a b = f a b a b
+vh f x y = f x y x y
 
 -- | Like "vh", but uses the same size for *everything*.
 ev :: (Size a -> Size a -> Size a -> Size a -> Css) -> Size a -> Css
-ev f a = f a a a a
+ev f x = f x x x x
