@@ -71,7 +71,7 @@ myStylesheet = do
 					code ? do -- single-line `code`
 						fontSize (pt 10)
 						color (grayish 51)
-						backgroundColor $ grayish 248
+						backgroundColor codeBg
 						border solid (px 1) (grayish 204)
 						ev borderRadius (px 3)
 						vh padding 0 (px 4)
@@ -80,7 +80,7 @@ myStylesheet = do
 						overflow auto
 						vh margin (em 1) 0
 						".sourceCode" & do
-							backgroundColor $ grayish 248
+							backgroundColor codeBg
 							border solid (px 1) (grayish 204)
 							ev borderRadius (px 3)
 							boxShadow (px 0) (px 0) (px 3) (rgbHex shadowHex)
@@ -109,6 +109,8 @@ myStylesheet = do
 							display block
 							overflow auto
 							vh padding (px 6) (px 10)
+							ev borderRadius (px 3)
+							boxShadow (px 0) (px 0) (px 3) (rgbHex shadowHex)
 				"#footer" & do
 					margin (em 0.5) 0 (em 0.8) 0
 					color (grayish 100)
@@ -122,6 +124,10 @@ myStylesheet = do
 	bgHex = 0xc8c8d2
 	shadowHex :: Int
 	shadowHex = 0xdcdcd0
+	codeBgHex :: Int
+	codeBgHex = 0xfdf6e3
+	codeBg :: Color
+	codeBg = rgbHex codeBgHex
 
 -- | A horizontal/vertical size helper. It accepts a function and two sizes for
 -- the horizontal and vertical parts. E.g., instead of calling
