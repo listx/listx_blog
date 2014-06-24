@@ -45,7 +45,7 @@ cabal2pkgbuild (Haskell/Arch Linux) is an Arch Linux wrapper around [cblrepo](ht
 
 ### floop
 
-Floop (C/Linux) is a PRNG that spits out to STDOUT.
+Floop (C/Linux) is a PRNG that writes to STDOUT.
 Its main purpose is to generate random bytes to wipe a disk, before using it as an encrypted medium.
 
 - [Git repository](https://github.com/listx/floop)
