@@ -43,6 +43,15 @@ cabal2pkgbuild (Haskell/Arch Linux) is an Arch Linux wrapper around [cblrepo](ht
 - The latest source code in [zip](https://github.com/listx/cabal2pkgbuild/zipball/master) or [tar](https://github.com/listx/cabal2pkgbuild/tarball/master)
 - [AUR](https://aur.archlinux.org/packages/cabal2pkgbuild-git/)
 
+### floop
+
+Floop (C/Linux) is a PRNG that spits out to STDOUT.
+Its main purpose is to generate random bytes to wipe a disk, before using it as an encrypted medium.
+
+- [Git repository](https://github.com/listx/floop)
+- The latest source code in [zip](https://github.com/listx/floop/zipball/master) or [tar](https://github.com/listx/floop/tarball/master)
+- [AUR](https://aur.archlinux.org/packages/floop-git/)
+
 ### nox
 
 Nox (Haskell/Linux) comments/uncomments text from STDIN and prints the result to STDOUT.
