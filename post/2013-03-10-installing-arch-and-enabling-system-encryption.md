@@ -19,12 +19,12 @@ dd if=/dev/urandom of=/dev/sdX
 ```
 before doing anything.
 This way, your new Linux install will blend into the random noise data resulting from the command above, making it virtually impossible to detect which portions of the drive contain actual data.
-If the disk you want to wipe is a secondary device to an existing Linux installation, you can try using [`frandom`][frandom] to generate a faster stream of pseudorandom bytes.
-If you get `frandom` working, you can just do
+If the disk you want to wipe is a secondary device to an existing Linux installation, you can try using [`floop`][floop] to generate a faster stream of pseudorandom bytes.
+With `floop`, you can just do
 ```
-dd if=/dev/frandom of=/dev/sdX
+floop --threads 4 --thread-buf 0x200000 --count 0 | dd of=/dev/sdX
 ```
-and it will be roughly 10 to 50 times faster than using `/dev/urandom` --- which is a real time saver if your disk is larger than 16 GiB.
+and it will be significantly faster than using `/dev/urandom`.
 
 ```{.bash .numberLines}
 # Put in the Arch Linux live CD and run the following commands...
@@ -233,4 +233,4 @@ swapoff
 reboot
 ```
 
-[frandom]: http://www.billauer.co.il/frandom.html
+[floop]: ../../code.html#floop
