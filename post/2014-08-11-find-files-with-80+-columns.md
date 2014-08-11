@@ -1,6 +1,6 @@
 ---
 title: Find Lines with 80+ Columns in Multiple Files
-tags: linux
+tags: linux, programming
 ---
 
 It's nice to follow the 80-columns-per-line rule[^lkcs], but what if you have some lingering project that has yet to conform?
