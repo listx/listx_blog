@@ -1,6 +1,7 @@
 # About
 
 This is the source code for [my blog](http://listx.github.io/).
+The compiled output can be found at [another github repository](https://github.com/listx/listx.github.io).
 
 # Compiling
 
