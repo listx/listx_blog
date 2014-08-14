@@ -36,7 +36,7 @@ Thankfully, there is a SHA-1 [package][sha-hackage] available, so I don't need t
 
 To solve my problem, I just take the current date, then feed it to the SHA-1 function to get `sha1Hash`; I then then repeatedly call SHA-1 against `sha1Hash` recursively.
 Meanwhile, each time I get a SHA-1 hash of 20 bytes, I append it to an empty string of bytes, `acc`.
-When `acc` is large enough to be split up into 256 `Word32` elements and then feed it to `initialize`.
+When `acc` is large enough to be split up into 256 `Word32` elements, I feed it to `initialize`.
 The result is that I get much better seed-vs-similar-seed randomness with MWC.
 
 Here is the code:
@@ -65,7 +65,7 @@ initialize' num = initialize . V.fromList . loop B.empty . B.pack $ octetsLE num
 	where
 	loop :: B.ByteString -> B.ByteString -> [Word32]
 	loop acc bs
-		| B.length acc >= (256 * 4) = toW32s acc
+		| B.length acc >= (256 * 4) = take 256 $ toW32s acc
 		| otherwise = loop (B.append acc $ sha1Bytes bs) (sha1Bytes bs)
 	sha1Bytes :: B.ByteString -> B.ByteString
 	sha1Bytes = bytestringDigest . sha1
