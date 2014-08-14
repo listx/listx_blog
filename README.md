@@ -1,3 +1,9 @@
+# About
+
+This is the source code for [my blog](http://listx.github.io/).
+
+# Compiling
+
 To compile, do:
 
 ```
