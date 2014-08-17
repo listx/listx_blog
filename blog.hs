@@ -19,6 +19,7 @@ main = hakyll $ do
 			makeItem ""
 				>>= loadAndApplyTemplate "template/archive.html" (mconcat
 					[ constField "body" list
+					, archiveCtx tags
 					, defaultContext
 					])
 				>>= loadAndApplyTemplate "template/default.html" (mconcat
@@ -81,10 +82,10 @@ main = hakyll $ do
 			itemTpl <- loadBody "template/post-item.html"
 			list <- applyTemplateList itemTpl postCtx sorted
 			makeItem list
-				>>= loadAndApplyTemplate "template/archive.html" archiveCtx
+				>>= loadAndApplyTemplate "template/archive.html" (archiveCtx tags)
 				>>= loadAndApplyTemplate "template/default.html" (mconcat
 					[ mathCtx
-					, archiveCtx
+					, archiveCtx tags
 					])
 				>>= relativizeUrls
 
@@ -96,10 +97,10 @@ main = hakyll $ do
 			itemTpl <- loadBody "template/post-item.html"
 			list <- applyTemplateList itemTpl postCtx sorted
 			makeItem list
-				>>= loadAndApplyTemplate "template/index.html" (homeCtx tags list)
+				>>= loadAndApplyTemplate "template/index.html" (homeCtx list)
 				>>= loadAndApplyTemplate "template/default.html" (mconcat
 					[ mathCtx
-					, homeCtx tags list
+					, homeCtx list
 					])
 				>>= relativizeUrls
 
@@ -114,9 +115,10 @@ postCtx = mconcat
 	, defaultContext
 	]
 
-archiveCtx :: Context String
-archiveCtx = mconcat
+archiveCtx :: Tags -> Context String
+archiveCtx tags = mconcat
 	[ constField "title" "Archive"
+	, field "taglist" (\_ -> renderTagList tags)
 	, defaultContext
 	]
 
@@ -126,11 +128,10 @@ tagsCtx tags = mconcat
 	, postCtx
 	]
 
-homeCtx :: Tags -> String -> Context String
-homeCtx tags list = mconcat
+homeCtx :: String -> Context String
+homeCtx list = mconcat
 	[ constField "post" list
 	, constField "title" "Home"
-	, field "taglist" (\_ -> renderTagList tags)
 	, defaultContext
 	]
 
