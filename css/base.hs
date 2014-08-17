@@ -21,6 +21,7 @@ myStylesheet = do
 	html ? do
 		ev margin 0
 		ev padding 0
+		fontFamily ["Merriweather"] [serif]
 		backgroundColor $ rgbHex 0xd1dbbd
 		color (grayish 30)
 		overflowY scroll
