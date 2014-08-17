@@ -7,6 +7,17 @@ Hello! My name is Linus Arver and this is my blog.
 Please email me at `linus at ucla dot edu` for anything related to this blog.
 I have long since graduated from UCLA, but they gave me a lifetime email address. ;)
 
+## Programming
+
+I have fun writing computer programs.
+It is by far my favorite hobby.
+I program mainly in [Haskell][haskell], ever since I discovered it around 2009.
+I also program some [pet projects][projects] in [C][c].
+
+[haskell]: http://en.wikipedia.org/wiki/Haskell_(programming_language)
+[c]: http://en.wikipedia.org/wiki/C_(programming_language)
+[projects]: ../code.html
+
 ## Recommended Software
 
 I use free/open-source software almost exclusively as much as possible.
@@ -46,17 +57,6 @@ Here are some of them I heartily recommend.
 [blend]: https://www.archlinux.org/packages/community/x86_64/blender/
 [luxrender]: https://www.archlinux.org/packages/community/x86_64/luxrender/
 [luxblend]: https://www.archlinux.org/packages/community/any/luxblend25/
-
-## Programming
-
-I have fun writing computer programs.
-It is by far my favorite hobby.
-I program mainly in [Haskell][haskell], ever since I discovered it around 2009.
-I also program some [pet projects][projects] in [C][c].
-
-[haskell]: http://en.wikipedia.org/wiki/Haskell_(programming_language)
-[c]: http://en.wikipedia.org/wiki/C_(programming_language)
-[projects]: ../code.html
 
 ## This Site
 
