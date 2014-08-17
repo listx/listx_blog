@@ -9,6 +9,8 @@ I have long since graduated from UCLA, but they gave me a lifetime email address
 
 ## Programming
 
+My [Github](https://github.com/listx).
+
 I have fun writing computer programs.
 It is by far my favorite hobby.
 I program mainly in [Haskell][haskell], ever since I discovered it around 2009.
