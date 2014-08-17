@@ -21,7 +21,6 @@ myStylesheet = do
 	html ? do
 		ev margin 0
 		ev padding 0
-		fontSize (pt 14)
 		backgroundColor $ rgbHex 0xd1dbbd
 		color (grayish 30)
 		overflowY scroll
