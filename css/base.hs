@@ -125,7 +125,6 @@ myStylesheet = do
 					textAlign $ alignSide sideCenter
 	where
 	div' = Clay.div
-	span' = Clay.span
 	cPageWidth :: Integer
 	cPageWidth = 750
 	bgHex :: Int
