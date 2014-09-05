@@ -33,7 +33,7 @@ The name comes from a contraction of "auto" and "call".
 
 - [Git repository](https://github.com/listx/auca)
 - The latest source code in [zip](https://github.com/listx/auca/zipball/master) or [tar](https://github.com/listx/auca/tarball/master)
-- [Manual](file/auca-0.1.2-0-g7424b49.pdf)
+- [Manual](file/auca-0.0.1.4-0-gfa4e4dc.pdf)
 
 ### cabal2pkgbuild
 
