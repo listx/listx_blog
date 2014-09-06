@@ -81,6 +81,9 @@ myStylesheet = do
 						ev borderRadius (px 3)
 						vh padding 0 (px 4)
 					table ? do -- code with line numbers
+						"-moz-tab-size" -: "4"
+						"-o-tab-size" -: "4"
+						"tab-size" -: "4"
 						display block
 						overflow auto
 						vh margin (em 1) 0
@@ -113,6 +116,9 @@ myStylesheet = do
 						ev borderRadius (px 3)
 					pre ? do -- <pre><code> is generated if there is multiline (``` ... ```) code
 						code ? do
+							"-moz-tab-size" -: "4"
+							"-o-tab-size" -: "4"
+							"tab-size" -: "4"
 							display block
 							overflow auto
 							vh padding (px 6) (px 10)
