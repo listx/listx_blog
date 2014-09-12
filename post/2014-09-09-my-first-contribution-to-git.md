@@ -10,7 +10,7 @@ So, how did I do it?
 
 ## Dead Simple Fix
 
-It all first started out when I typed in `man git init` and found this line:
+It all started when I typed in `man git init` and found this line:
 
 ```
 The template directory used will (in order):
@@ -21,29 +21,29 @@ I could not believe that such a glaring error was present in such a high profile
 Then again, if you think about it, you only invoke `git init` once per project (to initialize a Git repository), so the vast majority of users have but a cursory glance at the manpage --- that is, if they even bother at all to consult the manpages for such a basic task.
 
 Anyway, my initial reaction was "Aha! I will fix this typo and submit my first patch to Git!".
-I thought fixing something so simple and obvious will surely have no trouble getting into the main branch.
-But then, something stirred inside me, and compelled me to look for more simple errors in the manpage.
+I thought fixing something so simple and obvious would surely have no trouble getting into the main branch.
+But then, something stirred inside me, and compelled me to look for similar errors in the manpage.
 Judging by the pace of things, my next patch to Git might take one, two, five years (or forever?), and the thought of becoming a one-shot, one-commit, one-word-fix contributor made my ego twitch.
 And besides, it felt a bit stupid to just submit a two-letter ("b" and "e") fix.
-"Maybe there are other low-hanging fruits to pluck?" I thought.
+I thought to myself, "Maybe there are other low-hanging fruits to pluck?"
 
 ## Real Work
 
-So, I set a medium-term goal to myself: read the entire `git init` manpage, and improve the clarity.
+So, I set a medium-term goal to myself: read the entire `git init` manpage, with a singular focus on clarity.
 I spotted more typographical errors, and even some confusing parts that a Git newbie would have trouble with.
 `git init`, after all, is a very basic, fundamental operation that all newcomers to Git would probably have questions about.
 It might even be the first thing that newbies might look up in the docs!
 
 First things first.
 I cloned the [master Git repository](https://github.com/git/git) from GitHub.
-I then checked created a new branch to record my work; in the end, I created 7 commits.
+I then created a new branch to record my work; in the end, I created 7 commits.
 I read Git's documentation on how to submit patches, and also consulted contribution advice for the Linux Kernel project in the form of [Greg Kroah-Hartman's excellent talk](http://youtu.be/LLBrBBImJt4).
 The Linux Kernel is where Git's real action is (tens of thousands of contributors, all using Git!), so it made sense to check out the Kernel's way of doing things.
 
 I used `git rebase -i` countless times until I got everything sorted out.
 I even reordered the commits to have the [most basic one](https://github.com/git/git/commit/6e1ccacbedf084971f095816f4450c4b607607c5) (all typographical changes) be the first one, in case they wanted to merge just a few of them and reject the rest.
 
-After re-reading everything for the eighth time, I sent off everything using Git's `send-email` command.
+After re-reading everything for the eighth time, I sent an email to the official mailing list with `git send-email`.
 I checked `git blame` for the lines I touched to CC everyone that could be directly affected by my changes.
 After a few days, I got a response back --- from the principal maintainer of Git, Junio Hamano, no less!
 
@@ -54,10 +54,10 @@ You can see the discussion that took place over at the [mailing list archive](ht
 I sent off my second version of my 7-commit patch series after a few days, and waited.
 
 And waited.
-I waited two weeks, and my new patch series was not getting any feedback.
+I waited two weeks, but alas, my new patch series was not getting any further feedback.
 I was concerned that my changes were simply forgotten.
-A nagging thought annoyed me --- what if I miss the current merge window[^merge-window]?
-In mild desperation, I sent a reminder email to Junio about my patches off-list.
+A nagging thought annoyed me --- "What if I miss the current merge window[^merge-window]?"
+In mild desperation, I sent an email directly to Junio to remind him about my patches.
 Still no response.
 A couple more weeks passed, and I almost forgot about my patches...
 
