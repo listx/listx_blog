@@ -45,7 +45,7 @@ main = hakyll $ do
 		compile $ getResourceString >>= withItemBody (unixFilter ".cabal-sandbox/bin/cabal" ["exec", "runghc"])
 
 	-- Add some default pages
-	match (fromList ["about.md", "code.md"]) $ do
+	match (fromList ["about.md", "art.md", "code.md"]) $ do
 		route   $ setExtension "html"
 		compile $ pandocCompiler
 			>>= loadAndApplyTemplate "template/default.html" (mconcat
@@ -56,6 +56,10 @@ main = hakyll $ do
 
 	-- Add images
 	match "img/*" $ do
+		route idRoute
+		compile copyFileCompiler
+
+	match "img/art/*" $ do
 		route idRoute
 		compile copyFileCompiler
 

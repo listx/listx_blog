@@ -35,6 +35,8 @@ myStylesheet = do
 			sup ? do
 				"vertical-align" -: "top"
 				fontSize (em 0.6)
+			hr ? do
+				height (px 1)
 			div' ? do
 				".center" & do
 					textAlign $ alignSide sideCenter
@@ -87,6 +89,13 @@ myStylesheet = do
 						display block
 						overflow auto
 						vh margin (em 1) 0
+						".gallery" & do
+							fontSize $ pt 10
+							tr ? do
+								textAlign $ alignSide sideCenter
+								"#header" & do
+									fontSize $ pt 12
+									fontWeight bold
 						".sourceCode" & do
 							backgroundColor codeBg
 							border solid (px 1) (grayish 204)
@@ -131,6 +140,7 @@ myStylesheet = do
 					textAlign $ alignSide sideCenter
 	where
 	div' = Clay.div
+	span' = Clay.span
 	cPageWidth :: Integer
 	cPageWidth = 750
 	bgHex :: Int
