@@ -175,6 +175,6 @@ atomFeedConf = FeedConfiguration
 	{ feedTitle = "Linus's Blog"
 	, feedDescription = "The latest blog posts from Linus (listx on Github)!"
 	, feedAuthorName  = "Linus Arver"
-	, feedAuthorEmail = "linus@ucla.edu"
+	, feedAuthorEmail = ""
 	, feedRoot = "http://listx.github.io"
 	}
