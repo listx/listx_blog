@@ -1,6 +1,7 @@
 ---
 title: Reverse Polish Notation (RPN) Calculator in Ruby and Haskell
 tags: programming, ruby, haskell
+mathjax: on
 ---
 
 A friend of mine is in DevBootCamp, an intensive coding school program designed to get students ready for real world job placement.
@@ -76,14 +77,9 @@ evalTerms = foldl modifyStack []
 	where
 	modifyStack stack term = case term of
 		TermInt n -> n : stack
-		TermOp op
-			| length stack < 2
-				-> error "stack too small for operator application"
-			| otherwise -> let
-				a = stack!!0
-				b = stack!!1
-				c = op a b
-				in c : drop 2 stack
+		TermOp op -> case stack of
+			(a:b:_) -> op a b : drop 2 stack
+			_ -> error "stack too small for operator application"
 ```
 
 Probably the first thing to note is that we define a robust data type, `Term`, to encapsulate the values held in a given RPN string.
@@ -95,6 +91,7 @@ The next thing to notice is that the `evaluate` function is composed of smaller 
 
 When `modifyStack` encounters a `TermInt`, it pushes the number into the stack.
 When it encounters a `TermOp`, it applies that operator to the first 2 items in `stack`, and pushes this result back into `stack`.
+We use pattern matching with `(a:b:_)` to pull out the `a` and `b` values from the stack --- the expression `(a:b:_)` means a value that matches either $[x_1, x_2]$, or $[x_1, x_2, ... , x_n]$, because the `_` operator matches anything, including the empty list `[]` used to finalize list creation.
 The `drop 2 stack` is necessary because Haskell's types by default are immutable.
 
 ## Thoughts
