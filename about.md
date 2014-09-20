@@ -18,7 +18,7 @@ I also program some [pet projects][projects] in [C][c].
 
 [haskell]: http://en.wikipedia.org/wiki/Haskell_(programming_language)
 [c]: http://en.wikipedia.org/wiki/C_(programming_language)
-[projects]: ../code.html
+[projects]: /code.html
 
 ## Recommended Software
 

@@ -233,4 +233,4 @@ swapoff
 reboot
 ```
 
-[floop]: ../../code.html#floop
+[floop]: /code.html#floop
