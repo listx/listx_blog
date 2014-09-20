@@ -72,9 +72,9 @@ mkTerm termStr = case termStr of
 		| otherwise -> error $ "invalid input `" ++ termStr ++ "'"
 
 reduce :: [Term] -> [Integer]
-reduce = foldl f []
+reduce = foldl modifyStack []
 	where
-	f stack term = case term of
+	modifyStack stack term = case term of
 		TermInt n -> n : stack
 		TermOp op
 			| length stack < 2
@@ -91,9 +91,9 @@ We take advantage of Haskell's functions-as-first-class-values ability, and defi
 
 The next thing to notice is that the `evaluate` function is composed of smaller helper functions, `mkTerm` and `reduce`.
 `mkTerm` simply converts a `String` type into an appropriate `Term` type.
-`reduce` takes a list of `Term` values, and reduces it as much as possible by applying the `stackManip` function over it with `foldl` (Haskell's version of a single-pass loop).
+`reduce` takes a list of `Term` values, and reduces it as much as possible by applying the `modifyStack` function over it with `foldl` (Haskell's version of a single-pass loop).
 
-When `stackManip` encounters a `TermInt`, it pushes the number into the stack.
+When `modifyStack` encounters a `TermInt`, it pushes the number into the stack.
 When it encounters a `TermOp`, it applies that operator to the first 2 items in `stack`, and pushes this result back into `stack`.
 The `drop 2 stack` is necessary because Haskell's types by default are immutable.
 
