@@ -60,7 +60,7 @@ data Term
 	| TermOp (Integer -> Integer -> Integer)
 
 evaluate :: String -> [Integer]
-evaluate = reduce . map mkTerm . words
+evaluate = evalTerms . map mkTerm . words
 
 mkTerm :: String -> Term
 mkTerm termStr = case termStr of
@@ -71,8 +71,8 @@ mkTerm termStr = case termStr of
 		| and $ map isDigit termStr -> TermInt $ read termStr
 		| otherwise -> error $ "invalid input `" ++ termStr ++ "'"
 
-reduce :: [Term] -> [Integer]
-reduce = foldl modifyStack []
+evalTerms :: [Term] -> [Integer]
+evalTerms = foldl modifyStack []
 	where
 	modifyStack stack term = case term of
 		TermInt n -> n : stack
@@ -89,9 +89,9 @@ reduce = foldl modifyStack []
 Probably the first thing to note is that we define a robust data type, `Term`, to encapsulate the values held in a given RPN string.
 We take advantage of Haskell's functions-as-first-class-values ability, and define the `TermOp` constructor with it (i.e., it needs an arithmetic function `(Integer -> Integer -> Integer)` as an argument).
 
-The next thing to notice is that the `evaluate` function is composed of smaller helper functions, `mkTerm` and `reduce`.
+The next thing to notice is that the `evaluate` function is composed of smaller helper functions, `mkTerm` and `evalTerms`.
 `mkTerm` simply converts a `String` type into an appropriate `Term` type.
-`reduce` takes a list of `Term` values, and reduces it as much as possible by applying the `modifyStack` function over it with `foldl` (Haskell's version of a single-pass loop).
+`evalTerms` takes a list of `Term` values, and reduces it as much as possible by applying the `modifyStack` function over it with `foldl` (Haskell's version of a single-pass loop).
 
 When `modifyStack` encounters a `TermInt`, it pushes the number into the stack.
 When it encounters a `TermOp`, it applies that operator to the first 2 items in `stack`, and pushes this result back into `stack`.
@@ -101,10 +101,10 @@ The `drop 2 stack` is necessary because Haskell's types by default are immutable
 
 I much prefer the Haskell version.
 
-The separation of concerns is a big win --- we can easily create helper functions like `mkTerm` and `reduce` because of Haskell's purity[^purity].
+The separation of concerns is a big win --- we can easily create helper functions like `mkTerm` and `evalTerms` because of Haskell's purity[^purity].
 Haskell embraces the use of algebraic data types (i.e., `Term` here), and perhaps this preference lends itself to the use of helper functions that convert things from one type to another.
 Ruby does not have types, at least in the sense of Haskell types, so to artificially create such concepts and to implement them would be difficult.[^ruby-type]
-I mean, I really want to write equivalent `mkTerm` and `reduce` methods in Ruby, but my beginner skills prevent me from doing it in a simple, straightforward way.
+I mean, I really want to write equivalent `mkTerm` and `evalTerms` methods in Ruby, but my beginner skills prevent me from doing it in a simple, straightforward way.
 I know enough about coding to abandon "solutions" that require circuitous, complex design.
 
 I also like how all the functions are pure and thus easy to reason about with the type signatures.
