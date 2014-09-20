@@ -72,6 +72,7 @@ main = hakyll $ do
 		route $ setExtension "html"
 		compile $ pandocCompilerWith defaultHakyllReaderOptions pandocOptions
 			>>= loadAndApplyTemplate "template/post.html"    (tagsCtx tags)
+			>>= saveSnapshot "content"
 			>>= loadAndApplyTemplate "template/default.html" (mconcat
 				[ mathCtx
 				, tagsCtx tags
@@ -109,6 +110,19 @@ main = hakyll $ do
 				>>= relativizeUrls
 
 	match "template/*" $ compile templateCompiler
+
+	create ["atom.xml"] $ do
+		route idRoute
+		compile $ do
+			let
+				feedCtx = mconcat
+					[ postCtx
+					, bodyField "description"
+					]
+			posts <- fmap (take 10)
+				. recentFirst
+				=<< loadAllSnapshots "post/*" "content"
+			renderAtom atomFeedConf feedCtx posts
 	where
 	pandocOptions :: WriterOptions
 	pandocOptions = defaultHakyllWriterOptions { writerHTMLMathMethod = MathJax "" }
@@ -155,3 +169,12 @@ postList tags pattern sortFilter = do
 	posts <- sortFilter =<< loadAll pattern
 	itemTpl <- loadBody "template/post-item.html"
 	applyTemplateList itemTpl (tagsCtx tags) posts
+
+atomFeedConf :: FeedConfiguration
+atomFeedConf = FeedConfiguration
+	{ feedTitle = "Linus's Blog"
+	, feedDescription = "The latest blog posts from Linus (listx on Github)!"
+	, feedAuthorName  = "Linus Arver"
+	, feedAuthorEmail = "linus@ucla.edu"
+	, feedRoot = "http://listx.github.io"
+	}
