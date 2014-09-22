@@ -22,7 +22,7 @@ But since we take the modulo by 3, **we get 0 40% of the time (0 and 3)!**
 This fact alone should make you worried.
 Visually it is as follows:
 
-<img src="../img/mbias.png" alt="Modulo bias" title="Modulo bias">
+<img src="../img/mbias.png" alt="Modulo bias" title="Modulo bias" width="100%">
 
 The following code is correct:
 

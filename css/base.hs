@@ -22,119 +22,190 @@ myStylesheet = do
 		ev margin 0
 		ev padding 0
 		fontFamily ["Merriweather"] [serif]
-		backgroundColor $ rgbHex 0xd1dbbd
+		let
+			bgHexColor = 0xd1dbbd
+		backgroundColor $ rgbHex bgHexColor
 		color (grayish 30)
 		overflowY scroll
 		body ? do
 			width (px cPageWidth)
 			vh margin 0 auto
 			a ? do
-				":hover" & do
+				link & do
+					color (rgbHex 0x0077ff)
+				visited & do
+					color (rgbHex 0x007020)
+				hover & do
 					textDecoration none
-					textShadow (px 0) (px 0) (px 2) (rgbHex $ shadowHex - 0x222222)
 			sup ? do
 				"vertical-align" -: "top"
 				fontSize (em 0.6)
 			hr ? do
+				ev margin 0
 				height (px 1)
 			div' ? do
 				".center" & do
 					textAlign $ alignSide sideCenter
 			div' ? do
 				"#header" & do
-					vh margin (em 0.5) 0
+					vh padding (em 0.5) 0
 					textAlign $ alignSide sideCenter
 				"#content" & do
-					vh padding (em 1) (em 2)
 					ev borderRadius (px 3)
 					backgroundImage $ url "/lightpaperfibers_JorgeFuentes.png"
 					boxShadow (px 0) (px 0) (px 3) (rgbHex 0x666666)
 					h1 ? do
-						fontSize (pt 30)
+						ev margin 0
+						headerIndent
+						textIndentRight
+						paddingBottom (em 1)
 						fontWeight normal
-						margin (px 2) 0 (px 10) 0
 						borderBottom solid (px 2) (rgb 0 0 0)
+						-- For the title of the page, center-align it.
 						".center" & do
+							ev margin 0
+							paddingTop (em 0.5)
+							paddingBottom 0
+							marginBottom (em 0.5)
+							fontSize (pt 30)
+							headerIndentRight
 							textAlign $ alignSide sideCenter
+					div' ? do
+						".info" & do
+							paddingBottom (em 1)
 					h2 ? do
-						margin (em 1) (em 1) (em 1) (em (-0.4))
+						ev margin 0
+						headerIndent
+						textIndentRight
+						paddingBottom (em 1)
 						fontWeight normal
 						textDecoration underline
 					h3 ? do
-						margin 0 0 0 (em (-0.4))
+						ev margin 0
+						headerIndent
+						textIndentRight
+						paddingBottom (em 1)
 						fontWeight normal
 						fontStyle italic
+					h4 ? do
+						ev margin 0
+						headerIndent
+						textIndentRight
+						paddingBottom (em 1)
+					ol ? do
+						ev margin 0
+						textListIndent
+						paddingBottom (em 1)
+						p ? do
+							ev padding 0
 					ul ? do
-						"#flushLeft" & do
-							margin 0 0 0 (px (-20))
+						ev margin 0
+						textListIndent
+						paddingBottom (em 1)
 					p ? do
-						"#taglist" & do
-							fontSize (pt 12)
-					div' ? do
-						".figure" & do
-							-- center images
-							"display" -: "table"
-							vh margin 0 auto
-					code ? do -- single-line `code`
+						ev margin 0
+						paddingBottom (em 1)
+						textIndent
+					-- single-line `code`
+					code ? do
 						fontSize (pt 10)
 						color (grayish 51)
 						backgroundColor codeBg
 						border solid (px 1) (grayish 204)
 						ev borderRadius (px 3)
 						vh padding 0 (px 4)
-					table ? do -- code with line numbers
-						"-moz-tab-size" -: "4"
-						"-o-tab-size" -: "4"
-						"tab-size" -: "4"
-						display block
-						overflow auto
-						vh margin (em 1) 0
-						".gallery" & do
-							fontSize $ pt 10
-							tr ? do
-								textAlign $ alignSide sideCenter
-								"#header" & do
-									fontSize $ pt 12
-									fontWeight bold
-						".sourceCode" & do
-							backgroundColor codeBg
-							border solid (px 1) (grayish 204)
-							ev borderRadius (px 3)
-							boxShadow (px 0) (px 0) (px 3) (rgbHex shadowHex)
-							tr ? do
-								td ? do
-									".lineNumbers" & do
-										vh padding 0 (px 4)
-										pre ? do
-											ev margin 0
-											textAlign $ alignSide sideRight
-											fontSize (pt 10)
-											color (rgbHex $ bgHex - 0x151515)
-								td ? do
-									".sourceCode" & do
-										ev padding 0
-										pre ? do
-											ev margin 0
-											code ? do
-												display block
-												overflow auto
-												vh padding (px 4) (px 2)
-												"border-style" -: "none"
-												ev borderRadius (px 0)
-												boxShadow (px 0) (px 0) (px 0) (rgbHex shadowHex)
-						ev borderRadius (px 3)
-					pre ? do -- <pre><code> is generated if there is multiline (``` ... ```) code
+					div' ? do
+						".figure" & do
+							-- center images
+							"display" -: "table"
+							vh margin 0 auto
+						".footnotes" & do
+							paddingBottom 0
+							ol ? do
+								textIndent
+								paddingTop (em 1)
+								paddingBottom (em 1)
+								li ? do
+									paddingLeft 0
+					-- <pre><code> is generated if there is multiline (``` ... ```) code
+					pre ? do
+						ev margin 0
+						vh padding 0 0
 						code ? do
 							"-moz-tab-size" -: "4"
 							"-o-tab-size" -: "4"
 							"tab-size" -: "4"
 							display block
 							overflow auto
-							vh padding (px 6) (px 10)
-							ev borderRadius (px 3)
+							textIndent
+							fontSize (pt 10)
+							color (grayish 51)
+							backgroundColor codeBg
+							ev borderRadius (px 0)
+							"border-style" -: "none"
+							borderTop solid (px 1) (grayish 204)
+							borderBottom solid (px 1) (grayish 204)
+							marginBottom (em 1)
 							boxShadow (px 0) (px 0) (px 3) (rgbHex shadowHex)
+					table ? do -- code with line numbers
+						"-moz-tab-size" -: "4"
+						"-o-tab-size" -: "4"
+						"tab-size" -: "4"
+						paddingRight 0
+						marginBottom (em 1)
+						".ul" & do
+							textIndent
+							marginBottom 0
+							paddingBottom (em 1)
+							tr ? do
+								td ? do
+									".date" & do
+										"vertical-align" -: "text-top"
+						".gallery" & do
+							headerIndent
+							paddingBottom (em 1)
+							fontSize $ pt 10
+							tr ? do
+								textAlign $ alignSide sideCenter
+								"#header" & do
+									fontSize $ pt 12
+									fontWeight bold
+									textDecoration underline
+						".sourceCode" & do
+							textIndent
+							display block
+							overflow auto
+							backgroundColor codeBg
+							borderTop solid (px 1) (grayish 204)
+							borderBottom solid (px 1) (grayish 204)
+							boxShadow (px 0) (px 0) (px 3) (rgbHex shadowHex)
+							tr ? do
+								td ? do
+									".lineNumbers" & do
+										pre ? do
+											ev margin 0
+											textAlign $ alignSide sideRight
+											fontSize (pt 10)
+											color (rgbHex $ bgHex - 0x151515)
+									".sourceCode" & do
+										color (rgbHex $ 0xff0000)
+										paddingLeft 0
+										pre ? do
+											ev margin 0
+											code ? do
+												ev margin 0
+												padding 0 0 0 (em 1)
+												"border-style" -: "none"
+												boxShadow (px 0) (px 0) (px 0) (rgbHex shadowHex)
 				"#footer" & do
-					margin (em 0.5) 0 (em 0.8) 0
+					-- Margins of adjacent elements are *overlap*, unlike
+					-- padding. We use a 1em top-side margin here, because,
+					-- e.g., code listings sometimes have a bottom margin, and
+					-- if the blog post ends with a code listing, we don't want
+					-- to render both the listing's bottom spacing and the top
+					-- spacing of the footer.
+					marginTop (em 1)
+					paddingBottom (em 1)
 					color (grayish 100)
 					fontSize (pt 12)
 					textAlign $ alignSide sideCenter
@@ -150,6 +221,16 @@ myStylesheet = do
 	codeBgHex = 0xfdf6e3
 	codeBg :: Color
 	codeBg = rgbHex codeBgHex
+	headerIndent = "padding-left" -: "6%"
+	headerIndentRight = "padding-right" -: "6%"
+	textIndent = do
+		"padding-left" -: "12%"
+		textIndentRight
+	textIndentRight = do
+		"padding-right" -: "12%"
+	textListIndent = do
+		"padding-left" -: "18%"
+		textIndentRight
 
 -- | A horizontal/vertical size helper. It accepts a function and two sizes for
 -- the horizontal and vertical parts. E.g., instead of calling

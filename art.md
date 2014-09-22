@@ -9,15 +9,12 @@ Here is a gallery of some of my original 3D art.
 <tr id="header">
 <td>
 Image
-<hr>
 </td>
 <td style="width:30%">
 Title &amp; Date
-<hr>
 </td>
 <td>
 Description
-<hr>
 </td>
 </tr>
 
