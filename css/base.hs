@@ -60,7 +60,7 @@ myStylesheet = do
 						textIndentRight
 						paddingBottom (em 1)
 						fontWeight normal
-						borderBottom solid (px 2) (rgb 0 0 0)
+						textDecoration underline
 						-- For the title of the page, center-align it.
 						".center" & do
 							ev margin 0
@@ -70,6 +70,8 @@ myStylesheet = do
 							fontSize (pt 30)
 							headerIndentRight
 							textAlign $ alignSide sideCenter
+							borderBottom solid (pt 3) (rgb 0 0 0)
+							textDecoration none
 					div' ? do
 						".info" & do
 							paddingBottom (em 1)
