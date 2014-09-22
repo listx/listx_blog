@@ -11,7 +11,7 @@ I just wish there was something like LKCS for Haskell, mainly because every time
 It really has gotten out of hand.
 So, I hereby propose some rules to reduce the level of indentation, whether you use tabs or spaces.[^tabs]
 
-NOTE: I use 4-character-wide tabs for Haskell, but because HTML renders tabs as 8 characters wide, I've used 4 spaces for a single tab in this post.
+NOTE: I use 4-character-wide tabs for Haskell; your browser may not render this correctly, but bear with me.
 
 ## Chapter 1: Indentation
 
@@ -24,12 +24,12 @@ That is, indent as little as possible.
 Whenever you use a `where` clause, use it like this:
 
 ```
-    ...
-    f x y
-    where
-    f = ...
-    x = ...
-    y = ...
+	...
+	f x y
+	where
+	f = ...
+	x = ...
+	y = ...
     ...
 ```
 
@@ -41,10 +41,10 @@ Use guards like this:
 
 ```
 someArbitraryFunctionName x y z
-    | x == 0 = ...
-    | y == 0 = ...
-    | z == 0 = ...
-    | otherwise = ...
+	| x == 0 = ...
+	| y == 0 = ...
+	| z == 0 = ...
+	| otherwise = ...
 ```
 
 not like this:
@@ -66,18 +66,18 @@ Do
 
 ```
 foo x = case x of
-    Abcdef y -> ...
-    Foo y -> ...
-    Abracadabra y -> ...
+	Abcdef y -> ...
+	Foo y -> ...
+	Abracadabra y -> ...
 ```
 
 instead of
 
 ```
 foo x = case x of
-    Abcdef y      -> ...
-    Foo y         -> ...
-    Abracadabra y -> ...
+	Abcdef y      -> ...
+	Foo y         -> ...
+	Abracadabra y -> ...
 ```
 
 .
@@ -89,13 +89,13 @@ Align lists as follows:
 
 ```
 someLongList =
-    [ abcd
-    , efghi
-    , jkl
-    , m
-    , nopqrstu
-    , vwxyz
-    ]
+	[ abcd
+	, efghi
+	, jkl
+	, m
+	, nopqrstu
+	, vwxyz
+	]
 ```
 
 .
@@ -107,8 +107,8 @@ Use ``hanging'' do-notation:
 
 ```
 main = do
-    x <- foo
-    y z
+	x <- foo
+	y z
 ```
 
 instead of
@@ -161,12 +161,12 @@ Import all external library modules in their own ``paragraph'', followed by thos
 
 
 ```
-    import Control.Monad
-    import Data.Maybe
-    import Data.Text
+	import Control.Monad
+	import Data.Maybe
+	import Data.Text
 
-    import MyModule.One
-    import MyModule.Two
+	import MyModule.One
+	import MyModule.Two
 ```
 
 .
@@ -175,11 +175,11 @@ Import all external library modules in their own ``paragraph'', followed by thos
 
 Do it like this:
 ```
-    {-# LANGUAGE SomeBadExtension #-}
-    {-# LANGUAGE SomeCoolExtension #-}
-    {-# LANGUAGE SomeScaryExtension #-}
-    {-# LANGUAGE SomeUglyExtension #-}
-    {-# LANGUAGE StrangeExtensionNobodyUnderstands #-}
+	{-# LANGUAGE SomeBadExtension #-}
+	{-# LANGUAGE SomeCoolExtension #-}
+	{-# LANGUAGE SomeScaryExtension #-}
+	{-# LANGUAGE SomeUglyExtension #-}
+	{-# LANGUAGE StrangeExtensionNobodyUnderstands #-}
 ```
 
 ### Try to use as few pragmas as possible
@@ -203,10 +203,10 @@ If you want to break up a long chain of functions, break them up like this:
 
 ```
 foo x y z = head
-    . init
-    . blahblah y
-    . funcMX x
-    $ abcd z
+	. init
+	. blahblah y
+	. funcMX x
+	$ abcd z
 ```
 
 , with each function on its own line, with the function composition operator `.` as the leading character, similar to how the comma `,` is the leading character for breaking up long lists.
