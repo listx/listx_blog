@@ -29,7 +29,7 @@ Description
 <em>Moebius Torus</em><br><code>2014-09-17</code>
 </td>
 <td>
-Rendered for 140 hours (over 5 days!) with LuxRender, using the "SLG Path OpenCL" rendering mode. 201 kS/p. (3840x2160)
+Rendered for 140 hours (over 5 days!) with LuxRender, using the "SLG Path OpenCL" rendering mode. 201 kS/p. I did some manual touch-up in Gimp to get rid of so-called "fireflies" (rendering artifacts). (3840x2160)
 </td>
 </tr>
 </table>
