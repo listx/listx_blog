@@ -154,6 +154,7 @@ myStylesheet = do
 						"tab-size" -: "4"
 						paddingRight 0
 						marginBottom (em 1)
+						-- posts archive
 						".ul" & do
 							paragraphIndent
 							marginBottom 0
