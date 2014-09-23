@@ -57,7 +57,7 @@ myStylesheet = do
 					h1 ? do
 						ev margin 0
 						headerIndent
-						textIndentRight
+						paragraphIndentRight
 						paddingBottom (em 1)
 						fontWeight normal
 						textDecoration underline
@@ -78,21 +78,21 @@ myStylesheet = do
 					h2 ? do
 						ev margin 0
 						headerIndent
-						textIndentRight
+						paragraphIndentRight
 						paddingBottom (em 1)
 						fontWeight normal
 						textDecoration underline
 					h3 ? do
 						ev margin 0
 						headerIndent
-						textIndentRight
+						paragraphIndentRight
 						paddingBottom (em 1)
 						fontWeight normal
 						fontStyle italic
 					h4 ? do
 						ev margin 0
 						headerIndent
-						textIndentRight
+						paragraphIndentRight
 						paddingBottom (em 1)
 					ol ? do
 						ev margin 0
@@ -107,7 +107,7 @@ myStylesheet = do
 					p ? do
 						ev margin 0
 						paddingBottom (em 1)
-						textIndent
+						paragraphIndent
 					-- single-line `code`
 					code ? do
 						fontSize (pt 10)
@@ -124,7 +124,7 @@ myStylesheet = do
 						".footnotes" & do
 							paddingBottom 0
 							ol ? do
-								textIndent
+								paragraphIndent
 								paddingTop (em 1)
 								paddingBottom (em 1)
 								li ? do
@@ -139,7 +139,7 @@ myStylesheet = do
 							"tab-size" -: "4"
 							display block
 							overflow auto
-							textIndent
+							paragraphIndent
 							fontSize (pt 10)
 							color (grayish 51)
 							backgroundColor codeBg
@@ -156,7 +156,7 @@ myStylesheet = do
 						paddingRight 0
 						marginBottom (em 1)
 						".ul" & do
-							textIndent
+							paragraphIndent
 							marginBottom 0
 							paddingBottom (em 1)
 							tr ? do
@@ -174,7 +174,7 @@ myStylesheet = do
 									fontWeight bold
 									textDecoration underline
 						".sourceCode" & do
-							textIndent
+							paragraphIndent
 							display block
 							overflow auto
 							backgroundColor codeBg
@@ -225,14 +225,14 @@ myStylesheet = do
 	codeBg = rgbHex codeBgHex
 	headerIndent = "padding-left" -: "6%"
 	headerIndentRight = "padding-right" -: "6%"
-	textIndent = do
+	paragraphIndent = do
 		"padding-left" -: "12%"
-		textIndentRight
-	textIndentRight = do
+		paragraphIndentRight
+	paragraphIndentRight = do
 		"padding-right" -: "12%"
 	textListIndent = do
 		"padding-left" -: "18%"
-		textIndentRight
+		paragraphIndentRight
 
 -- | A horizontal/vertical size helper. It accepts a function and two sizes for
 -- the horizontal and vertical parts. E.g., instead of calling
