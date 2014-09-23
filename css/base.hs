@@ -188,7 +188,6 @@ myStylesheet = do
 											textAlign $ alignSide sideRight
 											color (rgbHex $ bgHex - 0x151515)
 									".sourceCode" & do
-										color (rgbHex $ 0xff0000)
 										paddingLeft 0
 										pre ? do
 											ev margin 0
