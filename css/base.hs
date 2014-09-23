@@ -105,6 +105,10 @@ myStylesheet = do
 						ev margin 0
 						paragraphListIndent
 						paddingBottom (em 1)
+						ul ? do
+							ev margin 0
+							headerIndent
+							paddingBottom 0
 					p ? do
 						ev margin 0
 						paddingBottom (em 1)
@@ -139,7 +143,12 @@ myStylesheet = do
 							"tab-size" -: "4"
 							display block
 							overflow auto
-							paragraphIndent
+							-- we indent a little bit more here compared to
+							-- table.sourceCode, because here we have to
+							-- compensate for the fact that we don't have line
+							-- numbers to push our code a little bit further
+							-- right
+							paragraphIndent'
 							color (grayish 51)
 							backgroundColor codeBg
 							ev borderRadius (px 0)
@@ -228,6 +237,9 @@ myStylesheet = do
 		paragraphIndentRight
 	paragraphIndentRight = do
 		"padding-right" -: "12%"
+	paragraphIndent' = do
+		"padding-left" -: "15%"
+		paragraphIndentRight
 	paragraphListIndent = do
 		"padding-left" -: "18%"
 		paragraphIndentRight
