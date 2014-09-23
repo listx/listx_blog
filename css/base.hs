@@ -97,13 +97,13 @@ myStylesheet = do
 						paddingBottom (em 1)
 					ol ? do
 						ev margin 0
-						textListIndent
+						paragraphListIndent
 						paddingBottom (em 1)
 						p ? do
 							ev padding 0
 					ul ? do
 						ev margin 0
-						textListIndent
+						paragraphListIndent
 						paddingBottom (em 1)
 					p ? do
 						ev margin 0
@@ -228,7 +228,7 @@ myStylesheet = do
 		paragraphIndentRight
 	paragraphIndentRight = do
 		"padding-right" -: "12%"
-	textListIndent = do
+	paragraphListIndent = do
 		"padding-left" -: "18%"
 		paragraphIndentRight
 
