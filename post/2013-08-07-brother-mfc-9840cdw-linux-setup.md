@@ -8,10 +8,10 @@ I will kindly refrain from getting into the drama, and just write a short tutori
 
 First, install the `cups` package, as well as the Brother driver packages in the AUR:
 
-	- brother-cups-wrapper-ac
-	- brother-cups-wrapper-common
-	- brother-lpr-drivers-ac
-	- brother-lpr-drivers-common
+- `brother-cups-wrapper-ac`
+- `brother-cups-wrapper-common`
+- `brother-lpr-drivers-ac`
+- `brother-lpr-drivers-common`
 
 Then, enable the `cups` daemon with `systemd`, and then start it:
 

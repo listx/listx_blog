@@ -24,13 +24,13 @@ That is, indent as little as possible.
 Whenever you use a `where` clause, use it like this:
 
 ```
-	...
-	f x y
+...
+f x y
 	where
 	f = ...
 	x = ...
 	y = ...
-    ...
+	...
 ```
 
 That is, put `where` on its own line, and then avoid any additional indentation for all definitions that follow.
@@ -161,12 +161,12 @@ Import all external library modules in their own ``paragraph'', followed by thos
 
 
 ```
-	import Control.Monad
-	import Data.Maybe
-	import Data.Text
+import Control.Monad
+import Data.Maybe
+import Data.Text
 
-	import MyModule.One
-	import MyModule.Two
+import MyModule.One
+import MyModule.Two
 ```
 
 .
@@ -175,11 +175,11 @@ Import all external library modules in their own ``paragraph'', followed by thos
 
 Do it like this:
 ```
-	{-# LANGUAGE SomeBadExtension #-}
-	{-# LANGUAGE SomeCoolExtension #-}
-	{-# LANGUAGE SomeScaryExtension #-}
-	{-# LANGUAGE SomeUglyExtension #-}
-	{-# LANGUAGE StrangeExtensionNobodyUnderstands #-}
+{-# LANGUAGE SomeBadExtension #-}
+{-# LANGUAGE SomeCoolExtension #-}
+{-# LANGUAGE SomeScaryExtension #-}
+{-# LANGUAGE SomeUglyExtension #-}
+{-# LANGUAGE StrangeExtensionNobodyUnderstands #-}
 ```
 
 ### Try to use as few pragmas as possible
