@@ -3,6 +3,7 @@
 import Data.Bits
 import qualified Data.Text.Lazy.IO as T
 import Clay
+import Clay.Font
 
 main :: IO ()
 main = T.putStr $ renderWith compact [] myStylesheet
@@ -39,7 +40,7 @@ myStylesheet = do
 					textDecoration none
 			sup ? do
 				"vertical-align" -: "top"
-				fontSize (em 0.6)
+				fontSizeCustom Clay.Font.small
 			hr ? do
 				ev margin 0
 				height (px 1)
@@ -110,7 +111,6 @@ myStylesheet = do
 						paragraphIndent
 					-- single-line `code`
 					code ? do
-						fontSize (pt 10)
 						color (grayish 51)
 						backgroundColor codeBg
 						border solid (px 1) (grayish 204)
@@ -140,7 +140,6 @@ myStylesheet = do
 							display block
 							overflow auto
 							paragraphIndent
-							fontSize (pt 10)
 							color (grayish 51)
 							backgroundColor codeBg
 							ev borderRadius (px 0)
@@ -166,11 +165,11 @@ myStylesheet = do
 						".gallery" & do
 							headerIndent
 							paddingBottom (em 1)
-							fontSize $ pt 10
+							fontSizeCustom Clay.Font.small
 							tr ? do
 								textAlign $ alignSide sideCenter
 								"#header" & do
-									fontSize $ pt 12
+									fontSizeCustom Clay.Font.medium
 									fontWeight bold
 									textDecoration underline
 						".sourceCode" & do
@@ -187,7 +186,6 @@ myStylesheet = do
 										pre ? do
 											ev margin 0
 											textAlign $ alignSide sideRight
-											fontSize (pt 10)
 											color (rgbHex $ bgHex - 0x151515)
 									".sourceCode" & do
 										color (rgbHex $ 0xff0000)
@@ -209,7 +207,7 @@ myStylesheet = do
 					marginTop (em 1)
 					paddingBottom (em 1)
 					color (grayish 100)
-					fontSize (pt 12)
+					fontSizeCustom Clay.Font.medium
 					textAlign $ alignSide sideCenter
 	where
 	div' = Clay.div
