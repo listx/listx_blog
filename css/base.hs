@@ -157,6 +157,8 @@ myStylesheet = do
 							borderBottom solid (px 1) (grayish 204)
 							marginBottom (em 1)
 							boxShadow (px 0) (px 0) (px 3) (rgbHex shadowHex)
+							paddingTop (em 1)
+							paddingBottom (em 1)
 					table ? do -- code with line numbers
 						"-moz-tab-size" -: "4"
 						"-o-tab-size" -: "4"
@@ -190,6 +192,8 @@ myStylesheet = do
 							borderTop solid (px 1) (grayish 204)
 							borderBottom solid (px 1) (grayish 204)
 							boxShadow (px 0) (px 0) (px 3) (rgbHex shadowHex)
+							paddingTop (em 0.5)
+							paddingBottom (em 0.5)
 							tr ? do
 								td ? do
 									".lineNumbers" & do
