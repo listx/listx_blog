@@ -13,7 +13,7 @@ I've provided "Expected Output" sections for you to try out your own solutions a
 
 Imagine an infinite parking lot, where each parking space is given a natural number, starting with 0, 1, 2, 3, ... to infinity.
 The entire lot is a single row of spaces --- so that space `0` is the one closest to the entrance.
-There are a finite number of cars parked in the lot in it at random, as people come and go as they wish.
+There are a finite number of cars randomly parked in the lot, as people come and go as they wish.
 A new car has just arrived outside the lot, and the driver asks you, *"Where is the closest open parking space?"*
 
 The only information you have is the *taken* spaces list (`T`), which lists all the occupied parking spaces.
@@ -58,13 +58,13 @@ Then, when we are done (`T` is empty), we can look at `N` and retrieve the lowes
 
 ### Sorting
 
-Intuitively, we are really only interested in first consecutive group of cars parked next to each other.
+Intuitively, we are really only interested in the first consecutive group of cars parked next to each other.
 Essentially, what you do is walk along from the very first parking space, `0`, and see if it is occupied.
 If it is occupied, you move on to the next space --- if it is not occupied, you can stop because you found your answer!
 
 There is no way to solve the problem without first sorting `T`.[^nosort]
 You can solve the problem without sorting only in the edge case where `T`'s lowest number is greater than `0` --- i.e., if the car most closely parked to the entrance is not on `0`, then you do not need to bother sorting `T`, because the answer is simply `0`.
-And, finding the lowest number in a given set is always a $O(n)$ operation because you just need to loop through the entire set one time, keeping track of the lowest number found.
+And, finding the lowest number in a given set is always a $O(n)$ operation because you need to loop through the entire set just once, keeping track of the lowest number found.
 
 In the more common case (as seen in real life), the parking space closest to the driver (the most desirable parking space) is already taken; and what's more, the group of spaces closest to the driver is already taken.
 In this case, we have to proceed from space `0`, and incrementally observe every subsequent space, until we arrive at an empty parking space.
@@ -73,7 +73,7 @@ The insight here is that we are treating the multitude of consecutively parked c
 ## Ruby
 
 I think it is time for some actual code.
-While I could explain how the Ruby version works, I feel that I have already expounded upon the problem at length above, so the code here should make intuitive sense.
+While I could explain how the Ruby version works, I feel that I have already expounded upon the problem enough above, so that the code here should make intuitive sense.
 
 ```{.ruby .numberLines}
 def get_parking_space(t)
@@ -105,10 +105,10 @@ getParkingSpace ts
     | null ts = 0
     | otherwise = loop 0 $ sort ts
     where
-    loop i ts'
-        | i == length ts' = i
-        | i < ts' !! i = i
-        | otherwise = loop (i + 1) ts'
+    loop i xs
+        | i == length xs = i
+        | i < xs !! i = i
+        | otherwise = loop (i + 1) xs
 ```
 
 ## Low-Level Interlude
@@ -119,7 +119,7 @@ This is such a common scenario, that there are native hardware instructions for 
 The canonical name for this operation is [*find first set*](http://en.wikipedia.org/wiki/Find_first_set) or *find first one*.[^twos]
 In Linux, you can do `man ffs` to learn about how to use it in your C program.
 
-Of course, the parking lot in our problem is of infinite size, which makes the size of `T` arbitrarily large, and thus we cannot use `ffs` here.
+Of course, the parking lot in our problem is of infinite size, which makes the size of `T` arbitrarily large; alas, we cannot use `ffs` here.
 
 # The Parking Load Problem
 
@@ -130,7 +130,7 @@ Interestingly, this problem is easier to solve than the first problem.
 This seems paradoxical --- surely, finding the first available parking space is easier than counting every single available space!
 But it is true --- this problem is indeed easier --- because we can solve the problem *without sorting*.
 
-If we talk in terms of our "Low-Level Interlude," this is the same as saying, "Count the number of `1` bits."
+If we talk in terms of our "Low-Level Interlude," this is essentially the same as saying, "Count the number of `1` bits."
 There are very clever ways of counting bits, but that is not our concern, and so I will present a naive solution in Ruby.
 
 ## Expected Output
@@ -139,7 +139,7 @@ Like in the previous problem, below are some expected outputs for you to test yo
 
 ```
 Input -> Output
-[] -> "Infinity"
+[] -> "N/A"
 [0] -> 0
 [0,1] -> 0
 [0,1,3] -> 1
@@ -147,12 +147,16 @@ Input -> Output
 [1,5,999] -> 997
 ```
 
+We return "N/A" for the empty case because this condition does not make sense under the terms of the problem, which defines the bounds of the parking lot based on the car farthest away; if there are no cars to begin with, the problem cannot be posed.
+
 ## Ruby
+
+Without further ado, here is the Ruby solution.
 
 ```{.ruby .numberLines}
 def get_parking_spaces(t)
 	if t.empty?
-		return "Infinity"
+		return "N/A"
 	else
 		return (t.max - t.size) + 1
 	end
@@ -166,7 +170,7 @@ The Haskell version is not much different.
 ```{.haskell .numberLines}
 getParkingSpaces :: [Int] -> Either String Int
 getParkingSpaces t
-	| null t = Left "Infinity"
+	| null t = Left "N/A"
 	| otherwise = Right $ (maximum t) - (length t) + 1
 ```
 
@@ -175,10 +179,10 @@ getParkingSpaces t
 For some reason, I get a strong feeling that these problems are much more interesting than [FizzBuzz](http://en.wikipedia.org/wiki/Fizz_buzz).
 The fact that we talk about an *infinitely large* parking lot will probably throw a lot of newbies and naive thinkers off the right track.
 You have to be especially careful about edge cases, such as the empty list in the second Haskell version.
-I believe that good coders have a keen sense of edge cases, because good algorithms must withstand them without blowing up.
+I believe that good coders have a keen sense of edge cases, because correct algorithms must withstand them without blowing up.
 Just review the Haskell solutions and notice all of the edge cases that we have to look out for!
 
-You might even get some crazy answers that talk at length about related nonessential tangents and Big-O notation, but fail to realize just how simple, at least conceptually, the problem becomes once you sort `T`.
+You might even get some crazy answers that consider at length related nonessential tangents and Big-O notation, but fail to realize just how simple, at least conceptually, the problem becomes once you sort `T`.
 And, I like these problems more than FizzBuzz because there are so many interesting points about it.
 For example, you can ask a simple related question: if you were the keeper of this parking lot, what kind of data structure would you use to keep track of the taken parking spaces?
 And of course, there are very conspicuous low-level analogues that more experienced coders can relate to.
@@ -189,4 +193,5 @@ Maybe you can quiz your friend about it, and see how they respond!
 Happy hacking!
 
 [^nosort]: You can, for example, loop from `0` to infinity and then see if this number exists in `T` --- but this is probably the worst way to solve the problem, at least from a computational perspective.
+E.g., if it takes $O(n)$ to search through `T` to see if some integer `i` exists in it, then this algorithm has $O(n^2)$ complexity because you need to run the search for every single integer in `T`.
 [^twos]: A closely related operation is [two's complement](http://en.wikipedia.org/wiki/Two's_complement) arithmetic. You can read about it from the ["Find first set"](http://en.wikipedia.org/wiki/Find_first_set) article on Wikipedia.
