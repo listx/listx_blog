@@ -17,10 +17,11 @@ There are a finite number of cars parked in the lot in it at random, as people c
 A new car has just arrived outside the lot, and the driver asks you, *"Where is the closest open parking space?"*
 
 The only information you have is the *taken* spaces list (`T`), which lists all the occupied parking spaces.
+This list is sometimes sorted --- sometimes, it is not!
 
 ## Expected Output
 
-Here is a set of expected answers from our solution function, `get_parking_space`:
+Here is a set of expected inputs and outputs for our problem:
 
 ```
 Input -> Output
@@ -33,7 +34,9 @@ Input -> Output
 [0,1,2,3,1000] -> 4
 ```
 
-. Try your own solution out against these expected outputs!
+. You may notice that the input list is sorted (for readability), but recall that `T` *may or may not* be sorted!
+Try your own solution against these expected outputs!
+
 
 ## Some Preliminary Observations
 
