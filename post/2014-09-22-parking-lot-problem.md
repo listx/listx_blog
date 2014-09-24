@@ -7,6 +7,8 @@ mathjax: on
 In one of my side projects, I encountered a pair of interesting problems, the first of which which I call the *Parking Lot* problem, and the sister problem the *Parking Load* problem.
 They are but toy problems, but to anyone outside of the programming field, they sound quite complicated!
 
+I've provided "Expected Output" sections for you to try out your own solutions against, so don't be too aggressive with the scrollbar if you want to quiz yourself!
+
 ## Problem Statement
 
 Imagine an infinite parking lot, where each parking space is given a natural number, starting with 0, 1, 2, 3, ... to infinity.
@@ -15,6 +17,23 @@ There are a finite number of cars parked in the lot in it at random, as people c
 A new car has just arrived outside the lot, and the driver asks you, *"Where is the closest open parking space?"*
 
 The only information you have is the *taken* spaces list (`T`), which lists all the occupied parking spaces.
+
+## Expected Output
+
+Here is a set of expected answers from our solution function, `get_parking_space`:
+
+```
+Input -> Output
+[] -> 0
+[0] -> 1
+[0, 1] -> 2
+[1] -> 0
+[1,2,3] -> 0
+[0,1,2,3] -> 4
+[0,1,2,3,1000] -> 4
+```
+
+. Try your own solution out against these expected outputs!
 
 ## Some Preliminary Observations
 
@@ -110,10 +129,24 @@ But it is true --- this problem is indeed easier --- because we can solve the pr
 If we talk in terms of our "Low-Level Interlude," this is the same as saying, "Count the number of `1` bits."
 There are very clever ways of counting bits, but that is not our concern, and so I will present a naive solution in Ruby.
 
+## Expected Output
+
+Like in the previous problem, below are some expected outputs for you to test your own version against.
+
+```
+Input -> Output
+[] -> "Infinity"
+[0] -> 0
+[0,1] -> 0
+[0,1,3] -> 1
+[999] -> 999
+[1,5,999] -> 997
+```
+
 ## Ruby
 
 ```{.ruby .numberLines}
-def get_parking_load(t)
+def get_parking_spaces(t)
 	if t.empty?
 		return "Infinity"
 	else
@@ -127,8 +160,8 @@ end
 The Haskell version is not much different.
 
 ```{.haskell .numberLines}
-getParkingLoad :: [Int] -> Either String Int
-getParkingLoad t
+getParkingSpaces :: [Int] -> Either String Int
+getParkingSpaces t
 	| null t = Left "Infinity"
 	| otherwise = Right $ (maximum t) - (length t) + 1
 ```
