@@ -1,8 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards #-}
 
 import qualified Data.Map.Lazy as M
 import Data.Monoid (mconcat)
+import System.FilePath.Posix
 import Text.Pandoc (WriterOptions (..), HTMLMathMethod (MathJax))
+import Text.Pandoc.Definition
 import Hakyll
 
 main :: IO ()
@@ -72,7 +75,10 @@ main = hakyll $ do
 
 	match "post/*" $ do
 		route $ setExtension "html"
-		compile $ pandocCompilerWith defaultHakyllReaderOptions pandocOptions
+		compile $ pandocCompilerWithTransformM
+			defaultHakyllReaderOptions
+			pandocOptions
+			transformer
 			>>= loadAndApplyTemplate "template/post.html"    (tagsCtx tags)
 			>>= saveSnapshot "content"
 			>>= loadAndApplyTemplate "template/default.html" (mconcat
@@ -80,6 +86,15 @@ main = hakyll $ do
 				, tagsCtx tags
 				])
 			>>= relativizeUrls
+
+	-- Add code blocks
+	match "code/*" $ do
+		route idRoute
+		compile copyFileCompiler
+
+	match "code/toy/*" $ do
+		route idRoute
+		compile copyFileCompiler
 
 	create ["archive.html"] $ do
 		route idRoute
@@ -183,6 +198,62 @@ fileNameField :: String -> Context String
 fileNameField key = field key $ \item -> do
 	return . toFilePath $ itemIdentifier item
 
+transformer :: Pandoc -> Compiler Pandoc
+transformer (Pandoc m bs0) = do
+	bs1 <- mapM cbExpandRawInput bs0
+	return . Pandoc m $ concat bs1
+
+-- We allow the user to do
+--
+-- - i foo/bar.hs
+--
+-- in a file, and make it expand to the equivalent
+--
+-- ```{.numberLines .haskell}
+-- [CONTENTS OF "foo/bar.hs"]
+-- ```
+--
+-- form, but also with a hyperlink to the file "foo/bar.hs". This is by far much
+-- easier to write in actual blog posts.
+cbExpandRawInput :: Block -> Compiler [Block]
+cbExpandRawInput b = case b of
+	(BulletList [[Plain [(Str "i"), Space, (Str fp)]]]) -> do
+		let
+			codeLang = case takeExtensions fp of
+				".c" -> ["c"]
+				".el" -> ["commonlisp"]
+				".hs" -> ["haskell"]
+				".rb" -> ["ruby"]
+				".sh" -> ["bash"]
+				".xorg.conf" -> ["xorg"]
+				_ -> []
+			httpTarget = "/code/" ++ fp
+			fn = takeFileName fp
+			attr = ("", ["numberLines"] ++ codeLang, [("input", "code/" ++ fp)])
+		raw <- unsafeCompiler . readFile $ "code/" ++ fp
+		return
+			[ Div ("", ["code-and-raw"], [])
+				[ CodeBlock attr raw
+				, Div ("", ["raw-link"], [])
+					[ Plain
+						[ RawInline
+							"html" $
+							unwords
+								[ "<a"
+								, " class=\"raw\""
+								, " href="
+								, dquote httpTarget
+								, " mimetype=text/plain"
+								, ">"
+								, fn
+								, "</a>"
+								]
+						]
+					]
+				]
+			]
+	_ -> return [b]
+
 atomFeedConf :: FeedConfiguration
 atomFeedConf = FeedConfiguration
 	{ feedTitle = "Linus's Blog"
@@ -191,3 +262,6 @@ atomFeedConf = FeedConfiguration
 	, feedAuthorEmail = ""
 	, feedRoot = "http://listx.github.io"
 	}
+
+dquote :: String -> String
+dquote str = "\"" ++ str ++ "\""

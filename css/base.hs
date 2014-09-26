@@ -32,6 +32,12 @@ myStylesheet = do
 			width (px cPageWidth)
 			vh margin 0 auto
 			a ? do
+				let
+					hoverLink = do
+						textDecoration none
+						hover & do
+							textShadow (px 0) (px 0) (px 2)
+								(rgbHex $ shadowHex - 0x222222)
 				link & do
 					color (rgbHex 0x0077ff)
 				visited & do
@@ -40,6 +46,7 @@ myStylesheet = do
 					textDecoration none
 				".history" & do
 					textDecoration none
+				".raw" & hoverLink
 			sup ? do
 				"vertical-align" -: "top"
 				fontSizeCustom Clay.Font.small
@@ -78,6 +85,26 @@ myStylesheet = do
 					div' ? do
 						".info" & do
 							paddingBottom (em 1)
+						".code-and-raw" & do
+							marginBottom (em 1)
+							borderTop solid (px 1) (grayish 204)
+							borderBottom solid (px 1) (grayish 204)
+							boxShadow (px 0) (px 0) (px 3) (rgbHex shadowHex)
+							table ? do
+								".sourceCode" & do
+									-- if a table is part of "code-and-raw",
+									-- reduce bottom margin to 0
+									marginBottom 0
+									paddingTop (em 0.5)
+									paddingBottom (em 0.5)
+									"border-style" -: "none"
+									display block
+									overflow auto
+									backgroundColor codeBg
+						".raw-link" & do
+							backgroundColor $ rgbHex (codeBgHex - 0x080808)
+							fontSizeCustom Clay.Font.small
+							textAlign $ alignSide sideCenter
 					h2 ? do
 						ev margin 0
 						headerIndent
@@ -188,14 +215,14 @@ myStylesheet = do
 									textDecoration underline
 						".sourceCode" & do
 							paragraphIndent
+							paddingTop (em 0.5)
+							paddingBottom (em 0.5)
 							display block
 							overflow auto
 							backgroundColor codeBg
 							borderTop solid (px 1) (grayish 204)
 							borderBottom solid (px 1) (grayish 204)
 							boxShadow (px 0) (px 0) (px 3) (rgbHex shadowHex)
-							paddingTop (em 0.5)
-							paddingBottom (em 0.5)
 							tr ? do
 								td ? do
 									".lineNumbers" & do

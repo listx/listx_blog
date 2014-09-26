@@ -75,21 +75,7 @@ The insight here is that we are treating the multitude of consecutively parked c
 I think it is time for some actual code.
 While I could explain how the Ruby version works, I feel that I have already expounded upon the problem enough above, so that the code here should make intuitive sense.
 
-```{.ruby .numberLines}
-def get_parking_space(t)
-	t_sorted = t.sort
-
-	i = 0
-	while i < t_sorted.size
-		if i < t_sorted[i]
-			break
-		end
-		i += 1
-	end
-
-	return i
-end
-```
+- i toy/parking-lot.rb
 
 ## Haskell
 
@@ -97,19 +83,7 @@ The Haskell version is a direct translation of the Ruby version, as an iterative
 The only drawback is that we use `Int` instead of the arbitrarily large `Integer` type for succinctness (we can use `Integer`, but some built-in functions like `sort` only work on `Int`).
 However, it is interesting if only for the fact that the edge cases are made explicit --- there seems to be no way to avoid "lying" to Haskell about the complexity of our problem!
 
-```{.haskell .numberLines}
-import Data.List
-
-getParkingSpace :: [Int] -> Int
-getParkingSpace ts
-    | null ts = 0
-    | otherwise = loop 0 $ sort ts
-    where
-    loop i xs
-        | i == length xs = i
-        | i < xs !! i = i
-        | otherwise = loop (i + 1) xs
-```
+- i toy/parking-lot.hs
 
 ## Low-Level Interlude
 
@@ -153,26 +127,13 @@ We return "N/A" for the empty case because this condition does not make sense un
 
 Without further ado, here is the Ruby solution.
 
-```{.ruby .numberLines}
-def get_parking_spaces(t)
-	if t.empty?
-		return "N/A"
-	else
-		return (t.max - t.size) + 1
-	end
-end
-```
+- i toy/parking-spaces.rb
 
 ## Haskell
 
 The Haskell version is not much different.
 
-```{.haskell .numberLines}
-getParkingSpaces :: [Int] -> Either String Int
-getParkingSpaces t
-	| null t = Left "N/A"
-	| otherwise = Right $ (maximum t) - (length t) + 1
-```
+- i toy/parking-spaces.hs
 
 ## A Successor to FizzBuzz?
 
