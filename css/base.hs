@@ -38,6 +38,8 @@ myStylesheet = do
 					color (rgbHex 0x007020)
 				hover & do
 					textDecoration none
+				".history" & do
+					textDecoration none
 			sup ? do
 				"vertical-align" -: "top"
 				fontSizeCustom Clay.Font.small

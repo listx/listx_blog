@@ -134,6 +134,7 @@ main = hakyll $ do
 postCtx :: Context String
 postCtx = mconcat
 	[ dateField "date" "%Y-%m-%d"
+	, fileNameField "filename"
 	, defaultContext
 	]
 
@@ -177,6 +178,10 @@ postList tags pattern sortFilter = do
 	posts <- sortFilter =<< loadAll pattern
 	itemTpl <- loadBody "template/post-item.html"
 	applyTemplateList itemTpl (tagsCtx tags) posts
+
+fileNameField :: String -> Context String
+fileNameField key = field key $ \item -> do
+	return . toFilePath $ itemIdentifier item
 
 atomFeedConf :: FeedConfiguration
 atomFeedConf = FeedConfiguration
