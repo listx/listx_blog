@@ -42,7 +42,9 @@ main = hakyll $ do
 	-- Add Clay-based css
 	match "css/*.hs" $ do
 		route $ setExtension "css"
-		compile $ getResourceString >>= withItemBody (unixFilter ".cabal-sandbox/bin/cabal" ["exec", "runghc"])
+		compile $ getResourceString
+			>>= withItemBody
+				(unixFilter ".cabal-sandbox/bin/cabal" ["exec", "runghc"])
 
 	-- Add some default pages
 	match (fromList ["about.md", "art.md", "code.md"]) $ do
@@ -87,7 +89,8 @@ main = hakyll $ do
 			itemTpl <- loadBody "template/post-item.html"
 			list <- applyTemplateList itemTpl postCtx sorted
 			makeItem list
-				>>= loadAndApplyTemplate "template/archive.html" (archiveCtx tags)
+				>>= loadAndApplyTemplate "template/archive.html"
+					(archiveCtx tags)
 				>>= loadAndApplyTemplate "template/default.html" (mconcat
 					[ mathCtx
 					, archiveCtx tags
@@ -125,7 +128,8 @@ main = hakyll $ do
 			renderAtom atomFeedConf feedCtx posts
 	where
 	pandocOptions :: WriterOptions
-	pandocOptions = defaultHakyllWriterOptions { writerHTMLMathMethod = MathJax "" }
+	pandocOptions = defaultHakyllWriterOptions
+		{writerHTMLMathMethod = MathJax ""}
 
 postCtx :: Context String
 postCtx = mconcat
@@ -157,7 +161,11 @@ mathCtx :: Context a
 mathCtx = field "mathjax" $ \item -> do
 	metadata <- getMetadata $ itemIdentifier item
 	return $ if (M.member "mathjax" metadata)
-		then "<script src=\"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML\"></script>"
+		then concat
+			[ "<script src=\""
+			, "http://cdn.mathjax.org/mathjax/latest/MathJax.js"
+			, "?config=TeX-AMS-MML_HTMLorMML\"></script>"
+			]
 		else ""
 
 postList
