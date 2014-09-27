@@ -44,8 +44,7 @@ myStylesheet = do
 					color (rgbHex 0x007020)
 				hover & do
 					textDecoration none
-				".history" & do
-					textDecoration none
+				".history" & hoverLink
 				".raw" & hoverLink
 			sup ? do
 				"vertical-align" -: "top"
