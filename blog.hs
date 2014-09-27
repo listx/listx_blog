@@ -60,16 +60,12 @@ main = hakyll $ do
 			>>= relativizeUrls
 
 	-- Add images
-	match "img/*" $ do
-		route idRoute
-		compile copyFileCompiler
-
-	match "img/art/*" $ do
+	match "img/**" $ do
 		route idRoute
 		compile copyFileCompiler
 
 	-- Add files
-	match "file/*" $ do
+	match "file/**" $ do
 		route idRoute
 		compile copyFileCompiler
 
@@ -88,11 +84,7 @@ main = hakyll $ do
 			>>= relativizeUrls
 
 	-- Add code blocks
-	match "code/*" $ do
-		route idRoute
-		compile copyFileCompiler
-
-	match "code/toy/*" $ do
+	match "code/**" $ do
 		route idRoute
 		compile copyFileCompiler
 
