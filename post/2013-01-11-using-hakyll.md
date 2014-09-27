@@ -3,6 +3,8 @@ title: Using Hakyll with GitHub Pages
 tags: linux, hakyll, github
 ---
 
+Update 2014: I do not use hsenv any more; instead, I use cabal sandboxes --- and so should you!
+
 I decided to ditch wordpress.com, because:
 
 - I cringe every time I have to use their web GUI for adding new posts.
