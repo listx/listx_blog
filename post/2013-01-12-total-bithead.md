@@ -13,19 +13,7 @@ The Setup
 We need to manually call a script every time the Total Bithead is connected.
 The script, called `switch_audio.sh`, looks like this:
 
-```{.bash .numberLines}
-#!/bin/zsh
-
-if [[ -e /proc/asound/card1 ]]; then
-	ln -sf ~/syscfg/alsa/cfg-total-bithead ~/.asoundrc
-else
-	case $HOST in
-	k0) ln -sf ~/syscfg/alsa/cfg-k0 ~/.asoundrc ;;
-	k1) ln -sf ~/syscfg/alsa/cfg-k1 ~/.asoundrc ;;
-	*) echo "Unknown host \`$HOST'" ;;
-	esac
-fi
-```
+- i switch_audio.sh
 
 where k0 is my desktop and k1 is my laptop.
 `cfg-k0` looks like this:

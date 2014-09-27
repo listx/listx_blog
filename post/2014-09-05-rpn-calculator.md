@@ -13,32 +13,7 @@ He gave me his Ruby solution; in response, I wrote my own Ruby version and decid
 
 First, the Ruby version:
 
-```{.ruby .numberLines}
-def evaluate(equation_str)
-	terms = equation_str.split(' ')
-	stack = []
-	while terms.size > 0
-		term = terms.shift
-		case term
-		when /^\d+?$/
-			stack.push(term.to_i)
-		when '+', '-', '*'
-			if stack.size < 2
-				raise "stack too small for operator application"
-			else
-				b = stack.pop
-				a = stack.pop
-				op = term.to_sym
-				c = b.send(op, a)
-				stack.push(c)
-			end
-		else
-			raise "invalid input `#{term}'"
-		end
-	end
-	stack
-end
-```
+- i toy/rpn.rb
 
 Pretty straightforward, yes?
 The `terms` variable holds an array of numbers and operators.
@@ -53,34 +28,7 @@ Otherwise, we reject the input as an invalid term.
 
 Here is the Haskell version:
 
-```{.haskell .numberLines}
-import Data.Char (isDigit)
-
-data Term
-	= TermInt Integer
-	| TermOp (Integer -> Integer -> Integer)
-
-evaluate :: String -> [Integer]
-evaluate = evalTerms . map mkTerm . words
-
-mkTerm :: String -> Term
-mkTerm termStr = case termStr of
-	"+" -> TermOp (+)
-	"-" -> TermOp (-)
-	"*" -> TermOp (*)
-	_
-		| and $ map isDigit termStr -> TermInt $ read termStr
-		| otherwise -> error $ "invalid input `" ++ termStr ++ "'"
-
-evalTerms :: [Term] -> [Integer]
-evalTerms = foldl modifyStack []
-	where
-	modifyStack stack term = case term of
-		TermInt n -> n : stack
-		TermOp op -> case stack of
-			(a:b:_) -> op a b : drop 2 stack
-			_ -> error "stack too small for operator application"
-```
+- i toy/rpn.hs
 
 Probably the first thing to note is that we define a robust data type, `Term`, to encapsulate the values held in a given RPN string.
 We take advantage of Haskell's functions-as-first-class-values ability, and define the `TermOp` constructor with it (i.e., it needs an arithmetic function `(Integer -> Integer -> Integer)` as an argument).

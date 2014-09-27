@@ -7,9 +7,7 @@ It's nice to follow the 80-columns-per-line rule[^lkcs], but what if you have so
 
 Just go to that project's sources directory and do
 
-```{.numberLines}
-find . -type f -exec sh -c "expand -t 8 {} | grep -n \".\{81\}\"" \; -print
-```
+- i find-80-cols.sh
 
 .
 
