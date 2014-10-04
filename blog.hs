@@ -32,11 +32,6 @@ main = hakyll $ do
 					])
 				>>= relativizeUrls
 
-	-- Add images
-	match "*.png" $ do
-		route idRoute
-		compile copyFileCompiler
-
 	-- Add raw CSS
 	match "css/*.css" $ do
 		route   idRoute
@@ -59,17 +54,16 @@ main = hakyll $ do
 				])
 			>>= relativizeUrls
 
-	-- Add images
-	match "img/**" $ do
-		route idRoute
-		compile copyFileCompiler
+	-- Add static content
+	mapM_ (flip match (route idRoute >> compile copyFileCompiler))
+		[ "CNAME"
+		, "*.png"
+		, "code/**"
+		, "img/**"
+		, "file/**"
+		]
 
-	-- Add files
-	match "file/**" $ do
-		route idRoute
-		compile copyFileCompiler
-
-	match "post/*" $ do
+	match "post/*.md" $ do
 		route $ setExtension "html"
 		compile $ pandocCompilerWithTransformM
 			defaultHakyllReaderOptions
@@ -82,11 +76,6 @@ main = hakyll $ do
 				, tagsCtx tags
 				])
 			>>= relativizeUrls
-
-	-- Add code blocks
-	match "code/**" $ do
-		route idRoute
-		compile copyFileCompiler
 
 	create ["archive.html"] $ do
 		route idRoute
