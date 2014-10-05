@@ -62,4 +62,15 @@ The name comes from "no *x*", where *x* is a chunk of source code that you'd wan
 - [Manual](file/nox-0.1.0-4-gf123c9e.pdf)
 - [Sample use case](post/2013-04-30-emacs-unix-filter.html)
 
+### emacs
+
+#### kakapo-mode
+
+Simple, stupid indentation.
+The kakapo is a species of parrot in New Zealand; intelligence is not its strong suit.
+
+- [Git repository](https://github.com/listx/kakapo-mode)
+- The latest source code in [zip](https://github.com/listx/kakapo/zipball/master) or [tar](https://github.com/listx/kakapo/tarball/master)
+- [AUR](https://aur.archlinux.org/packages/emacs-kakapo-mode-git/)
+
 [^gendoc]: The manual, provided here as a convenience, can be generated from a cloned git repository of the development sources if you have [TexLive](http://www.tug.org/texlive/) installed on your system.
