@@ -28,7 +28,7 @@ ZTile (Haskell) is a library for dealing with square or hexagon tiles in a game 
 
 ### auca
 
-Auca (Haskell/Linux) watches for file modifications and execute a given external command.
+Auca (Haskell/Linux) watches for file modifications and executes a given external command.
 The name comes from a contraction of "auto" and "call".
 
 - [Git repository](https://github.com/listx/auca)
