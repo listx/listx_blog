@@ -1,12 +1,10 @@
 def evaluate(equation_str)
-	terms = equation_str.split(' ')
 	stack = []
-	while terms.size > 0
-		term = terms.shift
+	equation_str.split.each do |term|
 		case term
 		when /^\d+?$/
 			stack.push(term.to_i)
-		when '+', '-', '*'
+		when "+", "-", "*"
 			if stack.size < 2
 				raise "stack too small for operator application"
 			else

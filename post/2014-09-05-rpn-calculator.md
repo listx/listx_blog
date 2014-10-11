@@ -19,7 +19,7 @@ Pretty straightforward, yes?
 The `terms` variable holds an array of numbers and operators.
 We use a calculator stack (aptly named, `stack`) to untangle the RPN in a stack-based way.
 
-In the `while` loop, the actions depend on what `term` looks like.
+In the `each` loop, the actions depend on what `term` looks like.
 If `term` is a number in string form, we convert it into a real number with `String#to_i`, and push it into `stack`.
 If `term` is one of the 3 recognized operators, we remove 2 terms `a` and `b` from `stack` and apply the necessary operation on it with Ruby's magic `Object#send` method, and push the new term `c` back into `stack` for further operations (if any, in later iterations of the `while` loop).
 Otherwise, we reject the input as an invalid term.
