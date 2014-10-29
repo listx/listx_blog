@@ -62,6 +62,15 @@ The name comes from "no *x*", where *x* is a chunk of source code that you'd wan
 - [Manual](file/nox-0.1.0-4-gf123c9e.pdf)
 - [Sample use case](post/2013-04-30-emacs-unix-filter.html)
 
+### panxor
+
+Panxor (Haskell/Linux) can perform a numerical XOR against an arbitrary number of hashes of arbitrary length in base 2 (binary), 8 (octal), 10 (digital), and 16 (hexadecimal).
+It is primarily meant to be used on top of a hashing utility like sha1sum; the idea is to combine all of the SHA1 hashes of the files of concern into 1 single hash by XOR-ing them all together; this way, as long as the number of files and filenames in question don't change, you can instantly tell with a single hash whether something has changed in between.
+From this use case, it is like a poor man's git commit hash.
+
+- [Git repository](https://github.com/listx/panxor)
+- The latest source code in [zip](https://github.com/listx/panxor/zipball/master) or [tar](https://github.com/listx/panxor/tarball/master)
+
 ### emacs
 
 #### kakapo-mode
