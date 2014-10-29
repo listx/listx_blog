@@ -14,6 +14,21 @@ Simtic (C/Linux) is a text-based, dead-simple tic-tac-toe game with an AI that u
 - [Git repository](https://github.com/listx/simtic)
 - The latest source code in [zip](https://github.com/listx/simtic/zipball/master) or [tar](https://github.com/listx/simtic/tarball/master)
 
+### quicksilver
+
+Quicksilver (Haskell) is a program that generates two mods for the real time strategy games *Rome: Total War (2004)* and *Medieval II: Total War (2006)* from the game studio *The Creative Assembly*.
+The *qs* command line program generates the `quicksilverRTW` and `quicksilverM2TW` mods from the game data sources.
+If any of the sources cannot be found or have a SHA-1 checksum mismatch, nothing is generated.
+
+- [Git repository](https://github.com/listx/quicksilver)
+- The latest source code in [zip](https://github.com/listx/quicksilver/zipball/master) or [tar](https://github.com/listx/quicksilver/tarball/master)
+
+While interesting from a developer's perspective (it being written in Haskell, perhaps the only such Haskell tool in existence in the Total War modding community), if you are an actual player of either of these games, you should check out the actual mods that `qs` generates.
+For either one, use 7zip to extract everything into your game root directory, and run the mod with the included `.bat` file.
+Both have been tested to work with the game binary from [Steam](http://store.steampowered.com/).
+
+- [Public quicksilver mods folder](https://drive.google.com/folderview?id=0BxczAgYXbLfJZjNtcENUekNlMm8&usp=sharing)
+
 ## Libraries
 
 ### ZTile
