@@ -1,0 +1,14 @@
+KEYS = some random list of numbers
+key = the number we're looking for in KEYS
+
+binary_search(KEYS, key):
+	middle_index = get_middle_index_index(length of KEYS)
+	lower_KEYS = get_below(middle_index, KEYS)
+	upper_KEYS = get_above(middle_index, KEYS)
+	if key < KEYS[middle_index]
+		binary_search(lower_KEYS, key)
+	else if key > KEYS[middle_index]
+		binary_search(upper_KEYS, key)
+	else
+		return middle_index
+	end

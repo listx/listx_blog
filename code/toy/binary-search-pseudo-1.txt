@@ -1,0 +1,20 @@
+KEYS = some random list of numbers
+first_index = 0
+last_index = 999 (our KEYS is 1000 elements big)
+key = the number we're looking for in KEYS
+
+binary_search(KEYS, key, first_index, last_index):
+	list_size = (last_index - first_index) + 1
+	if list_size == 0
+		return KEY_NOT_FOUND
+	end
+
+	middle_index = list_size / 2 + first_index
+
+	if key < KEYS[middle_index]
+		binary_search(KEYS, key, first_index, middle_index - 1)
+	else if key > KEYS[middle_index]
+		binary_search(KEYS, key, middle_index + 1, last_index)
+	else
+		return middle_index
+	end
