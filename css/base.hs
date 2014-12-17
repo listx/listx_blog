@@ -161,6 +161,8 @@ myStylesheet = do
 								paddingBottom (em 1)
 								li ? do
 									paddingLeft 0
+									p ? do
+										paddingBottom (em 1)
 					-- <pre><code> is generated if there is multiline (``` ... ```) code
 					pre ? do
 						ev margin 0
