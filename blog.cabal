@@ -22,6 +22,7 @@ executable blog
       base >=4.7 && <4.8
     , containers >= 0.5.5.1 && < 0.6
     , hakyll >= 4.5
+    , network-uri >= 2.6.0.1
     , pandoc >= 1.12
     , clay >= 0.8.0.1
     , filepath >= 1.3.0.2
