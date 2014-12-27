@@ -20,8 +20,8 @@ rgbHex rgb'
 myStylesheet :: Css
 myStylesheet = do
 	html ? do
-		ev margin 0
-		ev padding 0
+		noMargin
+		ev padding $ px 0
 		fontFamily ["Merriweather"] [serif]
 		let
 			bgHexColor = 0xd1dbbd
@@ -30,7 +30,7 @@ myStylesheet = do
 		overflowY scroll
 		body ? do
 			width (px cPageWidth)
-			vh margin 0 auto
+			vh margin (px 0) auto
 			a ? do
 				let
 					hoverLink = do
@@ -50,7 +50,7 @@ myStylesheet = do
 				"vertical-align" -: "top"
 				fontSizeCustom Clay.Font.small
 			hr ? do
-				ev margin 0
+				noMargin
 				height (px 1)
 			div' ? do
 				".center" & do
@@ -64,7 +64,7 @@ myStylesheet = do
 					backgroundImage $ url "/lightpaperfibers_JorgeFuentes.png"
 					boxShadow (px 0) (px 0) (px 3) (rgbHex 0x666666)
 					h1 ? do
-						ev margin 0
+						noMargin
 						headerIndent
 						paragraphIndentRight
 						paddingBottom (em 1)
@@ -72,9 +72,9 @@ myStylesheet = do
 						textDecoration underline
 						-- For the title of the page, center-align it.
 						".center" & do
-							ev margin 0
+							noMargin
 							paddingTop (em 0.5)
-							paddingBottom 0
+							paddingBottom $ px 0
 							marginBottom (em 0.5)
 							fontSize (pt 30)
 							headerIndentRight
@@ -93,7 +93,7 @@ myStylesheet = do
 								".sourceCode" & do
 									-- if a table is part of "code-and-raw",
 									-- reduce bottom margin to 0
-									marginBottom 0
+									marginBottom $ px 0
 									paddingTop (em 0.5)
 									paddingBottom (em 0.5)
 									"border-style" -: "none"
@@ -105,40 +105,40 @@ myStylesheet = do
 							fontSizeCustom Clay.Font.small
 							textAlign $ alignSide sideCenter
 					h2 ? do
-						ev margin 0
+						noMargin
 						headerIndent
 						paragraphIndentRight
 						paddingBottom (em 1)
 						fontWeight normal
 						textDecoration underline
 					h3 ? do
-						ev margin 0
+						noMargin
 						headerIndent
 						paragraphIndentRight
 						paddingBottom (em 1)
 						fontWeight normal
 						fontStyle italic
 					h4 ? do
-						ev margin 0
+						noMargin
 						headerIndent
 						paragraphIndentRight
 						paddingBottom (em 1)
 					ol ? do
-						ev margin 0
+						noMargin
 						paragraphListIndent
 						paddingBottom (em 1)
 						p ? do
-							ev padding 0
+							ev padding $ px 0
 					ul ? do
-						ev margin 0
+						noMargin
 						paragraphListIndent
 						paddingBottom (em 1)
 						ul ? do
-							ev margin 0
+							noMargin
 							headerIndent
-							paddingBottom 0
+							paddingBottom $ px 0
 					p ? do
-						ev margin 0
+						noMargin
 						paddingBottom (em 1)
 						paragraphIndent
 					-- single-line `code`
@@ -152,21 +152,21 @@ myStylesheet = do
 						".figure" & do
 							-- center images
 							"display" -: "table"
-							vh margin 0 auto
+							vh margin (px 0)auto
 						".footnotes" & do
-							paddingBottom 0
+							paddingBottom $ px 0
 							ol ? do
 								paragraphIndent
 								paddingTop (em 1)
 								paddingBottom (em 1)
 								li ? do
-									paddingLeft 0
+									paddingLeft $ px 0
 									p ? do
 										paddingBottom (em 1)
 					-- <pre><code> is generated if there is multiline (``` ... ```) code
 					pre ? do
-						ev margin 0
-						vh padding 0 0
+						noMargin
+						vh padding 0 $ px 0
 						code ? do
 							"-moz-tab-size" -: "4"
 							"-o-tab-size" -: "4"
@@ -193,12 +193,12 @@ myStylesheet = do
 						"-moz-tab-size" -: "4"
 						"-o-tab-size" -: "4"
 						"tab-size" -: "4"
-						paddingRight 0
+						paddingRight $ px 0
 						marginBottom (em 1)
 						-- posts archive
 						".ul" & do
 							paragraphIndent
-							marginBottom 0
+							marginBottom $ px 0
 							paddingBottom (em 1)
 							tr ? do
 								td ? do
@@ -228,15 +228,15 @@ myStylesheet = do
 								td ? do
 									".lineNumbers" & do
 										pre ? do
-											ev margin 0
+											noMargin
 											textAlign $ alignSide sideRight
 											color (rgbHex $ bgHex - 0x151515)
 									".sourceCode" & do
-										paddingLeft 0
+										paddingLeft $ px 0
 										pre ? do
-											ev margin 0
+											ev margin $ px 0
 											code ? do
-												ev margin 0
+												ev margin $ px 0
 												padding 0 0 0 (em 1)
 												"border-style" -: "none"
 												boxShadow (px 0) (px 0) (px 0) (rgbHex shadowHex)
@@ -290,3 +290,6 @@ vh f x y = f x y x y
 -- | Like "vh", but uses the same size for *everything*.
 ev :: (Size a -> Size a -> Size a -> Size a -> Css) -> Size a -> Css
 ev f x = f x x x x
+
+noMargin :: Css
+noMargin = margin 0 0 0 $ px 0
