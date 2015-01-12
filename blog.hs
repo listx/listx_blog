@@ -57,6 +57,9 @@ main = hakyll $ do
 	-- Add static content
 	mapM_ (flip match (route idRoute >> compile copyFileCompiler))
 		[ "CNAME"
+		-- Although not tailored to the actual deployed site itself, it still
+		-- has some rules that make it easier to git add/push new content.
+		, ".gitignore"
 		, "*.png"
 		, "code/**"
 		, "img/**"
