@@ -153,6 +153,25 @@ Maybe you can quiz your friend about it, and see how they respond!
 
 Happy hacking!
 
+## Update: January 2015
+
+I applied for a job at [Periscope](http://periscope.io), and during the process Tom O'Neill pointed out that the Parking Lot Problem can be solved without sorting using sparse bitsets.[^hire]
+The idea is pretty simple --- each bit represents a parking space, and if it is set to 1, we treat it as occupied, and if it is 0, we treat it as empty.
+If there are 1,000,000 parking spaces, then we would need 1,000,000 bits.
+But this is where "sparseness" comes in; if there are a ton of 0's --- say, 50,000 of them --- in one spot, we can easily encode that information in fewer bits; the traditional approach is to use run-length encoding (RLE) to do this.
+E.g., you could write the number "50,000", and then enclose it in special OP-codes that you reserve to declare that the "50,000" here means something special (in our case, that these 50,000 bits are all zeroes).
+
+Another approach is to use an octree (a tree that always has 8 child nodes), or "Bzets" as coined by the late [Robert Uzgalis](http://www.cs.ucla.edu/news/news-archive/2012/2012), who passed away in 2012.
+An excellent set of slides are available online if you Google them, but I've also uploaded them to my site [here](http://linusarver.com/upload/grid/file/attachment/fyle/54b437416c30006ac5000000/Bzets.pdf).
+Essentially, the idea is to have a tree with 3 possible values for the child nodes: `0 1 T`.
+A `0` means that you can stop recursing down the tree, as all child nodes, recursively are all set to `0`.
+A `1`, similarly, means you can stop because all child nodes are set to `1`.
+A `T` just means that you have to walk down to the child nodes, because if you gather up all the child nodes' bits, they are mixed with `0`s and `1`s.
+You can imagine how compact some representations can become.
+In fact, Uzgalis calls bzets as having logarithmic compression!
+A [project on Github exists](https://github.com/Bovinedragon/Binary-Bzet) that seems to be from one of the 3 UCLA student teams charged with implementing a version of bzets.
+
 [^nosort]: You can, for example, loop from `0` to infinity and then see if this number exists in `T` --- but this is probably the worst way to solve the problem, at least from a computational perspective.
 E.g., if it takes $O(n)$ to search through `T` to see if some integer `i` exists in it, then this algorithm has $O(n^2)$ complexity because you need to run the search for every single integer in `T`.
 [^twos]: A closely related operation is [two's complement](http://en.wikipedia.org/wiki/Two's_complement) arithmetic. You can read about it from the ["Find first set"](http://en.wikipedia.org/wiki/Find_first_set) article on Wikipedia.
+[^hire]: No, I did not get the job. But I did get a free lesson in interviewing over Skype. And I also had a very pleasant conversation about sparse bitsets, and this alone made the whole thing worthwhile.
