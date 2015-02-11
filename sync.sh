@@ -12,3 +12,4 @@ elif [[ ! -d $dest ]]; then
 fi
 
 rsync -ahP --no-whole-file --inplace --delete --exclude=.git $targ $dest
+cp -f .gitignore $dest
