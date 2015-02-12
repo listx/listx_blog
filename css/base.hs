@@ -81,6 +81,8 @@ myStylesheet = do
 							textAlign $ alignSide sideCenter
 							borderBottom solid (pt 3) (rgb 0 0 0)
 							textDecoration none
+						code ? do
+							vh margin (px 0) (px 4)
 					div' ? do
 						".info" & do
 							paddingBottom (em 1)
@@ -111,6 +113,8 @@ myStylesheet = do
 						paddingBottom (em 1)
 						fontWeight normal
 						textDecoration underline
+						code ? do
+							vh margin (px 0) (px 4)
 					h3 ? do
 						noMargin
 						headerIndent
@@ -118,11 +122,15 @@ myStylesheet = do
 						paddingBottom (em 1)
 						fontWeight normal
 						fontStyle italic
+						code ? do
+							vh margin (px 0) (px 4)
 					h4 ? do
 						noMargin
 						headerIndent
 						paragraphIndentRight
 						paddingBottom (em 1)
+						code ? do
+							vh margin (px 0) (px 4)
 					ol ? do
 						noMargin
 						paragraphListIndent
