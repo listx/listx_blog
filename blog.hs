@@ -42,7 +42,7 @@ main = hakyll $ do
 		route $ setExtension "css"
 		compile $ getResourceString
 			>>= withItemBody
-				(unixFilter ".cabal-sandbox/bin/cabal" ["exec", "runghc"])
+				(unixFilter "cabal" ["exec", "runghc"])
 
 	-- Add some default pages
 	match (fromList ["about.md", "art.md", "code.md", "papers.md"]) $ do

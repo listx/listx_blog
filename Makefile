@@ -1,12 +1,12 @@
 OBJ = dist/build/blog/blog-tmp/Main.o dist/build/base/base-tmp/Main.o
 all: $(OBJ)
-	./.cabal-sandbox/bin/cabal build --ghc-options "-O2 -Wall" blog
+	cabal build --ghc-options "-O2 -Wall" blog
 	cp dist/build/blog/blog .
 	./blog rebuild
 	./sync.sh
 
 nosync: $(OBJ)
-	./.cabal-sandbox/bin/cabal build --ghc-options "-O2 -Wall" blog
+	cabal build --ghc-options "-O2 -Wall" blog
 	cp dist/build/blog/blog .
 	./blog rebuild
 
