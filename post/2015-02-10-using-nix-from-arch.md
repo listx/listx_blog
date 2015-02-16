@@ -1,6 +1,6 @@
 ---
 title: Using the Nix Package Manager for Haskell Development from Arch Linux
-tags: programming, haskell, arch, linux
+tags: programming, haskell, arch, linux, nix
 ---
 
 I recently installed and configured NixOS on a laptop and had to learn how to develop Haskell on it.
