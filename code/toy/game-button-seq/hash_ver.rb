@@ -4,8 +4,8 @@ module GameButtonSeq
   # button_seq_db = a hash of {sequence => name}, but a sequence can have
   # multiple names if that sequence already exists.
   def GameButtonSeq.register(button_seq, name, button_seq_db)
-    # If the sequence already exists, simply add the new name to the old name, and
-    # store it as a list of names.
+    # If the sequence already exists, simply add the new name to the old name,
+    # and store it as a list of names.
     if button_seq_db.key?(button_seq)
       button_seq_db[button_seq] = [name] + button_seq_db[button_seq]
     else
