@@ -1,8 +1,8 @@
 module GameButtonSeq
   # button_seq = ["down", "forward", "punch"]
   # name = "hadoken"
-  # seq_db = a hash of {sequence => name}, but a sequence can have multiple
-  # names if that sequence already exists.
+  # button_seq_db = a hash of {sequence => name}, but a sequence can have
+  # multiple names if that sequence already exists.
   def GameButtonSeq.register(button_seq, name, button_seq_db)
     # If the sequence already exists, simply add the new name to the old name, and
     # store it as a list of names.
@@ -17,12 +17,12 @@ module GameButtonSeq
 
   def GameButtonSeq.on_buttons(button_seq, button_seq_db)
     found = []
-    # We search the entire seq_db hash for the full length of N buttons first,
-    # then N - 1 buttons, then N - 2 buttons, until the search input becomes 0.
-    # Meanwhile, we collect any and all matches that come our way. The point is
-    # to search based on the *last* input button, as this is the "current"
-    # button that should "finish" whatever combination/move we were trying to
-    # do.
+    # We search the entire button_seq_db hash for the full length of N buttons
+    # first, then N - 1 buttons, then N - 2 buttons, until the search input
+    # becomes 0. Meanwhile, we collect any and all matches that come our way.
+    # The point is to search based on the *last* input button, as this is the
+    # "current" button that should "finish" whatever combination/move we were
+    # trying to do.
     while button_seq.size > 0
       if button_seq_db.key?(button_seq)
         found << button_seq_db[button_seq]
