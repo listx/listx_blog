@@ -57,12 +57,12 @@ I have to admit, the `step` function in `onButtons` is essentially unreadable.
 But it does work:
 
 ```
-$ ghci game-button-seq-interview.hs
+$ ghci code/toy/game-button-seq/interview_ver.hs
 GHCi, version 7.8.4: http://www.haskell.org/ghc/  :? for help
 Loading package ghc-prim ... linking ... done.
 Loading package integer-gmp ... linking ... done.
 Loading package base ... linking ... done.
-[1 of 1] Compiling Main             ( code/toy/game-button-seq-interview.hs, interpreted )
+[1 of 1] Compiling Main             ( code/toy/game-button-seq/interview_ver.hs, interpreted )
 Ok, modules loaded: Main.
 *Main> onButtons ["down", "down", "forward", "punch"] buttonSeqDB
 ["charger","hadoken"]
