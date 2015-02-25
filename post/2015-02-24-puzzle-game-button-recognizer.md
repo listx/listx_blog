@@ -80,7 +80,7 @@ That's what the line `filter ((==button) . last . fst)` does; the sister line `f
 
 After we're done checking, we modify the entire sequence database `db`, such that we only care about the first $N - 1$ buttons in the sequence.
 This way, on the next iteration, we can rest assured that checking against the "last" button in a sequence is not always the same button.
-In subsequent runs of `step`, we have `dbRem`'s sequences slowly get reduced down to nothing as we keep chopping off all sequences's last button.
+In subsequent runs of `step`, we have `dbRem`'s sequences slowly get reduced down to nothing as we keep chopping off all sequences' last button.
 Keep in mind that we feed the filtered, matching entries of `db` back into subsequent runs of `step`, so that effectively we're only working with matching sequences.
 Once we reach down to no buttons, we label these named sequences as `entriesComplete`, and append it into `foundSoFar`.
 
@@ -97,12 +97,12 @@ We're wasting a lot of CPU cycles here.
 
 So on the day after (that is, *today* as of the time of this writing), I thought about the problem again and realized we can use hashes.
 It is a very simple approach, with far less lines of code.
-I even wrote a small test for it.
+I even wrote some tests for it.
 Here is the implementation below.
 
 - i toy/game-button-seq/hash_ver.rb
 
-And here is the test case for it.
+And here is the test suite for it.
 You can run it with `ruby test_hash_ver.rb`.
 
 - i toy/game-button-seq/test_hash_ver.rb
