@@ -15,7 +15,7 @@ cabal-version: >=1.10
 
 executable blog
   main-is: blog.hs
-  ghc-options: -Wall
+  ghc-options: -Wall -Werror
   -- other-modules:
   other-extensions: OverloadedStrings
   build-depends:
@@ -32,7 +32,7 @@ executable blog
 
 executable base
   main-is: css/base.hs
-  ghc-options: -Wall
+  ghc-options: -Wall -Werror
   -- other-modules:
   other-extensions: OverloadedStrings
   build-depends:
