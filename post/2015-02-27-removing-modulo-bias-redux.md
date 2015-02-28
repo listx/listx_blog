@@ -70,7 +70,7 @@ If we apply `% 4` to the values, then our output range looks like this:
 ```
 
 .
-Can you see how the two halves are the same?
+Can you see how the three subparts are the same?
 What's more, 0 will occur $\frac{3}{12} = \frac{1}{4}$ times.
 The same goes for `1`, `2`, and `3`.
 Because all 4 possible values, 0 through 4, occur an equal $\frac{1}{4}$ times, there is *no modulo bias here*!
