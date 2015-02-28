@@ -131,6 +131,13 @@ myStylesheet = do
 						paddingBottom (em 1)
 						code ? do
 							vh margin (px 0) (px 4)
+					h5 ? do
+						noMargin
+						headerIndent
+						paragraphIndentRight
+						paddingBottom (em 1)
+						code ? do
+							vh margin (px 0) (px 4)
 					ol ? do
 						noMargin
 						paragraphListIndent

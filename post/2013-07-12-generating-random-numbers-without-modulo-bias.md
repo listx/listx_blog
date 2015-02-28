@@ -4,6 +4,8 @@ tags: c, rng, programming
 mathjax: on
 ---
 
+UPDATE: See [this blog post](2015-02-27-removing-modulo-bias-redux.html).
+
 Let's say you need a random number from 0 to 2 (0, 1, or 2). If you do this:
 
 - i rng/listing-1.c
