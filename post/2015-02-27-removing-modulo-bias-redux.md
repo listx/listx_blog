@@ -53,8 +53,8 @@ Consider the following ASCII diagram, where the maximum value returned by our `s
 ```
 
 .
-So, `some_rng()` has 8 possible unique values, 0 through 11.
-If our bound was `4`, then doing `r % bound` is perfectly fine, because we can chop the RNG range into two equal parts of length 4 each, like this:
+So, `some_rng()` has 12 possible unique values, 0 through 11.
+If our bound was `4`, then doing `r % bound` is perfectly fine, because we can chop the RNG range into three equal parts of length 4 each, like this:
 
 
 ```
@@ -75,7 +75,7 @@ What's more, 0 will occur $\frac{3}{12} = \frac{1}{4}$ times.
 The same goes for `1`, `2`, and `3`.
 Because all 4 possible values, 0 through 4, occur an equal $\frac{1}{4}$ times, there is *no modulo bias here*!
 
-#### What if the modulus is not a nice number with respect to RAND_MAX?
+#### What if the modulus is not a nice number with respect to `RAND_MAX`?
 
 This is where the problem occurs.
 `RAND_MAX` is the highest value returned by our RNG, and thus defines the range of the possible values output by the RNG.[^rand-max]
@@ -86,19 +86,19 @@ Continuing with our example above, if instead of `bound = 4`, we used another va
 0 1 2 3 4 | 5 6 7 8 9 | 10 11
 ```
 
---- or essentially, these values as output if we just naivly use `r % bound`:
+--- or essentially, these values are output if we just naively use `r % bound`:
 
 ```
 0 1 2 3 4 | 0 1 2 3 4 | 0 1
 ```
 
 .
-Can you see how `0` and `1` occur $\frac{3}{12}$ times, but `2`, `3`, and `4` occur $\frac{2}{12}$ times?
+Can you see how `0` and `1` will occur $\frac{3}{12}$ times, but `2`, `3`, and `4` will occur only $\frac{2}{12}$ times?
 
 #### The fix --- adjust the range!
 
 Now, we can fix the above example by simply throwing out certain values.
-The approach I used in the [old appraoch][old-approach] was to discard the right hand side values.
+The approach I used in the [old blog post][old-approach] was to discard the right hand side values.
 So, in our example with `bound = 5`, where we have
 
 ```
@@ -244,7 +244,7 @@ You can try out different values for `RAND_MAX` and `bound`, but you will get th
 ##### But why is `-bound` the way it is?
 
 The [C standard](http://stackoverflow.com/questions/2711522/what-happens-if-i-assign-a-negative-value-to-an-unsigned-variable) says that a negative unsigned value is stored as a positive value.
-Without getting too technical, here is what the values of `bound` look like:
+Without getting too technical, here are the values of `bound` as it becomes "negative":
 
 ```
 Bound | Actual value
@@ -282,8 +282,8 @@ Meanwhile, I strongly recommend the following code for anyone using a low-level 
 
 [old-approach]:2013-07-12-generating-random-numbers-without-modulo-bias.html
 
-[^uniform]: Any RNG worth their salt will return a uniformly distributed value, typically from 0 to RAND_MAX.
-In the example here, our RAND_MAX is 11.
+[^uniform]: Any RNG worth their salt will return a uniformly distributed value, typically from 0 to `RAND_MAX`.
+In the example here, our `RAND_MAX` is 11.
 
 [^rand-max]: For a 32-bit unsigned integer RNG, $2^{32} - 1$ (all 1 bits set) is the highest value that can be returned.
 That is, our RNG returns a value from 0 (no bits set) to `RAND_MAX` (all bits set).
