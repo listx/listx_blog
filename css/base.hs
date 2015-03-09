@@ -219,6 +219,7 @@ myStylesheet = do
 								td ? do
 									".date" & do
 										"vertical-align" -: "text-top"
+										whiteSpace nowrap
 						".gallery" & do
 							headerIndent
 							paddingBottom (em 1)
