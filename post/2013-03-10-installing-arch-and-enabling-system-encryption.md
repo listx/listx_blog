@@ -3,7 +3,7 @@ title: Installing Arch Linux and Enabling System Encryption
 tags: linux, arch
 ---
 
-The follow list of commands is what you need to execute in order to set up Arch Linux with system-level encryption.
+The following list of commands is what you need to execute in order to set up Arch Linux with system-level encryption.
 The setup is 1 hard drive with 1 100MiB `/boot` partition, with the rest as a single LVM partition that will contain the `/` root, `/home`, and `swap` partitions.
 This LVM partition will be encrypted so that when the system boots, it will require a password to unlock the `/`, `/home`, and `swap` partitions to boot up the system.
 The `/boot` partition will remain unencrypted for the sake of simplicity.
