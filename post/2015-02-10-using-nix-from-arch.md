@@ -4,7 +4,7 @@ tags: programming, haskell, arch, linux, nix
 ---
 
 I recently installed and configured NixOS on a laptop and had to learn how to develop Haskell on it.
-The Nix community uses something called `cabal2nix` and `nix-shell` to get the job done.
+The Nix community uses something called `cabal2nix` (version 2.0 and up!) and `nix-shell` to get the job done.
 While things work quite smoothly right now in NixOS, I was wondering if I could do the same on my desktop Arch Linux box.
 
 The answer is yes --- you can easily use Nix to create a 'system sandbox' of sorts (the Nix store) that is completely isolated from Arch's own Haskell packages/GHC.
