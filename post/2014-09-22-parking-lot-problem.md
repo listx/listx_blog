@@ -81,9 +81,20 @@ While I could explain how the Ruby version works, I feel that I have already exp
 
 The Haskell version is a direct translation of the Ruby version, as an iterative approach works just fine.
 The only drawback is that we use `Int` instead of the arbitrarily large `Integer` type for succinctness (we can use `Integer`, but some built-in functions like `sort` only work on `Int`).
-However, it is interesting if only for the fact that the edge cases are made explicit --- there seems to be no way to avoid "lying" to Haskell about the complexity of our problem!
 
 - i toy/parking-space.hs
+
+### Functional solution
+
+Michele Alzetta kindly sent me another solution, which has a much stronger "Haskell" flavor.
+I've made some slight adjustments; here it is:
+
+- i toy/parking-space2.hs
+
+.
+The advantage of this version is that it only evaluates `length ts` (the input list) as a last resort, thanks to `fromMaybe`.
+It also uses standard Prelude functions like `elemIndex` and `zipWith` for easier understanding.
+Thanks Michele!
 
 ## Low-Level Interlude
 
