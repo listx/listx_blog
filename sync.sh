@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 dest='listx.github.io/'
 targ='_site/'
