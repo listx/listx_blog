@@ -339,7 +339,9 @@ Thanks to these standard library functions, we can easily keep track of more tha
 ### Word Frequency
 
 This is probably a convoluted way to keep track of words.
+I did not opt for using regular expressions, because I wanted to try out a different approach instead of just translating the Ruby solution.
 I could have used the excellent Parsec library, but I just felt like rolling my own solution.
+
 `freqW` works by looking at just one character at a time, just like `freqL`.
 It also keeps track of the evaluation of the previously-looked-at character, with the `wfsm` variable (for *Word Finite State Machine*, a fancy but still pertinent name).
 `wfsm` can either say that the last character made us go *in* a word (`WordIn`), *out* of a word for sure (`WordOut`), or possibly out of a word (`WordOutMaybe`).
