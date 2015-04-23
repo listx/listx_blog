@@ -4,11 +4,11 @@ tags: programming, haskell, ruby
 mathjax: off
 ---
 
+## Motivation
+
 I recently purchased an ErgoDox keyboard[^ergo-arrival], and I've been thinking about creating my own keyboard layout in the spirit of the Dvorak Simplified Keyboard layout (DSK).
 One of the guiding principles of DSK was putting an emphasis on reducing finger travel by identifying the most commonly occurring letters of the English language, and placing them on the home row of the keyboard.
 Now, the Dvorak layout was patented in 1936 according to Wikipedia, with subsequent adjustments culminating in the present form of DSK.
-
-## Motivation
 
 I want to find out for myself what letters are the most common.
 Sure, I could blindly trust an online source like Wikipedia, but it just feels like an easy problem to solve.
