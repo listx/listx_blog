@@ -191,6 +191,11 @@ transformer (Pandoc m bs0) = do
 --
 -- - i foo/bar.hs
 --
+-- or
+--
+-- - i foo/bar.hs
+-- - i baz/quux.hs (multiple items)
+--
 -- in a file, and make it expand to the equivalent
 --
 -- ```{.numberLines .haskell}
@@ -200,8 +205,12 @@ transformer (Pandoc m bs0) = do
 -- form, but also with a hyperlink to the file "foo/bar.hs". This is by far much
 -- easier to write in actual blog posts.
 cbExpandRawInput :: Block -> Compiler [Block]
-cbExpandRawInput b = case b of
-	(BulletList [[Plain [(Str "i"), Space, (Str fp)]]]) -> do
+cbExpandRawInput block = case block of
+	(BulletList xs) -> return . concat =<< mapM (mapM bList) xs
+	_ -> return [block]
+	where
+	bList :: Block -> Compiler Block
+	bList (Plain [(Str "i"), Space, (Str fp)]) = do
 		let
 			codeLang = case takeExtensions fp of
 				".c" -> ["c"]
@@ -216,7 +225,7 @@ cbExpandRawInput b = case b of
 			attr = ("", ["numberLines"] ++ codeLang, [("input", "code/" ++ fp)])
 		raw <- unsafeCompiler . readFile $ "code/" ++ fp
 		return
-			[ Div ("", ["code-and-raw"], [])
+			( Div ("", ["code-and-raw"], [])
 				[ CodeBlock attr raw
 				, Div ("", ["raw-link"], [])
 					[ Plain
@@ -235,8 +244,8 @@ cbExpandRawInput b = case b of
 						]
 					]
 				]
-			]
-	_ -> return [b]
+			)
+	bList x = return x
 
 atomFeedConf :: FeedConfiguration
 atomFeedConf = FeedConfiguration
