@@ -697,7 +697,7 @@ eût = 0.11% (130 occurrences)
 The most common French word in this book is *de*, meaning *of* in English.
 This is because the word for *the* is split into many different words, most notably *la* and *le*, not to mention *l'* as in *l'homme* (as you can see near the end of the list), due to the French language's gender and vowel contraction rules (unlike English, contractions like *l'homme* in French are mandatory regardless of tone).
 
-And, as a bit of trivia, it is interesting to note that *dieu* (God) edges out *'lhomme* (man) by 7 occurrences in this text.
+And, as a bit of trivia, it is interesting to note that *dieu* (God) edges out *l'homme* (man) by 7 occurrences in this text.
 
 ## Conclusion
 
