@@ -32,7 +32,7 @@ module TextFreq
   # dash for an em dash to separate two words.
   def TextFreq.freq_w(src)
     occs = {}
-    words = src.split(/[^a-zA-Z]*\s[^a-zA-Z]*/).map do |w|
+    words = src.split(/\W*\s\W*/).map do |w|
         w.empty? ? nil : w.downcase
       end.compact
     words.each do |w|
@@ -40,10 +40,10 @@ module TextFreq
       if w =~ /\w/
         if w =~ /--/
           w.split("--").each do |y|
-            count_word(occs, y)
+            count_word(occs, lstrip_punc(y))
           end
         else
-          count_word(occs, w)
+          count_word(occs, lstrip_punc(w))
         end
       end
     end
@@ -58,6 +58,11 @@ module TextFreq
     hash
   end
 
+  # Remove leading punctuation.
+  def TextFreq.lstrip_punc(w)
+    w.match(/\w.*/)[0]
+  end
+
   # Display the frequencies of letters and or words. For letters, we are only
   # concerned about 26 different values, so we print all of them out. However
   # for words, depending on the corpus there might be thousands, or even
@@ -67,12 +72,16 @@ module TextFreq
     if occs.is_a?(Array)
       sum = occs.inject(0, :+)
       occs.zip(("a".."z").to_a).sort.reverse.each do |cnt, c|
-        puts "#{c} = " + "%.2f%%" % (cnt/sum.to_f * 100.0)  + " (#{cnt} occurrences)"
+        puts "#{c} = "\
+          + "%.2f%%" % (cnt/sum.to_f * 100.0)\
+          + " (#{cnt} occurrences)"
       end
     else
       sum = occs.values.inject(0, :+)
       occs.sort_by {|w, cnt| cnt}.reverse.take(100).each do |w, cnt|
-        puts "#{w} = " + "%.2f%%" % (cnt/sum.to_f * 100.0)  + " (#{cnt} occurrences)"
+        puts "#{w} = "\
+          + "%.2f%%" % (cnt/sum.to_f * 100.0)\
+          + " (#{cnt} occurrences)"
       end
     end
   end

@@ -15,7 +15,7 @@ type WHash = M.Map WProto Word64
 data WFSM
 	= WordIn
 	| WordOutMaybe
-	| WordOutReally
+	| WordOut
 	deriving (Eq)
 data WBuild = WBuild WFSM WProto WHash
 
@@ -30,37 +30,35 @@ freqL = T.foldl step occs
 freqW :: T.Text -> WHash
 freqW = (\(WBuild _ _ whash) -> whash) . T.foldl step occs
 	where
-	-- Use WordOutReally as the initial state for WFSM, because we're starting
-	-- from nothing!
+	-- Use WordOut as the initial state for WFSM, because we're starting from
+	-- nothing!
 	occs :: WBuild
-	occs = WBuild WordOutReally T.empty M.empty
+	occs = WBuild WordOut T.empty M.empty
 	step wb@(WBuild wfsm wproto whash) c
 		-- Letter.
 		| isAlpha c = case wfsm of
 			-- This is when we first encounter a letter.
-			WordOutReally -> WBuild WordIn (T.singleton c') whash
+			WordOut -> WBuild WordIn (T.singleton c') whash
 			_ -> WBuild WordIn (T.snoc wproto c') whash
 		-- Apostrophe. We ignore all leading apostrophes and only store
-		-- apostrophes at the end of a word, such as "goin'". We ignore words
-		-- where there are multiple apostrophes, such as "who'd've" (meaning
-		-- "who would have").
+		-- apostrophes at the end of a word, such as "goin'".
 		| c == '\'' = case wfsm of
 			-- This is when we encounter an apostrophe either at the middle or
 			-- end of a word.
 			WordIn -> WBuild WordOutMaybe (T.snoc wproto c') whash
 			-- E.g., "goin''" (a contracted "goin''" ending with a nested inner
 			-- quote). We store it as "goin'".
-			WordOutMaybe -> WBuild WordOutReally T.empty
+			WordOutMaybe -> WBuild WordOut T.empty
 				$ M.insertWith (+) wproto 1 whash
 			-- Already out of a word area, such as a space character. We do
 			-- nothing.
-			WordOutReally -> wb
+			WordOut -> wb
 		-- If we're looking at neither a letter nor an apostrophe.
 		| otherwise = case wfsm of
 			-- A series of nonsense chars; ignore.
-			WordOutReally -> wb
+			WordOut -> wb
 			-- End of a word.
-			_ -> WBuild WordOutReally T.empty
+			_ -> WBuild WordOut T.empty
 				$ M.insertWith (+) wproto 1 whash
 		where
 		c' = toLower c

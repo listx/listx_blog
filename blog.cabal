@@ -59,7 +59,7 @@ executable test_hash_ver
 -- Source code examples
 executable analyze
   main-is: analyze.hs
-  ghc-options: -Wall -O2
+  ghc-options: -Wall -Werror -O2
   other-modules: TextFreq
   build-depends:
       base >=4.7
