@@ -709,4 +709,4 @@ By writing these programs, I learned that the *input* of a program (Unicode? ASC
 
 Happy hacking!
 
-[^ergo-arrival]: After I receive it and assemble it, I will post a review about it.
+[^ergo-arrival]: After I receive, assemble, and acclimate myself to it, I will post a review.
