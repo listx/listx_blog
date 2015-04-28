@@ -206,10 +206,10 @@ transformer (Pandoc m bs0) = do
 -- easier to write in actual blog posts.
 cbExpandRawInput :: Block -> Compiler [Block]
 cbExpandRawInput block = case block of
-	(BulletList xs) -> return . concat =<< mapM (mapM bList) xs
+	(BulletList xs) -> return . maybeBullets =<< mapM (mapM bList) xs
 	_ -> return [block]
 	where
-	bList :: Block -> Compiler Block
+	bList :: Block -> Compiler (Bool, Block)
 	bList (Plain [(Str "i"), Space, (Str fp)]) = do
 		let
 			codeLang = case takeExtensions fp of
@@ -225,27 +225,34 @@ cbExpandRawInput block = case block of
 			attr = ("", ["numberLines"] ++ codeLang, [("input", "code/" ++ fp)])
 		raw <- unsafeCompiler . readFile $ "code/" ++ fp
 		return
-			( Div ("", ["code-and-raw"], [])
-				[ CodeBlock attr raw
-				, Div ("", ["raw-link"], [])
-					[ Plain
-						[ RawInline
-							"html" $
-							unwords
-								[ "<a"
-								, " class=\"raw\""
-								, " href="
-								, dquote httpTarget
-								, " mimetype=text/plain"
-								, ">"
-								, fn
-								, "</a>"
-								]
+			( True
+			,
+				( Div ("", ["code-and-raw"], [])
+					[ CodeBlock attr raw
+					, Div ("", ["raw-link"], [])
+						[ Plain
+							[ RawInline
+								"html" $
+								unwords
+									[ "<a"
+									, " class=\"raw\""
+									, " href="
+									, dquote httpTarget
+									, " mimetype=text/plain"
+									, ">"
+									, fn
+									, "</a>"
+									]
+							]
 						]
 					]
-				]
+				)
 			)
-	bList x = return x
+	bList x = return (False, x)
+	maybeBullets [] = [BulletList []]
+	maybeBullets xss = case head xss of
+		((True, _):_) -> concatMap (map snd) xss
+		_ -> [BulletList $ map (map snd) xss]
 
 atomFeedConf :: FeedConfiguration
 atomFeedConf = FeedConfiguration
