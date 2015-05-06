@@ -1,0 +1,39 @@
+# Convert MP into a possible AP.
+def unmutate(MP)
+	if length(MP) < 4
+		return NULL (we need at least 4 values to calculate an AP)
+	elsif every term in MP are the same
+		return MP (no change)
+	elsif MP is already an arithmetic sequence (MP = AP)
+		return MP (no change)
+	else
+		1) Assume every 0th, 2nd, 4th, etc. term is "honest" and that the rest are
+		"fake"; construct a tentative AP (call it BP) with the honest terms by
+		taking the difference between these honest terms to find the rate of change
+		*m*, and see if mutate(BP) = MP --- if so, then return BP.
+
+		2) Otherwise, every 1st, 3rd, 5th, etc. term is "honest" --- so
+		reconstruct BP, and check if mutate(AP) = MP (i.e., check that the
+		dishonest terms from mutate(BP) are the same as those in the given MP).
+		If the check fails, then we know that the input was not a true MP ---
+		the original AP was not an arithmetic progression to begin with!
+	end
+end
+
+# Convert AP into MP
+def mutate(AP)
+	MP = []
+	for every term 'a' in AP:
+		MP.insert(make_odd(a))
+	end
+end
+
+# Divide an integer n by 2 until it becomes odd. The edge case is when n is 0,
+# because dividing by 2 repeatedly does not change its parity.
+def make_odd(n)
+	if n is odd or n is 0
+		return n
+	else
+		return (make_odd(n/2))
+	end
+end

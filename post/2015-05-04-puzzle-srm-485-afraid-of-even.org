@@ -1,0 +1,343 @@
+---
+title: SRM 485: AfraidOfEven
+tags: programming, math, haskell, ruby
+mathjax: on
+---
+
+#+STARTUP: indent showall
+
+* Introduction
+
+The heart of this problem comes from TopCoder's [[http://community.topcoder.com/stat?c%3Dproblem_statement&pm%3D11146&rd%3D14238][SRM 485 "AfraidOfEven"]].
+The version given below is a bit harder to solve because there are negative numbers allowed in the input.
+There is quite a lot of discussion behind the somewhat elementary math principles, so you might want to skip down to the code directly after reading the problem statement.
+
+* The Problem
+
+An [[http://en.wikipedia.org/wiki/Arithmetic_progression][arithmetic progression]] $AP$ has been changed by the mutation function $M()$ in the following way: any even number $w$ in the sequence has been replaced by $\frac{w}{2}$, repeatedly, until it has become odd.
+For example, if $AP = \{2, 4, 6, 8\}$, then $M(AP) = \{1, 1, 3, 1\}$ (because $\frac{6}{2} = 3$ and $3$ is an odd number, it stopped mutating).
+Given a mutated sequence $M(AP) = MP$, design an "unmutate" function $U()$ such that $U(MP) \approx AP$.
+If more than one possible sequence $AP$ exists, find the one with the lowest lexicographical order.
+
+** Constraints
+
+$MP$ is limited to 4 to 50 terms.
+Each term in $MP$ is from $1$ to $1000$, inclusive (for now; later on we will consider numbers less than $1$).
+The difference (let's call it $m$) between each term can be $0$, so the following is still a valid arithmetic progression: $\{-17, -17, -17, -17, -17\}$.
+
+*** Lexicographic Order
+
+Given the input
+
+\[
+MP = \{1, 1, 3, 1, 5\}
+\]
+
+, we get the output
+
+\[
+U(AP) = \{1, 2, 3, 4, 5\}
+\]
+
+. It is possible that $AP$ was actually $\{2, 4, 6, 8, 10\}$ (or even $\{4, 8, 12, 16, 20\}$), but because $\{1, 2, 3, 4, 5\}$ has the smaller lexicographic representation, it is the correct answer.
+
+* Interlude
+
+I will include both Haskell and Ruby solutions in this post below.
+If you'd like to solve the problem on your own, please read the rest of this post at a later time.
+
+* The Math
+
+Let us consider the universe of possible arithmetic progressions, and then derive a general algorithm.
+Because the mutation involves even numbers, it makes sense to look at arithmetic progressions in terms of even and odd numbers (aka /parity/).
+
+The two most important parts of an arithmetic progression are the rate of change, $m$, and the first term $A_0$.
+This is because any arithmetic progression can be recreated by knowing only these two values.
+
+Now, $m$ can be either even ($E$), odd ($O$), or zero.
+The first term $A_0$ can be either even or odd.
+Let's plug these possible variations into a table, and see if there are any patterns we can exploit.
+To determine $AP$ based on $m$ and $A_0$, we only need to know three laws of parity:
+
+1) $\mathrm{O + O = E}$
+2) $\mathrm{E + E = E}$
+3) $\mathrm{O + E = O}$
+
+.
+Using these laws, we can construct the entire sequence $AP$ by adding $m$ into $A_0$ repeatedly.
+
+The only time that adding two numbers together results in an odd number is when one term is odd and the other term is even.
+This rule is true regardless of whether we are adding or subtracting (adding a negative term), or whether either term is positive or negative.
+Another interesting point is that adding by an even number does not change the parity of the original term, while adding by an odd number always flips the parity of the original.
+We now know how to construct $AP$ from $m$ and $A_0$, so let's examine the possible outcomes below:
+
+| <c> | <c>          | <c>          | <c>                                 |
+|     | $m$          | $A_0$        | $AP$                                |
+|-----+--------------+--------------+-------------------------------------|
+| 1   | $0$          | $\mathrm{O}$ | $\{\mathrm{O, O, O, O, \cdots{}}\}$ |
+| 2   | $0$          | $\mathrm{E}$ | $\{\mathrm{E, E, E, E, \cdots{}}\}$ |
+| 3   | $\mathrm{E}$ | $\mathrm{O}$ | $\{\mathrm{O, O, O, O, \cdots{}}\}$ |
+| 4   | $\mathrm{E}$ | $\mathrm{E}$ | $\{\mathrm{E, E, E, E, \cdots{}}\}$ |
+| 5   | $\mathrm{O}$ | $\mathrm{O}$ | $\{\mathrm{O, E, O, E, \cdots{}}\}$ |
+| 6   | $\mathrm{O}$ | $\mathrm{E}$ | $\{\mathrm{E, O, E, O, \cdots{}}\}$ |
+
+.
+Let's now look at each of the 6 possible cases, and see if we can simplify things more.
+We will look at each case from the perspective of $m$.
+
+** Mutation When $m$ is Zero
+
+If $m$ is zero, then \[AP = {A_0, A_0, A_0\cdots{}A_0}\].
+That is, subsequent terms after $A_0$ do not change, so it is a constant sequence of the first term, $A_0$.
+
+If $m$ is zero and $A_0$ is *odd*, then all terms remain the same after the mutation; so, $M(AP) = AP$ (no change).
+E.g.,
+
+| <c>                                         |
+| $AP = \{\mathrm{3, 3, 3, 3, \cdots{}, 3}\}$ |
+| becomes                                     |
+| $MP = \{\mathrm{3, 3, 3, 3, \cdots{}, 3}\}$ |
+
+.
+If $m$ is zero and $A_0$ is *even*, then all terms are likewise even, and all terms will become odd by application of $M()$.
+What's more, every term in $M_0$ will be the same odd number, essentially becoming "reduced" to the case where $A_0$ was originally odd.
+E.g.,
+
+| <c>                                              |
+| $AP = \{\mathrm{10, 10, 10, 10, \cdots{}, 10}\}$ |
+| becomes                                          |
+| $MP = \{\mathrm{5, 5, 5, 5, \cdots{}, 5}\}$      |
+
+.
+
+** Mutation When $m$ is Even
+
+If $m$ is even, then all terms in $AP$ are either even or odd, based on the first term $A_0$.
+Essentially, $AP$ behaves in an identical manner to the case where $m = 0$ as far as parity is concerned --- the only difference here is that the subsequent terms change in value by $m$.
+
+However, there is a slight twist when we apply mutation.
+If $A_0 = \mathrm{O}$, then there are no numbers to mutate, and we get $MP$ where all terms are odd and they change by $m$.
+But if $A_0 = \mathrm{E}$, then we get /changing/ even numbers for $MP$.
+So unlike in the case of $m = 0$ where all even numbers reduced down to the same odd number after applying the mutation, we get /different/ odd numbers.
+E.g.,
+
+| <c>                                    |
+| $AP = \{\mathrm{40, 48, 56, 64, 72}\}$ |
+| becomes                                |
+| $MP = \{\mathrm{5, 3, 7, 1, 9}\}$      |
+
+.
+Notice how even though $AP$ has a sequence of /increasing/ terms, $MP$'s terms are not increasing in the same manner.
+We will revisit this case below when simplifying the categories of behavior for $MP$.
+
+** Mutation When $m$ is Odd
+
+This is where things get interesting.
+If $m$ is odd, then $AP$ becomes a /series of alternating even and odd numbers/.
+Whether $AP$ begins with an even or odd number depends, naturally, on the parity of $A_0$.
+The more general observation we can make is that, given the fact that we have alternating even and odd numbers in $AP$, $MP$ will be populated with "originally odd" and "fake odd" (mutated) terms.
+Let's call these mutated terms $O_F$.
+So if $m$ is odd, then we get either
+
+| <c>                                                              |
+| $AP = \{\mathrm{O, E, O, E}\}, MP = \{\mathrm{O, O_F, O, O_F}\}$ |
+| or                                                               |
+| $AP = \{\mathrm{E, O, E, O}\}, MP = \{\mathrm{O_F, O, O_F, O}\}$ |
+
+.
+
+* A Summary of the Behavior of the Mutation Function $M()$
+
+We've exhausted the universe of all possible arithmetic sequences, and how they would mutate after applying $M()$.
+We know exactly how $M()$ behaves in all edge cases!
+Let us now simplify the various cases to two general cases.
+
+** There is nothing to "unmutate" as $MP$ is already the same as the answer $AP$
+
+This can happen in two ways.
+The easiest way is if $m = 0$, where all terms in $MP$ are the same and there is nothing to calculate ($M()$ will ensure that this case always results in the same repeating odd number).
+The other way is if $m$ is even, and $A_0$ is odd --- resulting in an "unmutatable" sequence such that $M(AP) = AP$.
+E.g. (where $m = 10$ and $A_0 = 11$),
+
+| <c>                                    |
+| $AP = \{\mathrm{11, 21, 31, 41, 51}\}$ |
+| becomes                                |
+| $MP = \{\mathrm{11, 21, 31, 41, 51}\}$ |
+
+.
+
+** The terms in $AP$ alternate between even and odd
+
+This covers the case when $m$ is odd.
+If $m$ is odd, then regardless of the parity of $A_0$, we get an alternating sequence of even and odd numbers.
+The import thing to keep in mind here is that the even numbers will mutate after $\mathrm{M()}$ is applied, while the odd numbers will stay as-is as "originals".
+
+* How to Design $U()$
+
+Let's think back to what our mutation function $M()$ does: it simply mutates an even number to an odd number by repeatedly dividing it by 2.
+If the number if odd to begin with, then there is nothing to mutate; essentially, /original/ odd numbers act as immutable beacons of truth --- they do not have to change form when returning to their $AP$ form!
+Our task in designing an "unmutate" function $U()$ is to preserve the "honest" odd numbers while converting the mutated, "fake" odd numbers back to their evenness, to get back the original progression $AP$ (or at least something close to it if there are multiple such \(AP\)s out there.
+
+You can now see where our extensive parity breakdown of the possible $MP$ can come in handy --- we know in what patterns the honest odd numbers show themselves in /any/ $MP$.
+Let's rewrite the table of all possibilities, with this analogy of "honest" and "fake" ($O_F$) odd numbers after the mutation.
+
+| <c> | <c>          | <c>          | <c>                                 | <c>                                     |
+|     | $m$          | $A_0$        | $AP$                                | $MP$                                    |
+|-----+--------------+--------------+-------------------------------------+-----------------------------------------|
+| 1   | $0$          | $\mathrm{O}$ | $\{\mathrm{O, O, O, O, \cdots{}}\}$ | $\{\mathrm{O, O, O, O, \cdots{}}\}$     |
+| 2   | $0$          | $\mathrm{E}$ | $\{\mathrm{E, E, E, E, \cdots{}}\}$ | $\{\mathrm{O, O, O, O, \cdots{}}\}$     |
+| 3   | $\mathrm{E}$ | $\mathrm{O}$ | $\{\mathrm{O, O, O, O, \cdots{}}\}$ | $\{\mathrm{O, O, O, O, \cdots{}}\}$     |
+| 4   | $\mathrm{E}$ | $\mathrm{E}$ | $\{\mathrm{E, E, E, E, \cdots{}}\}$ | $?$                                     |
+| 5   | $\mathrm{O}$ | $\mathrm{O}$ | $\{\mathrm{O, E, O, E, \cdots{}}\}$ | $\{\mathrm{O, O_F, O, O_F, \cdots{}}\}$ |
+| 6   | $\mathrm{O}$ | $\mathrm{E}$ | $\{\mathrm{E, O, E, O, \cdots{}}\}$ | $\{\mathrm{O_F, O, O_F, O, \cdots{}}\}$ |
+
+As you can see, the two dominating patterns are either the all-odd (and honest!) numbers (first 3 rows) or the alternating honest or fake odd numbers.
+But what about the case where $m$ is a nonzero even value and $A_0$ is even as well (row 4)?
+In the universe of all possible even numbers of $m$ and $A_0$, how can we know for a fact that the mutation to $MP$ will fall into a neat pattern?
+
+* When both $m$ and $A_0$ are even
+
+The short answer is, we can prove that all such sequences will mutate to the familiar $\{\mathrm{O, O, O, O, \cdots{}}\}$, $\{\mathrm{O, O_F, O, O_F, \cdots{}}\}$, or $\{\mathrm{O_F, O, O_F, O, \cdots{}}\}$ pattern shown in the table above.
+The long answer is that it helps to think of linear equations, and to see the possible ways in which we can /grow/ the $AP$ progression from $m$ and $A_0$.
+
+If you paid attention in high school algebra class, you will probably remember the formula $y = mx + b$ to describe a straight line (except the vertical line!) in the cartesian coordinate system (in the $x$ and $y$ axes).
+We can use the *same* equation to describe the growth behavior of an arithmetic sequence!
+And for that, we use the following translation:
+
+| <c>              |
+| $y = mx + b$     |
+| becomes          |
+| $A_n = mn + A_0$ |
+
+, where $A_n$ is the n-th term to be calculated in $AP$.
+Luckily, we've used the same letter $m$ in both contexts --- it describes the rate of change in one, and the distance between each term in the other.
+Let's simplify the equation with a concern to parity only.
+
+First, let's rewrite the equation as follows:
+
+| <c>                                            |
+| $A_n = \mathrm{E\cdot{}}n + \mathrm{E}$        |
+| or                                             |
+| $A_n = \mathrm{E_m}\cdot{}n + \mathrm{E_{A0}}$ |
+
+.
+The $\mathrm{E}$ here represents that this number is an even number, with the subscript denoting whether it is $m$ ($\mathrm{E_m}$) or the first term in the sequence ($\mathrm{E_{A0}}$).
+If we use this equation to map out the first 4 elements of $AP$, we get the following:
+
+| <c>                                   |
+| $A_0 = \mathrm{E_m\cdot{}0 + E_{A0}}$ |
+| $A_1 = \mathrm{E_m\cdot{}1 + E_{A0}}$ |
+| $A_2 = \mathrm{E_m\cdot{}2 + E_{A0}}$ |
+| $A_3 = \mathrm{E_m\cdot{}3 + E_{A0}}$ |
+
+.
+It should be noted that both $\mathrm{E_m}$ and $\mathrm{E_{A0}}$ remain the *same* throughout the entire sequence $AP$.
+The only thing that changes is $n$, which always increments by $1$, starting from $0$.
+
+And now we're faced with a problem.
+Ideally, we'd like to get rid of all those even terms in our formula --- they don't help us out at all!
+This is where we use the concept of /scaling/.
+There are two scaling rules: (1) if you multiply all terms of an arithmetic progression by some nonzero integer $k$, /the new progression remains arithmetic/; (2) the same is true if you divide all terms by $k$.
+
+The first scaling rule works because
+
+| <c>                                                                        |
+| $A_n = \mathrm{E_m\cdot{}}n + \mathrm{E_{A0}}$                             |
+| becomes                                                                    |
+| $A_n\cdot{}k = (\mathrm{E_m\cdot{}}n + \mathrm{E_{A0}})\cdot{}k$           |
+| becomes                                                                    |
+| $A_n\cdot{}k = (\mathrm{E_m}\cdot{}{k})\cdot{}n + \mathrm{E_{A0}}\cdot{}k$ |
+
+, where the terms $\mathrm{E_{A0}}\cdot{}k$ and $\mathrm{E_m}\cdot{}k$ both remain as constants --- we are still dealing with a [[http://en.wikipedia.org/wiki/Degree_of_a_polynomial][degree 1 polynomial]] (linear expression).
+Apart from increasing the first term $\mathrm{A_0}$ by $k$, all we did was increase the gap between each term by a factor of $k$.
+Likewise, if you /divide/ all terms of an arithmetic progression by some nonzero integer $k$, the new progression still remains arithmetic, because what you are doing is
+
+| <c>                                                                          |
+| $A_n = \mathrm{E_m\cdot{}}n + \mathrm{E_{A0}}$                               |
+| becomes                                                                      |
+| $\frac{A_n}{k} = \frac{\mathrm{E_m\cdot{}}n + \mathrm{E_{A0}}}{k}$           |
+| becomes                                                                      |
+| $\frac{A_n}{k} = \frac{\mathrm{E_m}}{k}\cdot{}n + \frac{\mathrm{E_{A0}}}{k}$ |
+
+.
+Division is simply multiplication by the inverse, so the same reasoning as for the first scaling rule applies here as well.
+By the way, we don't have to worry about what $A_n\cdot{}k$ or $\frac{A_n}{k}$ would look like --- we are merely concerned with how /parity/ behaves, and for that we rely on the right hand side of the equation.
+
+Going back to our problem, recall that we want to ultimately output some arithmetic progression that /could/ have resulted in the given mutated list $MP$.
+This is what scaling gives us --- it gives us the leeway that we need to stay within our original problem domain while changing around the parity of $A_n$ with $k$.
+
+Let us scale the entire progression by $k = \frac{1}{2}$.
+That is, let us repeatedly divide $\mathrm{E_m}$ and $\mathrm{E_{A0}}$ by 2, until one or both of them become odd.
+When either one becomes odd, we stop scaling and reuse the parity laws we discussed above to draw deeper conclusions.
+Which variable, $\mathrm{E_m}$ or $\mathrm{E_{A0}}$, has more 2's in it (as prime factors)?
+Which term is more /even/ than the other?
+
+There are three possible scenarios when we scale (let's call it $\mathrm{S()}$) by $\frac{1}{2}$ *repeatedly* as described above: (1) $\mathrm{E_{A0}}$ becomes odd first, (2) $\mathrm{E_m}$ becomes odd first, or (3) both become equally odd.
+If we write these three scenarios into a table, we get the following:
+
+| <c> | <c>                                                                           | <c>                                 | <c>                                     |
+|     | Scaled by $\frac{1}{2}$ repeatedly                                            | Parity of Scaled $AP$               | Parity of Scaled $MP$                   |
+|-----+-------------------------------------------------------------------------------+-------------------------------------+-----------------------------------------|
+| 1   | $\mathrm{S(E_m\cdot{}}n + \mathrm{E_{A0}}) = \mathrm{E\cdot{}}n + \mathrm{O}$ | $\{\mathrm{O, O, O, O, \cdots{}}\}$ | $\{\mathrm{O, O, O, O, \cdots{}}\}$     |
+| 2   | $\mathrm{S(E_m\cdot{}}n + \mathrm{E_{A0}}) = \mathrm{O\cdot{}}n + \mathrm{E}$ | $\{\mathrm{E, O, E, O, \cdots{}}\}$ | $\{\mathrm{O_F, O, O_F, O, \cdots{}}\}$ |
+| 3   | $\mathrm{S(E_m\cdot{}}n + \mathrm{E_{A0}}) = \mathrm{O\cdot{}}n + \mathrm{O}$ | $\{\mathrm{O, E, O, E, \cdots{}}\}$ | $\{\mathrm{O, O_F, O, O_F, \cdots{}}\}$ |
+
+.
+The parity of each scaled $AP$ is calculated by simply replacing $n$ with 0, 1, 2, etc. and relying on our three parity laws from the beginning of this post.
+If you want to lessen your load of mental arithmetic, we can simplify the parity expressions further.
+If we reword the additive parity laws with multiplication in mind (which is simply addition repeated many times over), we can derive two more parity laws:
+
+1) $\mathrm{E\cdot{}}n = \mathrm{E}$, regardless of $n$, and
+2) $\mathrm{O\cdot{}}n = \mathrm{P}_n$ --- i.e., the parity of $\mathrm{O\cdot{}}n$ is the same as the parity of $n$ itself
+
+.
+Going back to our table above, we can simplify the scaled expressions further:
+
+1) $\mathrm{E + O} = \mathrm{O}$, because adding by an even number preserves the parity of $\mathrm{O}$.
+2) $\mathrm{P}_n + \mathrm{E} = \mathrm{P}_n$, because adding by an even number preserves the parity of $\mathrm{P}_n$.
+3) $\mathrm{P}_n + \mathrm{O} = \neg{}\mathrm{P}_n$, because adding by an odd number flips the parity of $\mathrm{P}_n$
+
+.
+
+And now we can finally say that when both $m$ and $A_0$ are even, the parity of terms in in $AP$ can be either all odd or alternating between even and odd!
+I.e., if both $m = \mathrm{E}$ and $A_0 = \mathrm{E}$, then $M(AP) = \{\mathrm{O, O, O, O, \cdots{}}\}$, $\{\mathrm{O, O_F, O, O_F, \cdots{}}\}$, or \(\{\mathrm{O_F, O, O_F, O, \cdots{}}\}\)!
+
+* Back to Designing $U()$
+
+Through our discussion up to this point, we've established that the universe of all possible $MP$'s fall under three parity patterns: all honest odd ($\mathrm{O}$) terms, or alternating between "honest" odd ($\mathrm{O}$) and "fake" odd ($\mathrm{O_F}$) terms.
+There are actually four patterns because the all-honest-odd-terms pattern can be broken down into two cases: (1) all terms are the same odd number ($m = 0$), or (2) the terms are the same as those in $AP$ (i.e., $AP$ was all odd terms to begin with, so there was no actual mutation involved by applying $M()$).
+
+So, we can finally start sketching out the design for our "unmutate" function $U()$.
+
+- i toy/srm485-afraid-of-even/pseudocode.txt
+
+The interesting point is in line 18; thanks to our math work, we can even declare that a given mutated sequence was somehow either tampered with, or that the original sequence was not an arithmetic progression!
+We can make these assertions because we've exhausted all possible cases of arithmetic sequences and their mutations --- and if things don't fit the way we expect them to, then the only conclusion is that the given sequence $MP$ was not a byproduct of mutating an /arithmetic sequence/, but some other kind of sequence.
+Behold the power of math!
+
+The other thing is that in line 34 we allow $0$ as a possible value in $AP$.
+This means that after a mutation, we might still have an even number ($0$) in \(MP\)!
+Although this sounds like it would break all of the mathematic discussion we've had so far, it does not --- the proof is in the Haskell code below.
+The short answer is that a $0$ is harmless because it shares the same quality --- immutability --- with all other originally odd terms in $AP$; thus, treating it as an "odd" number does not change our logic.
+
+* Haskell version
+
+- i toy/srm485-afraid-of-even/Unmutate.hs
+- i toy/srm485-afraid-of-even/test-unmutate.hs
+
+As you can see, most of the real work involves identifying the *original, immutable numbers* we can work with as-is ($\mathrm{O}$) (as opposed to the ones we have to ignore ($\mathrm{O_F}$)) to construct our tentative sister arithmetic progression $BP$.
+
+* Ruby version
+
+- i toy/srm485-afraid-of-even/unmutate.rb
+- i toy/srm485-afraid-of-even/test-unmutate.rb
+
+This Ruby version is essentially a port of the Haskell version.
+The problem at hand is so mathematical that it makes sense to simply preserve the clean Haskell definitions.
+
+* Conclusion
+
+I hope you enjoyed this somewhat prolonged mathematical adventure.
+The most interesting part for me was seeing the problem as a linear equation, and using the formula (which I learned in high school) to derive powerful conclusions.
+High school algebra is useful after all!
+Until next time, happy hacking!
