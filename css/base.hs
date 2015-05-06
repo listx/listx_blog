@@ -271,7 +271,7 @@ myStylesheet = do
 	where
 	div' = Clay.div
 	cPageWidth :: Integer
-	cPageWidth = 750
+	cPageWidth = 900
 	bgHex :: Int
 	bgHex = 0xc8c8d2
 	shadowHex :: Int
