@@ -86,6 +86,8 @@ myStylesheet = do
 					div' ? do
 						".info" & do
 							paddingBottom (em 1)
+						-- This is when we use our custom 'import source code'
+						-- syntax with '- i <filename>'.
 						".code-and-raw" & do
 							marginBottom (em 1)
 							borderTop solid (px 1) (grayish 204)
