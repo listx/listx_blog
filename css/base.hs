@@ -83,6 +83,10 @@ myStylesheet = do
 							textDecoration none
 						code ? do
 							vh margin (px 0) (px 4)
+					-- For raw tables (e.g., org-mode's tables.)
+					table ? do
+						-- horizontally center it
+						vh margin (px 0) auto
 					div' ? do
 						".info" & do
 							paddingBottom (em 1)
