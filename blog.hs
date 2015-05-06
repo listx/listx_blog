@@ -65,7 +65,7 @@ main = hakyll $ do
 		, "file/**"
 		]
 
-	match "post/*.md" $ do
+	match (fromRegex "post/[^/]+\\.(md|org)$") $ do
 		route $ setExtension "html"
 		compile $ pandocCompilerWithTransformM
 			defaultHakyllReaderOptions
