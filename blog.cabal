@@ -15,7 +15,7 @@ cabal-version: >=1.10
 
 executable blog
   main-is: blog.hs
-  ghc-options: -Wall -Werror
+  ghc-options: -Wall -Werror -fno-warn-tabs
   -- other-modules:
   other-extensions: OverloadedStrings
   build-depends:
@@ -32,7 +32,7 @@ executable blog
 
 executable base
   main-is: css/base.hs
-  ghc-options: -Wall -Werror
+  ghc-options: -Wall -Werror -fno-warn-tabs
   -- other-modules:
   other-extensions: OverloadedStrings
   build-depends:
@@ -45,7 +45,7 @@ executable base
 -- Source code examples
 executable test_hash_ver
   main-is: test_hash_ver.hs
-  ghc-options: -Wall -Werror
+  ghc-options: -Wall -Werror -fno-warn-tabs
   other-modules: GameButtonSeq
   build-depends:
       base >=4.7
@@ -59,7 +59,7 @@ executable test_hash_ver
 -- Source code examples
 executable analyze
   main-is: analyze.hs
-  ghc-options: -Wall -Werror -O2
+  ghc-options: -Wall -Werror -O2 -fno-warn-tabs
   other-modules: TextFreq
   build-depends:
       base >=4.7

@@ -2,7 +2,6 @@
 {-# LANGUAGE RecordWildCards #-}
 
 import qualified Data.Map.Lazy as M
-import Data.Monoid (mconcat)
 import System.FilePath.Posix
 import Text.Pandoc (WriterOptions (..), HTMLMathMethod (MathJax))
 import Text.Pandoc.Definition
