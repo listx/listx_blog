@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+import Control.Monad
 import Data.Bits
 import qualified Data.Text.Lazy.IO as T
 import Clay
@@ -108,6 +109,7 @@ myStylesheet = do
 									display block
 									overflow auto
 									backgroundColor codeBg
+								sourceCodeMarkdownNumberlines False
 						".raw-link" & do
 							backgroundColor $ rgbHex (codeBgHex - 0x080808)
 							fontSizeCustom Clay.Font.small
@@ -236,32 +238,7 @@ myStylesheet = do
 									fontSizeCustom Clay.Font.medium
 									fontWeight bold
 									textDecoration underline
-						".sourceCode" & do
-							paragraphIndent
-							paddingTop (em 0.5)
-							paddingBottom (em 0.5)
-							display block
-							overflow auto
-							backgroundColor codeBg
-							borderTop solid (px 1) (grayish 204)
-							borderBottom solid (px 1) (grayish 204)
-							boxShadow (px 0) (px 0) (px 3) (rgbHex shadowHex)
-							tr ? do
-								td ? do
-									".lineNumbers" & do
-										pre ? do
-											noMargin
-											textAlign $ alignSide sideRight
-											color (rgbHex $ bgHex - 0x151515)
-									".sourceCode" & do
-										paddingLeft $ px 0
-										pre ? do
-											ev margin $ px 0
-											code ? do
-												ev margin $ px 0
-												padding 0 0 0 (em 1)
-												"border-style" -: "none"
-												boxShadow (px 0) (px 0) (px 0) (rgbHex shadowHex)
+						sourceCodeMarkdownNumberlines True
 				"#footer" & do
 					-- Margins of adjacent elements are *overlap*, unlike
 					-- padding. We use a 1em top-side margin here, because,
@@ -299,7 +276,33 @@ myStylesheet = do
 	paragraphListIndent = do
 		"padding-left" -: "18%"
 		paragraphIndentRight
-
+	sourceCodeMarkdownNumberlines addBorder = ".sourceCode" & do
+		paragraphIndent
+		paddingTop (em 0.5)
+		paddingBottom (em 0.5)
+		display block
+		overflow auto
+		backgroundColor codeBg
+		when addBorder $ do
+			borderTop solid (px 1) (grayish 204)
+			borderBottom solid (px 1) (grayish 204)
+			boxShadow (px 0) (px 0) (px 3) (rgbHex shadowHex)
+		tr ? do
+			td ? do
+				".lineNumbers" & do
+					pre ? do
+						noMargin
+						textAlign $ alignSide sideRight
+						color (rgbHex $ bgHex - 0x151515)
+				".sourceCode" & do
+					paddingLeft $ px 0
+					pre ? do
+						ev margin $ px 0
+						code ? do
+							ev margin $ px 0
+							padding 0 0 0 (em 1)
+							"border-style" -: "none"
+							boxShadow (px 0) (px 0) (px 0) (rgbHex shadowHex)
 -- | A horizontal/vertical size helper. It accepts a function and two sizes for
 -- the horizontal and vertical parts. E.g., instead of calling
 -- 		padding (px 6) (px 10) (px 6) (px 10)
