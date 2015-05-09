@@ -1,4 +1,4 @@
-# Usage: ruby unmutate.rb
+# Usage: ruby test-unmutate.rb
 
 require 'minitest/autorun'
 require_relative './unmutate.rb'
