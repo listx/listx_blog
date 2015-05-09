@@ -9,7 +9,6 @@ mathjax: on
 * Introduction
 
 The heart of this problem comes from TopCoder's [[http://community.topcoder.com/stat?c%3Dproblem_statement&pm%3D11146&rd%3D14238][SRM 485 "AfraidOfEven"]].
-The version given below is a bit harder to solve because there are negative numbers allowed in the input.
 There is quite a lot of discussion behind the somewhat elementary math principles, so you might want to skip down to the code directly after reading the problem statement.
 
 * The Problem
