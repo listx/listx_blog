@@ -41,7 +41,13 @@ main = hakyll $ do
 		route $ setExtension "css"
 		compile $ getResourceString
 			>>= withItemBody
-				(unixFilter "cabal" ["exec", "runghc"])
+				(unixFilter "cabal"
+				[ "exec"
+				, "--"
+				, "runghc"
+				, "--"
+				, "-fno-warn-tabs"
+				])
 
 	-- Add some default pages
 	match (fromList ["about.md", "art.md", "code.md", "papers.md"]) $ do
