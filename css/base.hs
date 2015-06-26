@@ -2,9 +2,11 @@
 
 import Control.Monad
 import Data.Bits
+import qualified Data.Text.Lazy as T
 import qualified Data.Text.Lazy.IO as T
 import Clay
 import Clay.Font
+import qualified Clay.Text as CT
 
 main :: IO ()
 main = T.putStr $ renderWith compact [] myStylesheet
@@ -68,9 +70,9 @@ myStylesheet = do
 						noMargin
 						headerIndent
 						paragraphIndentRight
-						paddingBottom (em 1)
+						paddingBottom (em 0.5)
 						fontWeight normal
-						textDecoration underline
+						addHeadingSymbol
 						-- For the title of the page, center-align it.
 						".center" & do
 							noMargin
@@ -82,6 +84,8 @@ myStylesheet = do
 							textAlign $ alignSide sideCenter
 							borderBottom solid (pt 3) (rgb 0 0 0)
 							textDecoration none
+							before & do
+								CT.content (none :: Content)
 						code ? do
 							vh margin (px 0) (px 4)
 					-- For raw tables (e.g., org-mode's tables.)
@@ -118,34 +122,37 @@ myStylesheet = do
 						noMargin
 						headerIndent
 						paragraphIndentRight
-						paddingBottom (em 1)
+						paddingBottom (em 0.5)
 						fontWeight normal
-						textDecoration underline
 						code ? do
 							vh margin (px 0) (px 4)
+						addHeadingSymbol
 					h3 ? do
 						noMargin
 						headerIndent
 						paragraphIndentRight
-						paddingBottom (em 1)
+						paddingBottom (em 0.5)
 						fontWeight normal
 						fontStyle italic
 						code ? do
 							vh margin (px 0) (px 4)
+						addHeadingSymbol
 					h4 ? do
 						noMargin
 						headerIndent
 						paragraphIndentRight
-						paddingBottom (em 1)
+						paddingBottom (em 0.5)
 						code ? do
 							vh margin (px 0) (px 4)
+						addHeadingSymbol
 					h5 ? do
 						noMargin
 						headerIndent
 						paragraphIndentRight
-						paddingBottom (em 1)
+						paddingBottom (em 0.5)
 						code ? do
 							vh margin (px 0) (px 4)
+						addHeadingSymbol
 					ol ? do
 						noMargin
 						paragraphListIndent
@@ -263,8 +270,8 @@ myStylesheet = do
 	codeBgHex = 0xfdf6e3
 	codeBg :: Color
 	codeBg = rgbHex codeBgHex
-	headerIndent = "padding-left" -: "6%"
-	headerIndentRight = "padding-right" -: "6%"
+	headerIndent = "padding-left" -: "12%"
+	headerIndentRight = "padding-right" -: "12%"
 	paragraphIndent = do
 		"padding-left" -: "12%"
 		paragraphIndentRight
@@ -303,6 +310,17 @@ myStylesheet = do
 							padding 0 0 0 (em 1)
 							"border-style" -: "none"
 							boxShadow (px 0) (px 0) (px 0) (rgbHex shadowHex)
+	addHeadingSymbol = before & do
+		CT.content $ stringContent symbol
+		position relative
+		bottom (em 0.1)
+		where
+		symbol = T.toStrict
+			. T.pack
+			$ (toEnum 0x25a0) -- box character
+			: (toEnum 0x00a0) -- nonbreaking space character
+			: (toEnum 0x00a0) -- nonbreaking space character
+			: []
 -- | A horizontal/vertical size helper. It accepts a function and two sizes for
 -- the horizontal and vertical parts. E.g., instead of calling
 -- 		padding (px 6) (px 10) (px 6) (px 10)
