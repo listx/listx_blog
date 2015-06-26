@@ -1,0 +1,129 @@
+---
+title: Useful rxvt-unicode (URxvt) Plugins
+tags: programming, linux
+---
+
+#+STARTUP: indent showall
+
+* Introduction
+
+I've been using [[http://software.schmorp.de/pkg/rxvt-unicode.html][rxvt-unicode]] (=urxvt=) for years.
+But, I never really bothered to customize it beyond adding in some simple font changing hotkeys.
+I discovered that =urxvt= can be customized with Perl plugins.
+This post shows some of the plugins I've started using.
+
+For this post, I will use the terms *terminal* and =urxvt= interchangeably.
+The plugins are configured in your =~/.Xdefaults= file, and to have this file take effect, run
+
+#+begin_src
+xrdb -merge ~/.Xdefaults
+#+end_src
+
+.
+The hotkeys are defined with key names from [[http://cgit.freedesktop.org/xorg/proto/x11proto/plain/keysymdef.h][keysymdef.h]] as part of X11.
+
+* keyoard-select
+
+[[https://github.com/muennich/urxvt-perls][Homepage]] (part of =urxvt-perls=)
+
+This is by far the most useful plugin.
+If you ever need surgical precision to select a particular chunk of text in your terminal, you can use this plugin.
+It gives you Vim-like /normal mode/ navigation in your terminal --- and then you can use hotkeys like =v= or =V= to select chunks of text, and use =y= to copy it to your X primary buffer.
+
+I use the snippet below in my =~/.Xdefaults=:
+
+#+begin_src
+! keyboard-select
+URxvt.keysym.M-s: perl:keyboard-select:activate
+URxvt.keysym.M-r: perl:keyboard-select:search
+#+end_src
+
+.
+Now, =M-s= (=Alt-s= for you folks not familiar with Emacs-style shortcut-naming) in the terminal gives you Vim-like normal mode like I mentioned above.
+The other shortcut, =M-r=, gives your reverse search against your terminal's buffer.
+
+Let =M-r= sink in.
+This means that your terminal is basically running a virtual =less= pager.
+Any time you want to go search against some text in your terminal, just use =M-r= and search; use =n= and =N= just like =less=.
+
+Actually, =M-r= is basically doing =M-s= followed by =?=.
+So, if you like searching forwards (not backwards), just do =M-s= and then =/=.
+But considering how terminal buffers are always *above* the cursor, it makes sense to search backwards by default with =M-r=.
+For me this runs against my habit of using =less= and =/=, but there you have it.
+
+* clipboard
+
+[[https://github.com/muennich/urxvt-perls][Homepage]] (part of =urxvt-perls=)
+
+=~/.Xdefaults= snippet:
+
+#+begin_src
+! clipboard
+! update clipboard whenever primary gets updated
+URxvt.clipboard.autocopy: true
+URxvt.keysym.M-c: perl:clipboard:copy
+URxvt.keysym.M-v: perl:clipboard:paste
+URxvt.keysym.M-C-v: perl:clipboard:paste_escaped
+#+end_src
+
+.
+To be honest I think the =autocopy= feature is a bit flaky (at least when using these shortcuts inside a NixOS VirtualBox VM from a Mac) --- but that's not that important.
+
+=M-c= copies the X11 primary buffer (aka X selection) to the clipboard buffer.
+
+What's really nice is the =M-v= shortcut --- it pastes the *clipboard* buffer, not the X11 primary buffer (there is =S-<insert>= (Shift-Insert) for that).
+Now you don't have to type =$(xsel -b)= for the same thing.
+
+=M-C-v= (=Alt-Control-v=) does the same thing, but escapes any special characters.
+This is very handy --- a simple use case might be using =M-s= (search shortcut discussed above) to find a particular file with a long name (think MP3 files) from the output of =ls= --- you can then just use =v= to copy that filename to the X11 buffer, then use =M-c= to copy it to clipboard buffer (if =autocopy= is working this step is unnecessary), then use =M-C-v= to paste it in, escaping things like space characters so that you can use other tools like =cp= or =mv= on them more easily.
+
+* url-select
+
+[[https://github.com/muennich/urxvt-perls][Homepage]] (part of =urxvt-perls=)
+
+=~/.Xdefaults= snippet:
+
+#+begin_src
+! url-select. We can middle-click on any url and this will launch the browser
+! defined by `URxvt.url-select.launcher`.
+URxvt.keysym.M-u: perl:url-select:select_next
+URxvt.url-select.underline: true
+URxvt.url-select.launcher: firefox
+#+end_src
+
+.
+Now you can use =M-u= to jump between any URL that was printed to the terminal buffer.
+Use =j= and =k= to jump to the next/previous URL, and =y= to copy it to your X primary buffer (and =M-c= to make sure it's also in the clipboard) for easy URL handling.
+Or, simply press =ENTER= to open that link in your browser.
+Next time you grab your mouse to carefully highlight a URL in the terminal, think again!
+
+* font-size
+
+[[https://github.com/majutsushi/urxvt-font-size][Homepage]]
+
+This plugin allows you to scale fonts up or down.
+
+=~/.Xdefaults= snippet:
+
+#+begin_src
+! `font-size` plugin
+URxvt.keysym.C-minus: perl:font-size:decrease
+URxvt.keysym.C-equal: perl:font-size:increase
+! The default font increase step size is 1. This is for portability across all
+! fonts (some fonts do not support particular font sizes). Because changing font
+! size only really makes sense for anti-aliased fonts (Terminus is bitmapped),
+! and because anti-aliased fonts support any size, it makes sense to just use a
+! size step of 4 for faster transitions between font size changes.
+URxvt.font-size.step: 4
+#+end_src
+
+.
+This is pretty self-explanatory.
+Use =C-minus= or =C-equal= to change your font size as needed --- perfect for screencasts or demos!
+
+* Conclusion
+
+Now that I use these plugins, there's even less interruption to use the mouse.
+I hope you find them as useful as I have.
+
+Happy hacking!
