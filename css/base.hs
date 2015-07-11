@@ -25,7 +25,6 @@ myStylesheet = do
 	html ? do
 		noMargin
 		ev padding $ px 0
-		fontFamily ["Merriweather"] [serif]
 		let
 			bgHexColor = 0xd1dbbd
 		backgroundColor $ rgbHex bgHexColor
