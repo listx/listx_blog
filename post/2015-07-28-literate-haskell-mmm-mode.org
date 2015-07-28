@@ -1,0 +1,76 @@
+---
+title: Emacs: Setting Up mmm-mode for Literate Haskell
+tags: programming, emacs, haskell
+---
+
+#+STARTUP: indent showall
+
+I use [[https://wiki.haskell.org/Literate_programming][Literate Haskell]] for some of my personal Haskell projects and for a long time I used the auto-loaded ~literate-haskell-mode~ that comes with [[https://github.com/haskell/haskell-mode][haskell-mode]].
+This past weekend, I finally buckled down and made use of [[https://github.com/purcell/mmm-mode][mmm-mode]] to make the literate programming experience better.
+The biggest advantage of using ~mmm-mode~ is that you can define subregions of your file which are handled by a different major mode.
+In other words, you can get proper syntax highlighting for 2, 3, or more different languages in the same file!
+
+* Setup
+
+You'll need to install [[https://github.com/purcell/mmm-mode][mmm-mode]] along with [[https://github.com/haskell/haskell-mode][haskell-mode]].
+I personally use [[http://melpa.org/][MELPA]] for all of my Emacs packages because once you set it up it's really painless.
+
+In your [[http://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html][emacs configuration file]] add these lines:
+
+#+begin_src
+; Remove the hard-coded 'literate-haskell-mode' activation for `.lhs' files that
+; haskell-mode comes with. In exchange, enable LaTeX mode whenever we open up a
+; `.lhs' file. Using mmm-mode, we will activate `haskell-mode' in the code
+; sections.
+(setq auto-mode-alist
+  (remove
+    (rassoc 'literate-haskell-mode auto-mode-alist) auto-mode-alist))
+(add-to-list 'auto-mode-alist '("\\.lhs$" . latex-mode))
+
+; Literate Haskell - mmm-mode. Adopted from
+; https://wiki.haskell.org/Literate_programming#Multi-mode_support_in_Emacs
+(require 'mmm-auto)
+
+(mmm-add-classes
+  '((literate-haskell-latex
+    :submode haskell-mode
+    :front "^\\\\begin{code}\n"
+    :back "^\\\\end{code}"
+  )))
+#+end_src
+
+.
+Now it's a matter of running the following commands whenever you open up a =.lhs= file:
+
+#+begin_src
+(setq mmm-global-mode 't)
+(setq mmm-submode-decoration-level 1)
+(mmm-ify-by-class 'literate-haskell-latex)
+#+end_src
+
+.
+Personally I use [[https://github.com/listx/kakapo-mode][kakapo-mode]] so I have a file called =kakapo-project-settings= that has this snippet in it:
+
+#+begin_src
+(defun my-kakapo-indents ()
+
+  ...
+
+  ; Literate Haskell
+  ((string-match "\\.lhs$" b)
+    (progn
+      (h 'latex-mode-hook t 4)
+      (setq mmm-global-mode 't)
+      (setq mmm-submode-decoration-level 1)
+      (mmm-ify-by-class 'literate-haskell-latex)
+    )
+  )
+
+  ...
+
+)
+#+end_src
+
+.
+Emacs will now automatically pick up =.lhs= files and apply =latex-mode= and =haskell-mode= with =mmm-mode=.
+Happy hacking!
