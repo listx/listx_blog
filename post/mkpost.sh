@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
 date=$(date +%F)
-fname="$date-$@.md"
-< template/default.md >> $fname
+fname="$date-$@.org"
+< template/default.org >> $fname
 emacs $fname & disown

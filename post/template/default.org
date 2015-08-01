@@ -1,0 +1,35 @@
+---
+title: A Nice Blog Post
+tags: programming, haskell
+mathjax: on
+---
+
+#+STARTUP: indent showall
+
+Hello world!
+
+* Sample stuff
+
+** Plaintext
+
+#+begin_src
+Blah blah blah.
+#+end_src
+
+** List items
+
+- *apple*
+- /banana/
+- candy
+
+** Raw code insertion
+
+- i toy/parking-space.rb
+
+** Math
+
+Some inline math: $2+2=4$.
+
+\[
+\mathrm{E} = \mathrm{mc}^2
+\]
