@@ -18,7 +18,7 @@ Arch Linux is based on a rolling release schedule --- packages are updated on a 
 What people often say is that Arch is "bleeding edge".
 While that is true, they don't realize that at the same time, you can choose to do weekly or monthly upgrades (in an incremental fashion) rather than waiting six months or a year for a big fat distribution upgrade.
 
-** System Age
+** System age
 
 The problem though, is that with age the system becomes increasingly confusing because of unused files/directories.
 You install packages, then delete them, but then your system still has traces of them left.
@@ -86,7 +86,7 @@ What's great is that it's all done in a programmatic way using the Nix expressio
 The rest are official packages I chose to install.
 But basically this sure beats doing something like =pacman -Q=, which grabs all installed packages on the entire system.
 
-Fifth, I really like how I can do a *sytem* upgrade without touching my explicitly-installed packages in my user's Nix environment (=nix-env=).
+Fifth, I really like how I can do a *system* upgrade without touching my explicitly-installed packages in my user's Nix environment (=nix-env=).
 I can update my version of =firefox= as much as I like without touching low-level packages like Xorg or the kernel, or vice-versa.
 It gives me the flexibility of a "rolling release" distro without the stability issues.
 
