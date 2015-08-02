@@ -1,0 +1,113 @@
+---
+title: Why I Use NixOS
+tags: linux, arch, nix, nixos
+mathjax: on
+---
+
+#+STARTUP: indent showall
+
+Since March 2015, I've been using NixOS on my main desktop machine at home.
+I was on Arch Linux for 6~7 years before that.
+So, why did I switch?
+
+* Arch Linux
+
+Let's review the reasons I switched to Arch Linux in the first place.
+I switched to Arch Linux from Xubuntu because I did not want to do big distribution upgrades from one major version to the next.
+Arch Linux is based on a rolling release schedule --- packages are updated on a daily basis.
+What people often say is that Arch is "bleeding edge".
+While that is true, they don't realize that at the same time, you can choose to do weekly or monthly upgrades (in an incremental fashion) rather than waiting six months or a year for a big fat distribution upgrade.
+
+** System Age
+
+The problem though, is that with age the system becomes increasingly confusing because of unused files/directories.
+You install packages, then delete them, but then your system still has traces of them left.
+I still have an old laptop with Arch on it dating from an earlier install probably about five years back (or more) --- and the =$HOME= directory on there has a lot of dotfiles and other folders --- some of which I have no clue about.
+It's not very different from the same feeling I got as a teenager looking at Windows XP's =regedit.exe= and wondering what some of the registry keys did, or if they were used at all.
+
+** Power user mindset
+
+Another problem is that Arch expects the user to understand their entire system from the bottom up!
+The culture is very much "RTFM", but not only that, you are expected to sign up to the Arch mailing lists and also read the distro homepage on a regular basis.
+Dare I say it --- the only reason the Arch Wiki is so well-regarded is because of this culture of "you must know everything".
+
+This is fine, but ultimately I believe that it is too much responsibility.
+For example, every once in a while, =pacman= generates copies of existing system files whenever they would get overwritten by newer ones.
+One example is the =/etc/group= file.
+Call me lazy but I never bothered learning about the ins-and-outs of this file and what the syntax means.
+But every Arch Linux user out there has to do a =vimdiff= against the old/new versions of this file and perform the correct changes (basically merge them), usually with the helper CLI tool called =yaourt= with its =-C= flag.
+
+** Package confusion
+
+As you use Arch Linux, you invariably end up installing one package after another.
+Right now, there is no way to introduce some hierarchical system of organizing packages.
+For example, let's say you install the =firefox= package because you want to use, well, Firefox!
+In =pacman='s point of view, there is no difference between =firefox= and =libfoo=.
+I.e., high-visibility, userland packages like =firefox= are treated the same in all respects as =libfoo=.
+You can do clever things like have meta-packages, which are defined in terms of other packages (e.g., LibreOffice), but this kind of organizational structure is hard-coded at the =PKGBUILD= level. [fn:: =PKGBUILD= files are like Makefiles, but for creating Arch Linux packages.]
+
+I'm sure there are =pacman= helper scripts/programs out there to give you a better, organized understanding of all of your installed packages.
+But do you really want to know that you have =libvdpau= installed, or that it needs to get updated?
+As you press =pacman -Syu<ENTER>=, do you really care about the exact names of the 50 low-level system packages that your userland programs (like Firefox) depend on?
+
+* NixOS
+
+So what makes NixOS better?
+
+** Pros
+
+First off, system age has no real bearing on NixOS.
+Because everything is done in a functional way with the Nix package manager, your *entire system* becomes "recreated" each time you decide to upgrade.
+
+Second, you don't have to hand-tune system files like =/etc/group=.
+The NixOS configuration file is where you define system-wide things like users and groups, and after you set it once, it's done for good.
+
+Third, you can either hard-code what packages get installed system-wide in your config file (=/etc/nixos/configuration.nix=), or you can define your own set of packages on top of the ones defined by the official NixOS Nix expression.
+I used to do the former, but now I do the latter; and all I do now to see what packages I have installed explicitly is invoke =nix-env -q=, and I get this:
+
+#+begin_src
+fontforge-20141230
+ghc-7.10.1
+l-set-av
+l-set-base
+l-set-dev
+l-set-games
+l-set-misc
+l-set-office
+l-set-vm
+l-set-web
+pavucontrol-3.0
+source-code-pro-2.010
+#+end_src
+
+.
+Those =l-set-= packages are ones where I have defined a hierarchy --- i.e., I've coded up Arch Linux's version of meta-packages.
+What's great is that it's all done in a programmatic way using the Nix expression language. [fn:: The Nix package manager only deals with *.nix files, which are exclusively written in the Nix expression language.]
+The rest are official packages I chose to install.
+But basically this sure beats doing something like =pacman -Q=, which grabs all installed packages on the entire system.
+
+Fifth, I really like how I can do a *sytem* upgrade without touching my explicitly-installed packages in my user's Nix environment (=nix-env=).
+I can update my version of =firefox= as much as I like without touching low-level packages like Xorg or the kernel, or vice-versa.
+It gives me the flexibility of a "rolling release" distro without the stability issues.
+
+Sixth, the heart of NixOS --- the Nix package manager --- works by looking at a single "master" Nix expression.
+So if you have any custom Nix expressions, they better play well with the other ones officially provided upstream by the NixOS team!
+In Nix, no package is an island; in a sense, it's a lot like how FreeBSD keeps all of their packages in a single code repository to guarantee stability.
+
+** Cons
+
+Granted, there are problems with NixOS.
+The biggest problem is the lack of adoption.
+It still has not hit critical mass, and most of the core contributors are overloaded with far too much work.
+
+The second problem is that there is no way to do things like =make install= after you download the source code to some program =foo=.
+This is because NixOS does not have directories like =/usr/share= --- the whole Linux Filesystem Hierarchy Standard is thrown out the window in favor of symlinks to the "compiled" Nix expressions.
+So, you have to Nxifiy it first, and then install it via its Nix expression (=foo.nix=).
+In this respect it shares the same pain point with [[http://www.gobolinux.org/][GoboLinux]].
+Personally this is not a huge problem for me, but it's still a problem.
+
+* Conclusion
+
+I hope this post gave you some motivation to try out NixOS.
+It has a steep learning curve but after you get most things working, it's really great.
+Happy hacking!
