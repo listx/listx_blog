@@ -22,7 +22,7 @@ While that is true, they don't realize that at the same time, you can choose to 
 
 The problem though, is that with age the system becomes increasingly confusing because of unused files/directories.
 You install packages, then delete them, but then your system still has traces of them left.
-I still have an old laptop with Arch on it dating from an earlier install probably about five years back (or more) --- and the =$HOME= directory on there has a lot of dotfiles and other folders --- some of which I have no clue about.
+I still have an old laptop with Arch on it dating from an earlier install probably about five years back (or more) --- and the =$HOME= directory on there has a lot of dotfiles and other folders --- some of which I have no clue about. [fn:: Granted, =$HOME= directories are supposed to be "dirty" as they are by their nature stateful things. On the other hand, system directories like =/usr/share= and =/usr/bin= should be kept clean by the distribution's package management system, but rarely is it automatic and maintenance-free. Arch Linux is no exception.]
 It's not very different from the same feeling I got as a teenager looking at Windows XP's =regedit.exe= and wondering what some of the registry keys did, or if they were used at all.
 
 ** Power user mindset
@@ -58,6 +58,9 @@ So what makes NixOS better?
 
 First off, system age has no real bearing on NixOS.
 Because everything is done in a functional way with the Nix package manager, your *entire system* becomes "recreated" each time you decide to upgrade.
+By default, you cannot directly write to places like =/usr/share= or =/usr/local=.
+Essentially, anything outside of =$HOME= can only be manipulated via the Nix package manager.
+And Nix does an excellent job of keeping all system directories clean and stateless!
 
 Second, you don't have to hand-tune system files like =/etc/group=.
 The NixOS configuration file is where you define system-wide things like users and groups, and after you set it once, it's done for good.
@@ -86,11 +89,11 @@ What's great is that it's all done in a programmatic way using the Nix expressio
 The rest are official packages I chose to install.
 But basically this sure beats doing something like =pacman -Q=, which grabs all installed packages on the entire system.
 
-Fifth, I really like how I can do a *system* upgrade without touching my explicitly-installed packages in my user's Nix environment (=nix-env=).
+Fourth, I really like how I can do a *system* upgrade without touching my explicitly-installed packages in my user's Nix environment (=nix-env=).
 I can update my version of =firefox= as much as I like without touching low-level packages like Xorg or the kernel, or vice-versa.
 It gives me the flexibility of a "rolling release" distro without the stability issues.
 
-Sixth, the heart of NixOS --- the Nix package manager --- works by looking at a single "master" Nix expression.
+Fifth, the heart of NixOS --- the Nix package manager --- works by looking at a single "master" Nix expression.
 So if you have any custom Nix expressions, they better play well with the other ones officially provided upstream by the NixOS team!
 In Nix, no package is an island; in a sense, it's a lot like how FreeBSD keeps all of their packages in a single code repository to guarantee stability.
 
