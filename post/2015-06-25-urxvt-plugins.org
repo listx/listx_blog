@@ -22,7 +22,7 @@ xrdb -merge ~/.Xdefaults
 .
 The hotkeys are defined with key names from [[http://cgit.freedesktop.org/xorg/proto/x11proto/plain/keysymdef.h][keysymdef.h]] as part of X11.
 
-* keyoard-select
+* keyboard-select
 
 [[https://github.com/muennich/urxvt-perls][Homepage]] (part of =urxvt-perls=)
 
