@@ -5,6 +5,7 @@ import Data.Bits
 import qualified Data.Text.Lazy as T
 import qualified Data.Text.Lazy.IO as T
 import Clay
+import qualified Clay.Display as CD
 import Clay.Font
 import qualified Clay.Text as CT
 
@@ -62,9 +63,10 @@ myStylesheet = do
 					vh padding (em 0.5) 0
 					textAlign $ alignSide sideCenter
 				"#content" & do
-					ev borderRadius (px 3)
-					backgroundImage $ url "/lightpaperfibers_JorgeFuentes.png"
+					ev borderRadius (px 6)
+					backgroundColor $ rgbHex 0xffffff
 					boxShadow (px 0) (px 0) (px 3) (rgbHex 0x666666)
+					paddingBottom (em 2)
 					h1 ? do
 						noMargin
 						headerIndent
@@ -75,13 +77,12 @@ myStylesheet = do
 						-- For the title of the page, center-align it.
 						".center" & do
 							noMargin
-							paddingTop (em 0.5)
-							paddingBottom $ px 0
-							marginBottom (em 0.5)
+							paddingTop (em 1)
+							paddingBottom (em 0.5)
 							fontSize (pt 30)
+							fontWeight bold
 							headerIndentRight
 							textAlign $ alignSide sideCenter
-							borderBottom solid (pt 3) (rgb 0 0 0)
 							textDecoration none
 							before & do
 								CT.content (none :: Content)
@@ -90,7 +91,8 @@ myStylesheet = do
 					-- For raw tables (e.g., org-mode's tables.)
 					table ? do
 						-- horizontally center it
-						vh margin (px 0) auto
+						headerIndent
+						headerIndentRight
 					div' ? do
 						".info" & do
 							paddingBottom (em 1)
@@ -98,9 +100,7 @@ myStylesheet = do
 						-- syntax with '- i <filename>'.
 						".code-and-raw" & do
 							marginBottom (em 1)
-							borderTop solid (px 1) (grayish 204)
-							borderBottom solid (px 1) (grayish 204)
-							boxShadow (px 0) (px 0) (px 3) (rgbHex shadowHex)
+							boxBorders
 							table ? do
 								".sourceCode" & do
 									-- if a table is part of "code-and-raw",
@@ -180,14 +180,18 @@ myStylesheet = do
 					div' ? do
 						".figure" & do
 							-- center images
-							"display" -: "table"
+							display CD.table
 							vh margin (px 0)auto
 						".footnotes" & do
+							backgroundColor footnotesBg
+							boxBorders
+							hr ? do
+								display displayNone
 							paddingBottom $ px 0
 							ol ? do
 								paragraphIndent
 								paddingTop (em 1)
-								paddingBottom (em 1)
+								paddingBottom (em 0)
 								li ? do
 									paddingLeft $ px 0
 									p ? do
@@ -212,10 +216,8 @@ myStylesheet = do
 							backgroundColor codeBg
 							ev borderRadius (px 0)
 							"border-style" -: "none"
-							borderTop solid (px 1) (grayish 204)
-							borderBottom solid (px 1) (grayish 204)
+							boxBorders
 							marginBottom (em 1)
-							boxShadow (px 0) (px 0) (px 3) (rgbHex shadowHex)
 							paddingTop (em 1)
 							paddingBottom (em 1)
 					table ? do -- code with line numbers
@@ -236,7 +238,8 @@ myStylesheet = do
 										whiteSpace nowrap
 						".gallery" & do
 							headerIndent
-							paddingBottom (em 1)
+							headerIndentRight
+							marginBottom $ em 0
 							fontSizeCustom Clay.Font.small
 							tr ? do
 								textAlign $ alignSide sideCenter
@@ -267,8 +270,12 @@ myStylesheet = do
 	shadowHex = 0xdcdcd0
 	codeBgHex :: Int
 	codeBgHex = 0xfdf6e3
+	footnotesBgHex :: Int
+	footnotesBgHex = 0xe9f7ff
 	codeBg :: Color
 	codeBg = rgbHex codeBgHex
+	footnotesBg :: Color
+	footnotesBg = rgbHex footnotesBgHex
 	headerIndent = "padding-left" -: "12%"
 	headerIndentRight = "padding-right" -: "12%"
 	paragraphIndent = do
@@ -290,9 +297,7 @@ myStylesheet = do
 		overflow auto
 		backgroundColor codeBg
 		when addBorder $ do
-			borderTop solid (px 1) (grayish 204)
-			borderBottom solid (px 1) (grayish 204)
-			boxShadow (px 0) (px 0) (px 3) (rgbHex shadowHex)
+			boxBorders
 		tr ? do
 			td ? do
 				".lineNumbers" & do
@@ -320,6 +325,10 @@ myStylesheet = do
 			: (toEnum 0x00a0) -- nonbreaking space character
 			: (toEnum 0x00a0) -- nonbreaking space character
 			: []
+	boxBorders = do
+		borderTop solid (px 1) (grayish 204)
+		borderBottom solid (px 1) (grayish 204)
+		boxShadow (px 0) (px 0) (px 3) (rgbHex shadowHex)
 -- | A horizontal/vertical size helper. It accepts a function and two sizes for
 -- the horizontal and vertical parts. E.g., instead of calling
 -- 		padding (px 6) (px 10) (px 6) (px 10)
