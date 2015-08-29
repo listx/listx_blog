@@ -105,7 +105,7 @@ main = hakyll $ do
 		route idRoute
 		compile $ do
 			posts <- loadAll "post/*"
-			sorted <- fmap (take 3) $ recentFirst posts
+			sorted <- fmap (take 5) $ recentFirst posts
 			itemTpl <- loadBody "template/post-item.html"
 			list <- applyTemplateList itemTpl postCtx sorted
 			makeItem list
@@ -158,7 +158,7 @@ tagsCtx tags = mconcat
 homeCtx :: String -> Context String
 homeCtx list = mconcat
 	[ constField "post" list
-	, constField "title" "Home"
+	, constField "title" "Linus's Blog"
 	, defaultContext
 	]
 
