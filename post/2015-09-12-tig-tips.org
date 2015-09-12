@@ -1,0 +1,37 @@
+---
+title: Tig Tips
+tags: programming, linux, git
+---
+
+#+STARTUP: indent showall
+
+I love [[https://github.com/jonas/tig][tig]].
+Still, I think the defaults aren't the best for most developers.
+Here are two easy customizations to make the default view better.
+
+First, put
+
+#+begin_src bash
+alias tig='tig -n 1000'
+#+end_src
+
+in your =~/.bashrc= to reduce tig's startup time (especially on large repositories).
+There's rarely a need to go back more than 1000 commits from your current HEAD position in an interactive, GUI-driven manner.
+And if you really need to see everything, do
+
+#+begin_src bash
+$ \tig
+#+end_src
+
+on the terminal to bypass the shell alias.
+
+Second, put the following in your =~/.tigrc= file:
+
+#+begin_src
+set main-view = date author id:width=10 commit-title:yes,graph,refs
+#+end_src
+
+.
+This makes the default view show git commit hashes (where =width= is the number of hex digits to show), so that you don't have to press ENTER on a particular commit to see its hash.
+
+Happy hacking!
