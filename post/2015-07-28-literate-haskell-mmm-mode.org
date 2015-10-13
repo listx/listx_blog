@@ -37,6 +37,11 @@ In your [[http://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.htm
     :front "^\\\\begin{code}\n"
     :back "^\\\\end{code}"
   )))
+
+; Re-fontify sub-mode portions when idle. The manual command for this is
+; `mmm-parse-buffer'. If you don't do this, then syntax highlighting won't work
+; for new regions of Haskell code in the \begin{code}...\end{code} blocks.
+(setq mmm-parse-when-idle 't)
 #+end_src
 
 .
