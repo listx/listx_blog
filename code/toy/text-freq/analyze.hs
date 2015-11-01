@@ -1,14 +1,15 @@
 module Main where
 
+import Control.Monad
+import qualified Data.Text.Lazy as T
 import qualified Data.Text.Lazy.IO as T
-import System.Environment
 
 import TextFreq
 
 main :: IO ()
 main = do
-	args <- getArgs
-	src <- T.readFile $ args!!0
+	fileList <- T.getContents
+	src <- liftM T.concat . mapM (T.readFile . T.unpack) $ T.lines fileList
 	dispFreqL $ freqL src
 	putStrLn $ replicate 80 '-'
 	dispFreqW $ freqW src

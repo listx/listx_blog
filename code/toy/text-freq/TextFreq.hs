@@ -24,8 +24,26 @@ freqL = T.foldl step occs
 	where
 	occs = M.empty
 	step lhash c
-		| isAlpha c = M.insertWith (+) (toLower c) 1 lhash
+		-- | isAlpha c = M.insertWith (+) (toLower c) 1 lhash -- this picks up non-ASCII 'word' letters, even korean/japanese!
+		| elem c (['a'..'z'] ++ ['A'..'Z']) = M.insertWith (+) (toLower c) 1 lhash
+		| elem c (concat puncKeys) = case lookup c puncTuples of
+			Just pkey -> M.insertWith (+) pkey 1 lhash
+			Nothing -> lhash
 		| otherwise = lhash
+	puncKeys =
+		[ "`~"
+		, "-_"
+		, "=+"
+		, "[{"
+		, "}]"
+		, "\\|"
+		, ";:"
+		, "'\""
+		, ",<"
+		, ".>"
+		, "/?"
+		]
+	puncTuples = concatMap (\keyPair -> [(head keyPair, head keyPair), (last keyPair, head keyPair)]) puncKeys
 
 freqW :: T.Text -> WHash
 freqW = (\(WBuild _ _ whash) -> whash) . T.foldl step occs
