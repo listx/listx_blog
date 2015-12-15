@@ -2,6 +2,7 @@
 
 import Control.Monad
 import Data.Bits
+import Data.Monoid
 import qualified Data.Text.Lazy as T
 import qualified Data.Text.Lazy.IO as T
 import Clay
@@ -28,8 +29,9 @@ myStylesheet = do
 		ev padding $ px 0
 		let
 			bgHexColor = 0xd1dbbd
+			textColor = grayish 30
 		backgroundColor $ rgbHex bgHexColor
-		color (grayish 30)
+		color textColor
 		overflowY scroll
 		body ? do
 			width (px cPageWidth)
@@ -49,6 +51,9 @@ myStylesheet = do
 					textDecoration none
 				".history" & hoverLink
 				".raw" & hoverLink
+				".section-heading" & do
+					color textColor
+					textDecoration none
 			sup ? do
 				"vertical-align" -: "top"
 				fontSizeCustom Clay.Font.small
@@ -67,13 +72,16 @@ myStylesheet = do
 					backgroundColor $ rgbHex 0xffffff
 					boxShadow (px 0) (px 0) (px 3) (rgbHex 0x666666)
 					paddingBottom (em 2)
-					h1 ? do
+					h1 <> h2 <> h3 <> h4 <> h5 ? do
 						noMargin
 						headerIndent
 						paragraphIndentRight
 						paddingBottom (em 0.5)
 						fontWeight normal
-						addHeadingSymbol
+						code ? do
+							vh margin (px 0) (px 4)
+					h1 ? do
+						addHeadingSymbol uBlackSquare
 						-- For the title of the page, center-align it.
 						".center" & do
 							noMargin
@@ -86,8 +94,16 @@ myStylesheet = do
 							textDecoration none
 							before & do
 								CT.content (none :: Content)
-						code ? do
-							vh margin (px 0) (px 4)
+					h2 ? do
+						addHeadingSymbol uDoubleSquare
+					h3 ? do
+						addHeadingSymbol uWhiteSquare
+					h4 ? do
+						addHeadingSymbol uBlackDiamond
+					h5 ? do
+						addHeadingSymbol uDoubleDiamond
+					h6 ? do
+						addHeadingSymbol uWhiteDiamond
 					-- For raw tables (e.g., org-mode's tables.)
 					table ? do
 						-- horizontally center it
@@ -117,41 +133,6 @@ myStylesheet = do
 							backgroundColor $ rgbHex (codeBgHex - 0x080808)
 							fontSizeCustom Clay.Font.small
 							textAlign $ alignSide sideCenter
-					h2 ? do
-						noMargin
-						headerIndent
-						paragraphIndentRight
-						paddingBottom (em 0.5)
-						fontWeight normal
-						code ? do
-							vh margin (px 0) (px 4)
-						addHeadingSymbol
-					h3 ? do
-						noMargin
-						headerIndent
-						paragraphIndentRight
-						paddingBottom (em 0.5)
-						fontWeight normal
-						fontStyle italic
-						code ? do
-							vh margin (px 0) (px 4)
-						addHeadingSymbol
-					h4 ? do
-						noMargin
-						headerIndent
-						paragraphIndentRight
-						paddingBottom (em 0.5)
-						code ? do
-							vh margin (px 0) (px 4)
-						addHeadingSymbol
-					h5 ? do
-						noMargin
-						headerIndent
-						paragraphIndentRight
-						paddingBottom (em 0.5)
-						code ? do
-							vh margin (px 0) (px 4)
-						addHeadingSymbol
 					ol ? do
 						noMargin
 						paragraphListIndent
@@ -314,14 +295,19 @@ myStylesheet = do
 							padding 0 0 0 (em 1)
 							"border-style" -: "none"
 							boxShadow (px 0) (px 0) (px 0) (rgbHex shadowHex)
-	addHeadingSymbol = before & do
+	uBlackSquare = 0x25a0
+	uWhiteSquare = 0x25a1
+	uDoubleSquare = 0x25a3
+	uBlackDiamond = 0x25c6
+	uWhiteDiamond = 0x25c7
+	uDoubleDiamond = 0x25c8
+	addHeadingSymbol hex = before & do
 		CT.content $ stringContent symbol
 		position relative
-		bottom (em 0.1)
 		where
 		symbol = T.toStrict
 			. T.pack
-			$ (toEnum 0x25a0) -- box character
+			$ (toEnum hex)
 			: (toEnum 0x00a0) -- nonbreaking space character
 			: (toEnum 0x00a0) -- nonbreaking space character
 			: []

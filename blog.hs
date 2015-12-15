@@ -69,6 +69,7 @@ main = hakyll $ do
 		, "code/**"
 		, "img/**"
 		, "file/**"
+		, "misc.js"
 		]
 
 	match (fromRegex "post/[^/]+\\.(md|org)$") $ do
@@ -265,7 +266,7 @@ atomFeedConf = FeedConfiguration
 	, feedDescription = "The latest blog posts from Linus (listx on Github)!"
 	, feedAuthorName  = "Linus Arver"
 	, feedAuthorEmail = ""
-	, feedRoot = "http://listx.github.io"
+	, feedRoot = "http://funloop.org"
 	}
 
 dquote :: String -> String

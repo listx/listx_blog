@@ -7,7 +7,7 @@ Hello! My name is Linus Arver and this is my blog.
 Please email me at `linus at ucla dot edu` for anything related to this blog.
 I have long since graduated from UCLA, but they gave me a lifetime email address. ;)
 
-## Programming
+# Programming
 
 My [Github](https://github.com/listx).
 
@@ -20,7 +20,7 @@ I also program some [pet projects][projects] in [C][c].
 [c]: http://en.wikipedia.org/wiki/C_(programming_language)
 [projects]: /code.html
 
-## Recommended Software
+# Recommended Software
 
 I use free/open-source software almost exclusively as much as possible.
 Here are some of them I heartily recommend.
@@ -60,7 +60,7 @@ Here are some of them I heartily recommend.
 [luxrender]: https://www.archlinux.org/packages/community/x86_64/luxrender/
 [luxblend]: https://www.archlinux.org/packages/community/any/luxblend25/
 
-## This Site
+# This Site
 
 Everything except links on this site will be self-contained and safely accessible forever.
 Hakyll comes with a link checker for the entire site so dead links should be a non-issue.
