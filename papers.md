@@ -23,8 +23,8 @@ The goal of the paper will be to introduce Haskell to beginners, and to explain 
 
 ## Git: Your Favorite Tool (July 2015)
 
-[Source](https://github.com/listx/listx_blog/blob/master/files/git.org)
-[PDF](https://github.com/listx/listx_blog/blob/master/files/git.pdf)
+[Source](https://github.com/listx/listx_blog/blob/master/file/git.org)
+[PDF](https://github.com/listx/listx_blog/blob/master/file/git.pdf)
 
 These slides are from a talk I gave internally at [Twin Prime](https://twinprime.com/).
 I designed the slides so that they are readable as-is, without a real presentation.
