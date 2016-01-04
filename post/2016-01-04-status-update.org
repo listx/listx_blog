@@ -1,0 +1,61 @@
+---
+title: Status Update
+tags: programming, haskell, life
+mathjax: on
+---
+
+#+STARTUP: indent showall
+
+Happy 2016 everyone!
+
+I thought I should update this blog, even though it's taking time away from some really fun side hobbies/projects!
+This post breaks with the unspoken tradition on this blog, which is that every post should be something meaningful, with original content; but, I now think that I should use this space for more personal/opinion/meta things too, not just pure technical articles.
+
+Anyway, below are some updates on various things going on in my life.
+
+* Side projects
+
+I have a number of side projects all clamoring for my loving care.
+In years past, I would work on multiple projects at the same time, and start new ones even without finishing old ones.
+This year, I plan to just focus on one project at a time!
+
+Currently, I am working on a computer keyboard layout optimizer, using the well-known [[https://en.wikipedia.org/wiki/Simulated_annealing][Simulated Annealing]] algorithm.
+It's a very interesting problem, and although currently my SA implementation lacks enough heuristics to make it perform any differently than random search, it is still fun to hack on.
+Once it is done, I will open-source it.
+
+After that, I want to finish up the core features for a simple terminal-based password manager program.
+Making a GUI application, even console-based, is quite the challenge!
+
+** Haskell book
+
+Eagle-eyed readers may have noticed that I silently pushed back timeframe for my [[http://funloop.org/papers.html#haskell-for-newbies-tentative-title-coming-2016][book]] the Haskell programming language.
+I did this on purpose, because what with a new job and whatnot, I have not had the time as before to work on it.
+But, it is not dead, and I do intend to finish it --- later this year!
+
+* New hobbies
+
+I picked up a new hobby --- the ancient game of [[https://en.wikipedia.org/wiki/Go_(game)][Go]]!
+I've been playing on my phone and even got myself some decent equipment, and I have to say that it is much more fun than chess (I say this as a former avid chess player).
+Maybe I'll find a way to tie it into programming.
+
+My brother gave me a rather expensive camera and I started to take some pictures with it, although I have yet to really put serious time into it.
+But I do know that it's one of the first things I'm grabbing the next time I go on a trip.
+
+* Retrospect
+
+Perhaps this section is a bit out of place, but I think I should mention the big highlights of 2015 for myself:
+
+- I got hired at a [[http://www.twinprime.com/][fantastic tech company]] (doing DevOps) and basically ended the self-imposed exile of staying out of the professional tech world
+- I moved to a new place (closer to work)
+- I bought a new car (truck!)
+- I learned a lot of new things (from work)
+
+.
+I should note that, before my current job, I had purposefully refrained from seeking professional positions in the tech sector because I had a fear that somehow my passion for programming would be lost.
+Thankfully, I can say that this fear was unfounded.
+Almost every day, after work and dinner, I sit and code (Haskell)!
+
+* Onward
+
+I will be posting something at least once a month, I hope, to share some thoughts with you all.
+I thank all past, present, and future readers, for giving me the motivation to keep this blog alive!
