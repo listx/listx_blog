@@ -1,0 +1,177 @@
+---
+title: My Quest for Keyboard Perfection: The Esrille Nisse
+tags: hardware, esrille, cherry mx
+---
+
+#+STARTUP: indent showall
+
+About a year ago, I preordered an ErgoDox keyboard from Massdrop.
+Unfortunately, that order was delayed for months; frustrated and disillusioned with the experience, I searched for an alternative.
+Eventually I settled on the [[https://www.esrille.com/keyboard/][Esrille Nisse]].
+It was more expensive than the ErgoDox, but it looked more ergonomic so I took a leap of faith and decided to buy it.
+I am glad I did!
+
+I've had the Nisse since last October, but did not use it right away.
+I spent quite a few hours customizing the firmware and also writing my own keyboard layout optimization program to make the most out of my new keyboard.
+My initial stab at a first iteration of my custom layout was completed just days ago; I'm just happy to write about it as I promised at the beginning of the year!
+
+Here is a brief review of the Nisse on build quality, comfort, and price, followed by a section on how I've customized it (to the extreme!) and my thoughts on going down this path.
+
+* Build Quality
+
+The Nisse has a thin outer metal case.
+You can easily remove the case by undoing a handful of screws.
+While it doesn't give an impression of the same kind of build strength as a Filco or Unicomp, it feels well-designed.
+There is no backplate for the key switches, and this gives the keyboard a much lighter feel.
+I personally would like it to have a thicker case and backplate, but I imagine that that would move the keyboard up to a much higher price point.
+
+* Comfort
+
+I ordered mine with Cherry MX Brown switches, and they felt fine.
+I write in the past tense because, during my long wait for the ErgoDox, I had ordered a set of aftermarket Cherry MX springs which are much stiffer than the stock Brown springs (rated at 67 grams).
+I swapped out the springs and and enjoy them so far; they somewhat imitate the much stiffer buckling spring switches found in the Unicomp but without the loud clicking noise.
+I should add that I also added 3mm thick O-rings around the stem of each keycap to reduce not only noise but keypress travel to reasonable effect.
+
+Overall, I really love the thumb row of keys.
+They really make a lot of sense giving each thumb 5 keys to work with on the same row (better than the ErgoDox, at least on the surface), and I am learning to use my right thumb more (on QWERTY I always use the left thumb for pressing the Space key, as my brain tends to get confused if I try to use both thumbs for the same key).
+
+* Price
+
+The Nisse is not cheap.
+I had to pay close to $500 USD for this keyboard because of the unique nature.
+Given that I don't spend money on other things in life, I was able to afford it.
+Still, you should only get something like this if you are serious about your keyboard typing comfort and want to upgrade the experience.
+My fingers spend many hours every single day on a keyboard, so I trust my investment.
+
+* Customizability
+
+This is where the Nisse really shines.
+The firmware is compiled from a handful of C files.
+This keyboard is unique in that it comes preloaded with multiple US English layouts, multiple Japanese layouts, and also a shared FN (function key) layer.
+
+Through much trial and error, I was able to incorporate some cool ideas that come with one of the Japanese layouts into my own custom layout, which I've dubbed the [[https://github.com/listx/new-keyboard/tree/zq]["ZQ" layout]].
+I added an extra "FN2" layer and also made the Shift key "stickey" (premptively hitting the Shift key is enough --- no need to press the Shift key simultaneously with a letter key to get a capital letter).
+In addition, I bound some punctuation marks to be just one keypress, such as double quotes ("), dollar sign ($), and underscore (_).
+Because of the extra FN2 layer, everything is reachable with minimal effort.
+In fact, a lot of keys around the far corners of the keyboard are surplus keys and left unbound.
+
+As for the actual keyboard layout, I wrote a [[https://github.com/listx/keylo][Haskell program]] to help find a decent layout.
+It uses either simulated annealing or a simple hill climber algorithm to find an optimal layout.
+Because the search space is so large, and because a lot of the rules and penalties for what makes a good layout can be somewhat arbitrary, I've discovered that it takes a combination of human guidance (artificially imposed constraints) and computer search to find the most desirable layouts.
+
+Below you can see my layout's base layer.
+The empty squares represent empty (unbound) keys.
+Because I'm using ASCII art to represent the layout, it's a bit awkward, but I've done my best to label the legends with non-interfering symbols so that it is unambiguous.
+(FYI, this is a step above taking pictures because I use blank keycaps.)
+
+#+begin_src
+    □ □ □ □ □ □     □ □ □ □ □ □
+    = ~ / ? &         ` 1 - ! $
+□ □ z r d f . 1     2 " y u p q □ □
+□ 2 s n t h l :     * x a e i o 3 □ <--- Home row
+  3 c w g m ;         ' j k b v 4
+      4 5 6 7 8     5 , 6 7 8 <--------- Thumb row
+
+Left-side legend
+1) Home
+2) Shift
+3) Escape
+4) Super (Windows key)
+5) Caps Lock (remapped with xmodmap to Hyper key)
+6) Space
+7) Enter
+8) Control
+
+Right-side legend
+1) Underscore
+2) End
+3) Shift
+4) Tab
+5) FN2
+6) FN
+7) Alt
+8) Right Alt (aka "AltGr" for US International Layout)
+#+end_src
+
+Here's my FN layer.
+
+#+begin_src
+    □ □ □ □ □ □     □ □ □ □ □ □
+    □ □ c □ □         □ □ a □ □
+□ □ b 7 8 9 □ d     b % [ \ | ] □ □
+□ □ a 4 5 6 □ □     □ # { ( ) } □ □
+  □ 0 1 2 3 □         ^ < + @ > □
+      □ □ □ □ □     □ □ □ □ □
+
+Left-side legend
+a) 00 (Macro that presses '0' 2x)
+b) 000 (Macro that presses '0' 3x)
+c) Shift+Insert
+d) Page Up
+
+Right-side legend
+a) Super+x (my hotkey to spawn terminals)
+b) Page Down
+#+end_src
+
+Finally, this is the FN2 layer.
+
+#+begin_src
+    □ □ □ □ □ □     □ □ □ □ □ □
+    □ □ □ □ □         □ □ □ □ □
+□ □ i j k l □ □     □ □ □ a □ □ □ □
+□ □ e f g h □ □     □ □ b c d □ □ □
+  □ a b c d □         □ □ □ □ □ □
+      □ □ □ □ □     □ □ □ □ □
+
+Left-side legend
+a) F1
+b) F2
+c) F3
+d) F4
+e) F5
+f) F6
+g) F7
+h) F8
+i) F9
+j) F10
+k) F11
+l) F12
+
+Right-side legend
+a) Up Arrow
+b) Left Arrow
+c) Down Arrow
+d) Right Arrow
+#+end_src
+
+There were some overriding design choices behind the layout; the most important ones are listed below.
+
+- HJKL keys should be somewhat intuitive.
+- Common keys should be on the home row.
+- Most modifier keys should be used with the thumbs.
+- For better granularity, punctuation symbols should be treated uniquely as separate keys (do not treat "/" and "?" as the same physical key).
+- Use numpad arrangement for numbers.
+
+The result of all of these considerations is that my layout does not make use of all the physical keys the hardware gives us; instead, it uses keys closest to my fingers.
+
+I have yet to master my own custom layout, but it's coming along with incremental, daily improvments.
+I hope to reach 60 wpm in a few month's time, after which I should be able to switch to it full-time on my primary desktop computer.
+
+Because of the openness of the firmware, the Nisse is extremely customizable, and I'm very happy with it.
+One modification I am particularly fond of is how I've managed to map the =Shift=, =FN=, and =FN2= keys to the blue, green, and red LEDs on the keyboard.
+These LEDs are traditionally used for the Scroll, Caps, and Num lock keys and in all my years of using the computer I've hardly ever seen either the Scroll or Caps LEDs being lit; it's nice to see these LEDs go off when I use my modifier keys as a visual reminder of the layers involved.
+
+* Conclusion
+
+I know that I'm going down a rabbit hole on this.
+If Esrille ever goes under, then that means I am on my own as far as obtaining a replacement board with the same physical dimensions.
+Hopefully that day will never come, but if it does, I might just grab an ErgoDox or something else that's similar and port my layout to that system.
+
+As it stands, there are still improvements to be made --- but it's all in the firmware.
+For example, I'd like to also make a layout for Japanese (type Japanese faster!), probably by just shifting some of the keys in the existing TRON or some other layout that the Nisse comes with to match ZQ's distribution of letter keys vs. punctuation keys.
+The same goes for a Korean layout.
+
+Those concerns will probably be addressed sometime later this year, or perhaps the next.
+It all depends on how much time I end up studying those languages again.
+For now, I'm just happy learning to type a little bit more comfortably on the Nisse (lots of home row goodness!).
