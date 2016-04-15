@@ -50,7 +50,7 @@ executable test_game_button_seq
   build-depends:
       base >=4.7
     , containers >=0.5 && <0.6
-    , tasty >=0.10 && <0.11
+    , tasty >=0.11 && <0.12
     , tasty-hunit >=0.9 && <0.10
     , tasty-quickcheck >=0.8 && <0.9
   hs-source-dirs: code/toy/game-button-seq
@@ -75,7 +75,7 @@ executable test_srm485_afraid_of_even
   build-depends:
       base >=4.7
     , containers >=0.5 && <0.6
-    , tasty >=0.10 && <0.11
+    , tasty >=0.11 && <0.12
     , tasty-hunit >=0.9 && <0.10
     , tasty-quickcheck >=0.8 && <0.9
   hs-source-dirs: code/toy/srm485-afraid-of-even
