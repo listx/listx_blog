@@ -1,0 +1,150 @@
+---
+title: Software Development Philosophy
+tags: programming
+mathjax: off
+---
+
+#+STARTUP: indent showall
+
+I've been meaning to write about software development best practices for a while now.
+Here are some things that I believe in, after having distilled countless blog posts, comments, and arguments over the years.
+
+* 1: Take version control seriously
+
+Learning how to use version control was easily one of the big eye-opening events in my technical journey.
+I get sad when I see commit messages without any real explanation such as "Ugh!" or "Oops".
+
+Although modern version control systems have many technical benefits (distributed nature allowing parallel collaboration, guaranteed data integrity, etc), I believe that the overruling importance of version control is *history preservation*.
+Reading the commit history of a well-maintained project is a pleasure: each commit explains why that commit was necessary at the time it was written, with references to other documents, bug reports, etc.
+If you have fine-grained commits, you can go back in time to reproduce bugs, or even use things like *git-bisect* to figure out which commit introduced a bug.
+If you are working to fix a regression that was introduced "around two months ago," the last thing you want to do is look at 2-month old commits with useless commit messages.
+
+* 2: Be consistent
+
+No one can deny the power of simplicity.
+On the other hand, how do we achieve simplicity?
+
+Start by being consistent.
+There are multiple domains of "consistency" in a software project but here are some basic ones: coding style, naming convention, and comments.
+Yes, comments have to be written in a particular way as well!
+Let's look at each in turn.
+
+** Coding style
+
+The simplest form of consistency is coding style.
+Every project must have some general consensus for coding style.
+Although 100% adherence may not be practical, you should at least make all /new/ code follow the same convention.
+Automated linters can help in this area.
+
+** Naming convention
+
+This is a superset of coding style.
+If you have variable names, they should be consistently named.
+If you use the term *cfg* in one variable or function, you should use it everywhere; do not use *conf* or *config* elsewhere.
+
+For functions, quite often in imperative languages they perform some action.
+And naturally, the action is performed on something.
+Now, where do we put the verb and the direct object?
+It doesn't really matter, but be consistent!
+
+For the following functions, notice how the verb comes before the object, consistently:
+
+- =init_config()=
+- =init_hash()=
+- =mark_foo()=
+- =gen_foo()=
+
+.
+I believe that such subtle details do matter in the long run.
+
+** Comments
+
+Too often I find random-looking comments strewn across a single file --- some one-liners, some just one word, etc.
+Comments should be written in a consistent style, too!
+
+Comments form the backbone of documentation for anyone not intimately familiar with the codebase.
+Thus, comments should never assume that the reader knows the basics of what's going on.
+Rather, comments should strive to explain things to the layman, the outsider.
+
+Writing comments in this style does not mean that you should always repeat everything from zero; instead, explain the general bird's eye view in one place, and refer to this introductory view.
+Also, avoid writing one-liner comments if you can, as they encourage laziness and half-baked explanations (how much meaning can you really convey in 1 line?); write a nice explanation for each "atomic" unit of code --- this is typically one function definition.
+
+Lastly, do not comment out code and check it into a commit!
+This is a habit of the era before version control became popular.
+If you really want to save commented code, at least preface it with an explanation.
+Mystery dead code is the worst!
+
+* 3: Have one source of truth
+
+This is another way of saying the DRY principle ("Do not Repeat Yourself") which I find somewhat vague.
+I hereby coin this rule as the HOST prinplce ("Have One Source of Truth").
+
+Under the HOST principle, if you are working with multiple components that depend on each other, it's important to establish who is the original source for which things.
+Any component that feeds from the source of truth must act subserviently to the originator, as far as that piece of truth is concerned.
+The Object-Oriented Programming model encapsulates this with public and private methods; in the purely functional model this is less of a concern because of the lack of side effects.
+
+This is the one principle that gets overlooked time and again.
+It's probably because the HOST principle can be violated in so many ways.
+Below are some typical violations.
+
+** Global variables
+
+Whereas global *constants* would be fine, global *variables* by their very nature allow anything to edit the originating source of truth.
+The result, all too often, is spaghetti code where it is unclear which function has authority over another function.
+
+** Non-modularity
+
+A common mistake is when people do not make things modular and just copy/paste large files making minor changes between each one.
+For example, let's say that there exists 3 different developer environments --- "development", "staging", and "production" --- and that each one shares about 90% of the configuration values, with the other 10% changing depending on the environment.
+You should not write 3 separate files; instead, you should keep in source control 1 file with all of the various values, and have some other process automatically generate the individual environment-specific configuration file.
+This way, you don't have to edit 3 files when you make some global change that affects all environments.
+
+** Lack of testing
+
+In the ideal world, every program ships with a contract, telling the user that the program will do X, Y, and Z, in such and such a way under such and such conditions.
+This contract would be the source of truth about a program's intended behavior at runtime.
+Alas, such "contracts" do not exist, at least at the program-behavior-at-runtime level. [fn:: This is one reason why I love purity in Haskell so much --- pure functions guarantee their inputs and outputs! It's like coding with little mini-contracts everywhere!]
+While excellent documentation, commit history, and even community-driven "best practices" all attempt to define how a program behaves and what to expect, they still bow down to the test suite.
+This is because tests, by their very nature, are written expressly to keep in line the behavior of a program over its lifetime.
+
+Not all projects can have the traditional test suite covering every corner case (e.g., the Linux Kernel is one such project).
+But most projects can.
+At the very least, you should have some standard practice or system of ensuring that your program is stable and behaves as intended.
+
+* 4: Accuracy is more important than performance
+
+Ultimately, software is written to perform some *task*.
+If your software does not perform that task, it is useless.
+Your code should care foremost about correctness (being free from bugs).
+
+Whereas performance can always be improved given a naive (but correct) implementation, it is not so the other way around --- a highly-performant yet buggy implementation cannot be easily debugged while maintaining existing performance benchmarks.
+
+* 5: Be cautious of new code
+
+Old code exists because it worked last year, last month, two weeks ago, and yesterday.
+Let that sink in.
+At the end of the day, something that works makes the *user* happy.
+
+If you have a new design or some new way of doing something, it better be superior to the old way.
+It should be as clear as night and day.
+Typically, new code is in bug fixes, where the "night and day" difference is obvious.
+But sometimes it is in new features or even in refactored code --- and still, it should be judged against the same high standards.
+
+When I [[./2014-09-09-my-first-contribution-to-git.html][submitted my patch to fix some Git documentation]] some years back, I originally submitted 7 commits.
+Of the 7, one of them was a patch to update the itemized list syntax; it was purely a change of form, not function.
+The maintainer (Junio Hamano) questioned this patch, and it was eventually dropped because I really could not make a good case for it.
+I keep thinking about this encounter once in a while, and remind myself that even something as harmless a documentation change should be treated with caution.
+
+All projects require new code --- and this is how projects grow.
+Growth has to be done in moderation and with great care --- this is how software must evolve.
+We can analogize software growth as mutation over time, with each commit as a particular "mutation".
+We choose the best ones (thanks to distributed VCS branching/merging!) one at a time, easing growing pains.
+Commits with far-reaching changes are the worst type of mutations and should be avoided; an exception is if you have changes that delete more code than add code --- these are golden if they can be vetted and proven to work, as they can cut bloat and slim down the codebase.
+
+* Conclusion
+
+In the real world, it's hard to cross all your t's and dot your i's --- I am no exception with regard to my own projects at home and at work.
+If I had to pick only one rule from the five above, it would be the first (treat version control seriously).
+Maybe I am biased because I love Git.
+Still, it's hard to argue against having version control; the rest of the guidelines above can be argued against under particular circumstances, but version control remains sacrosanct.
+Version control is king!
