@@ -77,7 +77,7 @@ Mystery dead code is the worst!
 * 3: Have one source of truth
 
 This is another way of saying the DRY principle ("Do not Repeat Yourself") which I find somewhat vague.
-I hereby coin this rule as the HOST prinplce ("Have One Source of Truth").
+I hereby coin this rule as the HOST principle ("Have One Source of Truth").
 
 Under the HOST principle, if you are working with multiple components that depend on each other, it's important to establish who is the original source for which things.
 Any component that feeds from the source of truth must act subserviently to the originator, as far as that piece of truth is concerned.
