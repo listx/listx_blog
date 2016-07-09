@@ -1,7 +1,6 @@
 ---
 title: Software Development Philosophy
 tags: programming
-mathjax: off
 ---
 
 #+STARTUP: indent showall

@@ -1,7 +1,6 @@
 ---
 title: "Programming Puzzles: Letter and Word Frequency"
 tags: programming, haskell, ruby
-mathjax: off
 ---
 
 ## Motivation
