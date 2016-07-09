@@ -1,7 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 
-import qualified Data.HashMap.Strict as HM
 import Hakyll
 import System.FilePath.Posix
 import Text.Pandoc (WriterOptions (..), HTMLMathMethod (MathJax))
@@ -166,7 +165,7 @@ homeCtx list = mconcat
 mathCtx :: Context a
 mathCtx = field "mathjax" $ \item -> do
 	metadata <- getMetadata $ itemIdentifier item
-	return $ case HM.lookup "mathjax" metadata of
+	return $ case lookupString "mathjax" metadata of
 		Just _ -> concat
 			[ "<script src=\""
 			, "http://cdn.mathjax.org/mathjax/latest/MathJax.js"
