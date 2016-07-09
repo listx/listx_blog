@@ -1,5 +1,5 @@
 ---
-title: cabal2pkgbuild: A Replacement for `cabal2arch`
+title: "cabal2pkgbuild: A Replacement for `cabal2arch`"
 tags: arch, linux, haskell, cblrepo
 ---
 

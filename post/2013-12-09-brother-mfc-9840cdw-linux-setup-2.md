@@ -1,5 +1,5 @@
 ---
-title: Brother MFC-9840CDW: Setup on Arch Linux, Redux
+title: "Brother MFC-9840CDW: Setup on Arch Linux, Redux"
 tags: arch, linux, hardware, printer
 ---
 

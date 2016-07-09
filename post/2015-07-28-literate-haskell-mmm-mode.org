@@ -1,5 +1,5 @@
 ---
-title: Emacs: Setting Up mmm-mode for Literate Haskell
+title: "Emacs: Setting Up mmm-mode for Literate Haskell"
 tags: programming, emacs, haskell
 ---
 

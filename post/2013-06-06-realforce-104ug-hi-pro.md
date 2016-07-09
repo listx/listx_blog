@@ -1,5 +1,5 @@
 ---
-title: Review: Realforce 104UG Hi-Pro
+title: "Review: Realforce 104UG Hi-Pro"
 tags: hardware, realforce, unicomp
 ---
 

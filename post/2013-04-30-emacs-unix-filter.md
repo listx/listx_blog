@@ -1,5 +1,5 @@
 ---
-title: Emacs: Using a Unix Filter
+title: "Emacs: Using a Unix Filter"
 tags: emacs
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: OpenGL from Haskell (#3: Matrices)
+title: "OpenGL from Haskell (#3: Matrices)"
 tags: haskell, opengl
 ---
 

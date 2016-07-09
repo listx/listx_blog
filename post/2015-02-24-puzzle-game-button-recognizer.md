@@ -1,5 +1,5 @@
 ---
-title: Programming Puzzle: Game Button Sequence Recognizer
+title: "Programming Puzzle: Game Button Sequence Recognizer"
 tags: programming, haskell, ruby
 mathjax: on
 ---

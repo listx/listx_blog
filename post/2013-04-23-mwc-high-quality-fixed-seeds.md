@@ -1,5 +1,5 @@
 ---
-title: Haskell: System.Random.MWC: High Quality Fixed Seeds
+title: "Haskell: System.Random.MWC: High Quality Fixed Seeds"
 tags: haskell, rng
 ---
 

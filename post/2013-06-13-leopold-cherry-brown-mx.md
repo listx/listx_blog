@@ -1,5 +1,5 @@
 ---
-title: Review: Leopold Tactile Touch Tenkeyless Keyboard (MX Brown)
+title: "Review: Leopold Tactile Touch Tenkeyless Keyboard (MX Brown)"
 tags: hardware, leopold, cherry mx, realforce, unicomp
 ---
 

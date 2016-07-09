@@ -1,5 +1,5 @@
 ---
-title: Solving the "NVRM: API mismatch" Problem on Arch Linux
+title: "Solving the \"NVRM: API mismatch\" Problem on Arch Linux"
 tags: arch, linux, nvidia
 ---
 

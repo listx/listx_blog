@@ -1,5 +1,5 @@
 ---
-title: My Quest for Keyboard Perfection: The Esrille Nisse
+title: "My Quest for Keyboard Perfection: The Esrille Nisse"
 tags: hardware, esrille, cherry mx
 ---
 

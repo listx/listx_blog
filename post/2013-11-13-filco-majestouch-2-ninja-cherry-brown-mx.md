@@ -1,5 +1,5 @@
 ---
-title: Review: Filco Majestouch 2 Ninja Cherry Brown MX Keyboard
+title: "Review: Filco Majestouch 2 Ninja Cherry Brown MX Keyboard"
 tags: hardware, filco, cherry mx
 ---
 

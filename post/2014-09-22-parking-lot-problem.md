@@ -1,5 +1,5 @@
 ---
-title: The Parking Lot Problem: A Successor to FizzBuzz?
+title: "The Parking Lot Problem: A Successor to FizzBuzz?"
 tags: programming, ruby, haskell
 mathjax: on
 ---

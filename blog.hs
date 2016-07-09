@@ -1,11 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 
-import qualified Data.Map.Lazy as M
+import qualified Data.HashMap.Strict as HM
+import Hakyll
 import System.FilePath.Posix
 import Text.Pandoc (WriterOptions (..), HTMLMathMethod (MathJax))
 import Text.Pandoc.Definition
-import Hakyll
 
 main :: IO ()
 main = hakyll $ do
@@ -166,13 +166,13 @@ homeCtx list = mconcat
 mathCtx :: Context a
 mathCtx = field "mathjax" $ \item -> do
 	metadata <- getMetadata $ itemIdentifier item
-	return $ if (M.member "mathjax" metadata)
-		then concat
+	return $ case HM.lookup "mathjax" metadata of
+		Just _ -> concat
 			[ "<script src=\""
 			, "http://cdn.mathjax.org/mathjax/latest/MathJax.js"
 			, "?config=TeX-AMS-MML_HTMLorMML\"></script>"
 			]
-		else ""
+		Nothing -> ""
 
 postList
 	:: Tags

@@ -1,5 +1,5 @@
 ---
-title: SRM 485: AfraidOfEven
+title: "SRM 485: AfraidOfEven"
 tags: programming, math, haskell, ruby
 mathjax: on
 ---
