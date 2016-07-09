@@ -81,7 +81,7 @@ myStylesheet = do
 						code ? do
 							vh margin (px 0) (px 4)
 					h1 ? do
-						addHeadingSymbol uBlackSquare
+						addHeadingSymbol uDoubleSquare
 						-- For the title of the page, center-align it.
 						".center" & do
 							noMargin
@@ -95,7 +95,7 @@ myStylesheet = do
 							before & do
 								CT.content (none :: Content)
 					h2 ? do
-						addHeadingSymbol uDoubleSquare
+						addHeadingSymbol uBlackSquare
 					h3 ? do
 						addHeadingSymbol uWhiteSquare
 					h4 ? do
