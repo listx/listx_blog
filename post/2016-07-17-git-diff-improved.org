@@ -1,0 +1,117 @@
+---
+title: Improved git-diff(1)
+tags: programming
+---
+
+#+STARTUP: indent showall
+
+* Motivation
+
+Like most people, I use git daily.
+For many years, I used to have these two aliases:
+
+#+begin_src shell
+alias gdf="git diff"
+alias gdfc="git diff --cached"
+#+end_src
+
+Last year I started working professionally as a developer and I began to work on many different repos at the same time.
+Oftentimes I would do either a ~git diff~ or ~git diff --cached~, then come back to it 10 minutes later but then forget whether the diff had a ~--cached~ flag or not.
+I needed to script some more git helpers functions!
+
+* Implementation
+
+I created a new shell function called ~gdf~ to replace the two aliases above.
+It works by first showing you the ~git diff~ output, then the ~git diff --cached~ output.
+For both outputs, a vertical colored "ribbon" is printed on the left margin to denote whether it's the working tree (~git diff~) or index (~git diff --cached~ aka "staging area").
+The name of the repo is prepended/appended to the output as well to further disambiguate it.
+Here are the functions:
+
+- i 2016-07-17-git-diff-improved/gdf
+- i 2016-07-17-git-diff-improved/vertical\_label
+- i 2016-07-17-git-diff-improved/git\_find\_repo
+
+I use Zsh as my shell, so I wrote the above in Zsh.
+I simply drop these files inside my autoloaded directory, which is defined like this:
+
+#+begin_src zsh
+fpath=(~/.zsh/func $fpath) # add ~/.zsh/func to $fpath
+autoload -U ~/.zsh/func/*(:t) # load all functions in ~/.zsh/func
+#+end_src
+
+Here is some sample output (used in the course of writing this blog post):
+
+#+begin_src diff
+    -- blog --
+ T  diff --git a/post/2016-07-17-git-diff-improved.org b/post/2016-07-17-git-diff-improved.org
+ R  index 631bcf4..9f6fbac 100644
+ E  --- a/post/2016-07-17-git-diff-improved.org
+ E  +++ b/post/2016-07-17-git-diff-improved.org
+    @@ -7,7 +7,7 @@ tags: programming
+ ┃
+ ┃   * Motivation
+ ┃
+ ┃  -Like most people, I use git every day.
+ ┃  +Like most people, I use git daily.
+ ┃   For many years, I used to have these two aliases:
+ ┃
+ ┃   #+begin_src shell
+ ┃  @@ -15,9 +15,9 @@ alias gdf="git diff"
+ ┃   alias gdfc="git diff --cached"
+ ┃   #+end_src
+ ┃
+ ┃  -Last year, I started working professionally as a developer, and I began to work on many different repos at the same time.
+ ┃  +Last year I started working professionally as a developer and I began to work on many different repos at the same time.
+ ┃   Oftentimes I would do either a ~git diff~ or ~git diff --cached~, then come back to it 10 minutes later but then forget whether the diff had a ~--cached~ flag or not.
+ ┃  -So, I needed to script some more git helpers functions!
+ ┃  +I needed to script some more git helpers functions!
+ ┃
+ ┃   * Implementation
+ ┃
+ ┃  @@ -41,9 +41,11 @@ autoload -U ~/.zsh/func/*(:t) # load all functions in ~/.zsh/func
+ ┃   Here is some sample output:
+ ┃
+ ┃   #+begin_src diff
+    + foo
+ T   #+end_src
+ R
+ E   #+begin_src diff
+ E  +
+     + bar
+ ┃    #+end_src
+ ┃
+ ┃   * Conclusion
+    -- blog --
+#+end_src
+
+#+begin_src diff
+    -- blog --
+ I  diff --git a/post/2016-07-17-git-diff-improved.org b/post/2016-07-17-git-diff-improved.org
+ N  index dc2fca4..631bcf4 100644
+ D  --- a/post/2016-07-17-git-diff-improved.org
+ E  +++ b/post/2016-07-17-git-diff-improved.org
+ X  @@ -38,6 +38,14 @@ fpath=(~/.zsh/func $fpath) # add ~/.zsh/func to $fpath
+     autoload -U ~/.zsh/func/*(:t) # load all functions in ~/.zsh/func
+ ┃   #+end_src
+ ┃
+ ┃  +Here is some sample output:
+ ┃  +
+ ┃  +#+begin_src diff
+ ┃  +#+end_src
+ ┃  +
+ ┃  +#+begin_src diff
+ ┃  +#+end_src
+ ┃  +
+ ┃   * Conclusion
+ ┃
+ ┃   I've been a happy ~gdf~ user for some months now.
+    -- blog --
+#+end_src
+
+* Conclusion
+
+I've been a happy ~gdf~ user for some months now.
+The only "downside" is that because of the vertical ribbon (and the repo name at the top/bottom), the output is no longer readable by ~patch~ (or copy-pastable into a diff-reading utility/service).
+But, this is a minor grievance at best as one can easily invoke the low-level ~git diff~ or ~git diff --cached~ directly to get the raw (~patch~-able) output.
+
+Happy hacking!
