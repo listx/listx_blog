@@ -37,7 +37,7 @@ Here are some of them I heartily recommend.
 - [GnuPG][gpg] (aka `gpg`) - a way to ensure secure communications
 - [Firefox][firefox] - the most mature and stable *customizable* web browser
 - [Pentadactyl][penta] - addon to make Firefox behave like Vim
-- [Qutebrowser][qb] - addon to make Firefox behave like Vim
+- [Qutebrowser][qb] - a lightweight browser that takes the best of Firefox + Pentadactyl experience
 - [Texlive][texlive] - the modern TeX environment (XeTeX being my preferred engine)
 - [Lilypond][lily] - if TeX is the sophisticated typesetting system, then Lilypond is the sophisticated sheet-music-setting system
 - [Blender][blend] - an advanced 3D graphics program
