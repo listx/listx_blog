@@ -21,7 +21,7 @@ executable blog
   build-depends:
       base >=4.7
     , containers >= 0.5.5.1
-    , hakyll >= 4.5
+    , hakyll >= 4.8
     , network-uri >= 2.6.0.1
     , pandoc >= 1.12
     , clay >= 0.8.0.1
