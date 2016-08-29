@@ -1,0 +1,32 @@
+---
+title: TexLive 2016 with Docker
+tags: linux, tex, docker
+---
+
+#+STARTUP: indent showall
+
+* Motivation
+
+When I first started using TeX, my main OS was Arch Linux.
+This was fine until I switched to NixOS a couple years ago --- I found that NixOS's packaging of [[https://en.wikipedia.org/wiki/TeX_Live][TexLive]] was not as current as Arch Linux.
+
+This is still the case today.
+
+As much as I love using NixOS, creating a Nix package of a very large project like TexLive is no joke.
+
+* Enter Docker
+
+Containerization makes sense for small, do-one-thing-well services like webservers and such, but it makes even more sense for big, complicated /collections/ of packages like TexLive.
+There are hundreds (thousands?) of components in TexLive: individual TeX packages, fonts, typesetting engines, etc.
+Thankfully, Arch Linux maintainers do a great of keeping up with upstream packages, and TexLive is no exception!
+
+I've created a [[https://github.com/listx/texlive-docker][new Github project]] (simply called ~texlive-docker~) to house the Dockerfiles I use to create TexLive images --- all built on top of Arch Linux as the base image.
+The project uses [[https://travis-ci.org/listx/texlive-docker][TravisCI]] to upload images to [[https://hub.docker.com/r/listx/texlive/tags/][Docker Hub]].
+
+Be sure to have a look at the [[https://github.com/listx/texlive-docker/blob/master/README.md][README]] for suggestions on usage.
+
+* Closing Thoughts
+
+If you have any suggestions for improvement (please bear in mind that we want to keep the images as simple as possible), please let me know in the Github issue tracker.
+
+Happy TeX-ing!
