@@ -1,0 +1,329 @@
+---
+title: The Parking Lot Problem, or "Smallest Free Number"
+tags: programming, haskell
+mathjax: on
+---
+
+#+STARTUP: indent showall
+
+Almost exactly two years ago, I discussed what I called the [[2014-09-22-parking-lot-problem.html][Parking Lot Problem]].
+Recently I discovered that it is a widely-known problem, enough to be featured in the very first chapter of /Pearls of Functional Algorithm Design/ (2010) by Richard Bird --- where it is simply called "smallest free number".
+In this post, I want to go over Bird's explanations in more detail; my aim is to spare you the effort in deciphering his opaque writing style.
+
+Bird presents two solutions --- an imperative, array-based solution and a functional solution based on divide-and-conquer.
+
+* Problem Statement
+
+Bird describes the problem as "computing the smallest natural number not in a given finite set /X/ of natural numbers".
+Here, *natural numbers* means the set of all positive integers and zero, or just ~[0..]~ in Haskell.
+
+I would like to add some further terminology.
+Let us think of the set /X/ as ~xs~ (a list of elements in /X/), and call the set of all free numbers as the /free set/.
+Using our original parking lot analogy, the infinite parking lot is the set of all natural numbers, /X/ is the list of parked spots (occupied), and finally the /free set/ is the list of all unoccupied (open) parking spots.
+
+* Naive list-based solution
+
+- i 2016-09-24-parking-lot-problem-revisited/naive.hs
+
+The worst case of *minfreeNaive* is \(\Theta(n^2)\), because it translates into imperative pseudocode as follows:
+
+#+begin_src
+# Algorithm P1
+minfreeNaive(xs)
+{
+  let freeSpots = array from 0 to infinity
+  let i = all natural numbers 0 to infinity
+  let j = i
+  let xs_max_idx = xs.length - 1
+
+  for (i = 0;; i++) {
+    for (j = 0; j < xs_max_idx; j++) {
+      if (i == xs[j]) {
+        remove i from freeSpots
+      }
+    }
+
+    if (i > xs_max_idx) {
+      break
+    }
+  }
+
+  return freeSpots.first_one
+}
+#+end_src
+
+.
+Now imagine if *xs* looks like *[9,8,7,6,5,4,3,2,1,0]*.
+Then the first iteration of the outer *i* for-loop would check all 10 values in *xs*, until finally hitting the last value in *xs*, 0 to remove that 0 from *candidates*.
+Then the second iteration would check all values 9 through 2, until removing *1* from candidates.
+And so on, until it removed 9 as well.
+So, the total number of times that single *if* statement gets executed is
+
+\[
+10 + 9 + 8 + 7 + 6 + 5 + 4 + 3 + 2 + 1 = 55
+\]
+
+.
+The formula for the sum of all positive, consecutive integers 1 through N is
+
+\[
+\frac{n(n + 1)}{2} = \frac{n^2 + n}{2}.
+\]
+
+In Big-O notation, the above reduces to just \(n^2\) because of the first term \(n^2\) in \(n^2 + n\). [fn:: Big-O only cares about growth of the algorithm; the \(n^2\) will come to dominate the growth rate as \(n\) gets bigger.]
+As a side note, the above equation has a colorful history in mathematics, [[https://en.wikipedia.org/wiki/Carl_Friedrich_Gauss#Anecdotes][anecdotally attributed to Gauss]].
+
+* Interlude: Key insight of the problem
+
+Bird says the following:
+
+#+begin_quote
+The key fact for both the array-based and divide and conquer solutions is that not every number in the range [ 0 .. /length xs/ ] can be in /xs/. Thus the smallest number not in /xs/ is the smallest number not in /filter (<= n) xs/, where /n = length xs/.
+#+end_quote
+
+.
+Let's examine the first sentence.
+Consider ~length xs = 1~.
+That is, what if ~xs~ is only 1 element big (only 1 car is parked in the lot)?
+Intuitively, it appears that we don't need to perform millions and millions of checks.
+Since we know that there is only 1 car parked, we just need to consider if that car is in Parking Spot 0 (the first free spot, or /PS0/).
+If it is, then we can assign the next slot, PS1.
+Otherwise, we can assign PS0 itself.
+If there are 2 cars parked (~length xs = 2~), in total we need only consider the first 2 spots, PS0, PS1 --- if those are both taken, then the answer is PS2.
+
+This leads us to the main theorem of this problem (let's call it the *Fullness Theorem*):
+
+#+begin_quote
+For any *n* cars parked, we can consider the spots numbered ~[0..(n-1)]~; if all of those spots are full, we can assign spot *n* itself.
+#+end_quote
+
+Since ~length [0..(n-1)]~ coincidentally happens to be just *n*, the total number of spots taken into consideration for this problem is *n + 1* --- parking spots ~[0..(n-1)]~ and spot ~n~ itself.
+And so we can reduce the free set to just ~[0..(n-1)] ++ [n]~, or the equivalent ~[0 .. length xs]~ and ignore all other possible free spots. [fn::It is for this reason, apart from looping indefinitely, that justifies the *break* condition for the outer loop in Algorithm P1.]
+To restate, our answer to the original problem statement lies somewhere in this range ~[0 .. length xs]~, which we will call *reducedFrees*.
+
+Now let's look at the second sentence.
+It describes the set ~filter (<n) xs~, which we will call *reducedXs*. [fn::Bird wrote (<=n) as the filter condition, but this is in error. The simpler ~(<n)~ does the job just as well.]
+The set *reducedXs* is found by removing all elements in *xs* that are too big for our problem size of *n + 1* spots --- i.e., beyond the range in *reducedFrees*.
+
+* Improved array-based solution
+
+Using the insight gained above, we can restate the problem as follows:
+
+- i 2016-09-24-parking-lot-problem-revisited/array2.hs
+
+.
+
+Bird says "[t]he function /search/ takes an array of Booleans, converts the array into a list of Booleans and returns the length of the longest initial segment consisting of /True/ entries. This number will be the position of the first /False/ entry."
+This is true, and we'll soon see why this is the case.
+
+In order to understand how *minfreeArray1* works, let's first examine a further simplification of the problem.
+Conceptually we are only interested in the very first group of consecutively parked cars (if it exists at all), because as soon as this first group of cars ends, we are at the lowest-numbered free parking spot.
+In binary, we can represent an empty spot as 0 and a parked car as 1.
+The set of parked cars in *reducedXs* might look something like this (using a ~.~ for ~0~):
+
+#+begin_example
+111111.11.1.111.1.111.111.11.1......1.1.111.1
+^^^^^^
+#+end_example
+
+.
+Although there are many groups of parked cars, we are only interested in the *first* group, denoted by the hat signs.
+Consider another example:
+
+#+begin_example
+.111.1.111.11...
+ ^^^
+#+end_example
+
+.
+In this there is the triplet of cars, but it starts after an empty spot at PS0.
+Lastly let's consider
+
+#+begin_example
+..........1..111111.111.1.1.111.1
+          ^
+#+end_example
+
+; again, the first group of cars (in this case just 1 car) is preceded by an empty spot (actually, many such empty spots).
+In the last two examples, the answer is simply 0, for the very first spot PS0.
+For all other cases, the first group of cars starts from PS0, and extends some arbitrary number of spots, until "breaking" by an available spot.
+So there are two cases really as far as *reducedXs* is concerned:
+
+1) there is a contiguous group of car(s) from PS0 onwards, or
+2) PS0 is empty.
+
+The algorithm then is simply ~length $ takeWhile (==True) checklist~, where ~checklist~ is a list of Boolean values with a 1:1 mapping of the parking spots, in order (with ~True~ representing a parked car and ~False~ representing an empty spot).
+If we're in case 2) as above, then we get 0 because ~takeWhile~ never grows.
+If we're in case 1), ~takeWhile~ keeps growing until the first empty spot; coincidentally, the length of ~takeWhile~'s return list happens to be the index of the next free spot, we can just use the size of the return list of ~takeWhile~ as-is.
+
+And this is exactly what the ~search~ function does in the algorithm Bird describes.
+~elems~ returns all the elements of an Array.
+~takeWhile~ grows a list so long as the given predicate evaluates to *True*; since we already have Booleans, we can just use *id*.
+All we need to give as an argument to ~search~ is a Boolean list that is ordered from PS0 to PSn (the range of *reducedXs*).
+This conversion of a list of unordered natural numbers into a sorted list of Boolean values in the range covered by *reducedXs* is handled by ~checklist~.
+
+Bird uses the library function ~Data.Array.accumArray~ to populate ~checklist~.
+~accumArray~ takes a list of index-value pairs, and if there are multiple pairs with the same index, combines the values of those pairs using the accumulating function.
+A common use case of ~accumArray~ is to use it to create a histogram of values, by using ~(+)~ as the accumulating function (so that all values at a particular index are summed together).
+In the ~checklist~ implementation by Bird, the accumulating function is ~(||)~ (logical OR function) to account for the possibility of duplicate numbers in ~xs~.
+E.g., if ~xs = [1, 2, 1]~, then the ordered pairs are ~[(0, False), (1, True), (2, True), (1, True)]~, and ~checklist~ evaluates to ~[False, True, True]~, because the ~True~ value in the two instances of ~(1, True)~ are simply OR-ed together by ~(||)~.
+
+** Using ~accumArray~ to sort numbers
+
+Bird mentions that you can use ~accumArray~ to sort positive integers.
+The code is as follows:
+
+#+begin_src haskell :results session
+import Data.Array (Array, accumArray)
+
+countlist :: [Int] -> Array Int Int
+countlist xs = accumArray (+) 0 (0, n) (zip xs (repeat 1))
+
+sort xs = concat [ replicate k x | (x, k) <- assocs $ countlist xs ]
+#+end_src
+
+.
+(Bird defines ~sort~ without the use of ~assocs~ which gives a list of tuples of the form ~(index, element-at-index)~, but that is in error.)
+The way it works is, ~countlist~ essentially builds a histogram of numbers we want to sort.
+So, given ~[0, 6, 2, 0, 0]~, we get ~[(0,3),(2,1),(6,1)]~.
+We then use ~replicate~ in ~sort~ to "unpack" each element of the histogram.
+Continuing with the example, ~(0,3)~ becomes ~[0, 0, 0]~, ~(2,1)~ becomes ~[2]~, and so on.
+Since the result looks like ~[[0,0,0],[2],[6]]~ we have to ~concat~ it to get ~[0,0,0,2,6]~, our sorted list.
+
+** Sorting for "free"
+
+It should be reiterated here that ultimately we want to have an ordered list of Booleans that preserves the occupied parking spot information in the original list of "taken" spots.
+The way in which ~checklist~ performs the conversion of unordered numbers into a nice list of Booleans in the range ~[0..n]~ is virtually identical in design to the algorithm described by Jon Bentley in the very first chapter of his book /Programming Pearls/ (2nd Ed., 2000).
+There Bentley used a bitmap to represent a Boolean array because of strict memory requirements --- but otherwise the spirit of the data structure remains the same.
+
+* (Further improved) Array-based solution
+
+Bird's final array-based algorithm uses the ST Monad to squeeze out some more performance of the ~checklist~ function.
+Here is the code:
+
+- i 2016-09-24-parking-lot-problem-revisited/array2.hs
+
+.
+The use of the ST monad here reduces memory overhead, and according to Bird it is the most efficient approach using and imperative style on top of arrays.
+
+* Divide and Conquer via Recursion
+
+Ah, recursion.
+Bird describes the following divide-and-conquer algorithm as a faster alternative to ~accumArray~. [fn:: According to Bird, it is 20% faster than the array-based algorithm.]
+
+- i 2016-09-24-parking-lot-problem-revisited/divideAndConquer.hs
+
+The overall idea is that we can define the problem ~minimum of ([0..] \\ xs)~ by dividing up ~xs~ into 2 halves, and then look into the correct sub-part for the solution.
+Notice that we are partitioning the ~xs~ (soley the list of parked spots), and /not/ the parking lot itself.
+
+For example, we can divide up ~xs~ into ~as~ and ~bs~, where ~(as, bs) = partition (<b) xs~.
+(The ~partition~ library function simply splits up a given list into 2 subsets, those that satisfy the given condition, and those that do not.)
+Deciding which partition to look at is simple: look in the upper partition if the lower partition (containing the smaller-numbered parking spots) is full.
+We avoid using the word "half" here because the element ~b~ does not necessarily lie in the middle of ~xs~.
+(We could have ~xs = [0,773,234342,9993992349]~ where ~n = 4~.)
+
+The line ~(n == 0) = a~ merely means that, if the list of cars is empty, simply choose the lowest number (which is, by definition, ~a~).
+The line ~(m == b - a) = minfrom b (n -m, bs)~ chooses the bigger partition of the two partitions, on the condition ~(m == b - a)~.
+This condition asks whether the /length/ of ~as~ (the first partition) equal to the distance of ~b - a~ --- in other words, whether ~as~ fills up the entire range ~[a..(b-1)]~.
+If it does fill up the entire range, then this parking lot subsection is completely packed with cars, so there is no point in looking; we must look into the other partition (~[b..]~) for the first empty spot.
+Otherwise, we look into the first partition.
+
+The hard part here is choosing the value of ~b~ (the pivot at which we decide to partition ~xs~).
+By definition, our partitions are ~as~ and ~bs~, where ~(as, bs) = partition (<b) xs~.)
+There are two things we want:
+
+- minimum difference in size between ~as~ and ~bs~, and
+- nonzero length partition for the first partition ~as~.
+
+We want minimal size difference between ~as~ and ~bs~ because otherwise we might end up calling ~minfrom~ many times; we want it so that whether we use ~as~ or ~bs~ (in whichever sequence), we deal with smaller and smaller lists of parked cars.
+The only way to do this is to divide the list of cars by half each time.
+This is where we get ~div n 2~.
+This is, more or less, the spirit of binary search.
+
+The requirement of the second condition is more subtle --- we want to avoid taking a zero-length partition for ~as~, because our main conditional ~m == b - a~ relies on the fact that this distance, ~b - a~, is nonzero.
+This is because it must ask the question, "do the parking spots in the first partition fill up all spots in the range that it can cover?", and this question loses its meaning if we give it an empty partition.
+Seen another way, the statement ~partition (<b) xs~, and the act of choosing those ~xs~ that are ~b~ or bigger /if the first partition is completely full/, is the recursive analogue of the Fullness Theorem.
+Whereas the Fullness Theorem did not really help much in the iterative array-based solution, it plays a key role in this recursive solution, because it correctly describes how to partition ~xs~ with minimum fuss.
+The phrase "otherwise assign spot *n* itself" in that Theorem translates to choosing the non-full, bigger partition, because it starts with spot *n* --- the only twist here is that instead of assigning spot *n* directly, we re-assign ourselves a new problem of looking for parking spots /starting/ with spot *n*.
+To be clear, this partitioning scheme merely discards consecutive runs of parked cars, about ~div n 2~ spots at a time.
+
+For demonstrative purposes, let's consider what would happen if we ignored what we just said and really did define ~b~ as
+
+#+begin_src haskell
+b = a + (div n 2)
+#+end_src
+
+for the case of ~xs = [0]~ and ~n = 1~; we would start off with
+
+#+begin_src haskell
+minfrom 0 (1, [0])
+#+end_src
+
+and
+
+\[
+b = 0 + (\mathrm{div}\;1\,2) = 0 + 0 = 0,
+\]
+
+such that
+
+#+begin_src haskell
+partition (<0) [0] -- ([], [0])
+-- as = []
+-- m = 0
+-- bs = [0]
+-- n = 1
+#+end_src
+
+and since
+
+#+begin_src haskell
+(m == b - a) -- (0 == 0 - 0) true!
+#+end_src
+
+we would in turn execute
+
+#+begin_src haskell
+minfrom b (n - m, bs) -- minfrom 0 (1, [0])
+#+end_src
+
+, resulting in an infinite loop!
+Thus the correct way to choose ~b~ is with
+
+#+begin_src haskell
+b = a + (div n 2) + 1
+#+end_src
+
+** Running time
+
+Bird gives the running time as \(\Theta(n)\).
+He offers this cryptic phrase:
+
+#+begin_quote
+... the number of steps \(T(n)\) for evaluating /minfrom 0 xs/ when /n = length xs/ satisfies \(T(n) = T(n\,div\,2) + \Theta(n)\), with the solution \(T(n) = \Theta(n)\).
+#+end_quote
+
+Alas, I am not sure what this means.
+Here's my own justification of why we have running time \(\Theta(n)\).
+The two most expensive operations in the recursive algorithm are ~m = length as~ and ~partition (<b) xs~.
+The thing is that both of these calculations take \(\Theta(n)\) time, and both occur only once each, for every call to ~minfrom~.
+Now, ~minfrom~ calculates ~length as~, but /it does not calculate/ ~length bs~.
+This is again, because of the Fullness Theorem --- we only care about the first partition being completely packed with cars.
+Thus, we never really calculate ~m = length as~ over the same range.
+The worst case is an input like ~xs = [0..1000]~ where the entire range of concern is packed with cars; in this case we would calculate the length of ~[0..500]~, then see that it's full and choose the second partition.
+We'd then choose ~[501..750]~, and so on, such that the sum of these calculations effectively cost as much as ~length xs~, or \(n\) itself.
+
+
+** Connection to "Parking Load" problem
+In my sister post, I also described a similar problem, dubbed the Parking Load problem.
+At the time, I was quite surprised at how the answer was much simpler and easier to calculate.
+From the insight I gained from the Fullness Theorem, I think it is clear why that is the case.
+Indeed, the Parking Load problem is just a slight wrinkle of the Fullness Theorem, where ~n~ (number of parked cars) is known, but ~b~ (the endpoint of the "partition"), if you will, is unknown.
+The problem is to simply compute \(b + 1 - n\).
+(We have to add 1 to ~b~ because we use 0-based indexing.)
+I love it when you can explain something in a new way --- don't you?
+
+* Conclusion
+
+I think this lays to rest (for now) the intricacies of the Parking Lot problem, or as Bird puts it, finding the smallest free number.
+Still, I like my parking lot analogy better because I believe it's important to talk about problems in a way that can be related to the real world.
