@@ -6,7 +6,7 @@ mathjax: on
 
 #+STARTUP: indent showall
 
-Almost exactly two years ago, I discussed what I called the [[2014-09-22-parking-lot-problem.html][Parking Lot Problem]].
+Almost exactly two years ago, I discussed what I called the [[./2014-09-22-parking-lot-problem.html][Parking Lot Problem]].
 Recently I discovered that it is a widely-known problem, enough to be featured in the very first chapter of /Pearls of Functional Algorithm Design/ (2010) by Richard Bird --- where it is simply called "smallest free number".
 In this post, I want to go over Bird's explanations in more detail; my aim is to spare you the effort in deciphering his opaque writing style.
 
@@ -219,8 +219,6 @@ Notice that we are partitioning the ~xs~ (soley the list of parked spots), and /
 For example, we can divide up ~xs~ into ~as~ and ~bs~, where ~(as, bs) = partition (<b) xs~.
 (The ~partition~ library function simply splits up a given list into 2 subsets, those that satisfy the given condition, and those that do not.)
 Deciding which partition to look at is simple: look in the upper partition if the lower partition (containing the smaller-numbered parking spots) is full.
-We avoid using the word "half" here because the element ~b~ does not necessarily lie in the middle of ~xs~.
-(We could have ~xs = [0,773,234342,9993992349]~ where ~n = 4~.)
 
 The line ~(n == 0) = a~ merely means that, if the list of cars is empty, simply choose the lowest number (which is, by definition, ~a~).
 The line ~(m == b - a) = minfrom b (n -m, bs)~ chooses the bigger partition of the two partitions, on the condition ~(m == b - a)~.
