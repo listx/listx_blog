@@ -97,7 +97,8 @@ This leads us to the main theorem of this problem (let's call it the *Fullness T
 For any *n* cars parked, we can consider the spots numbered ~[0..(n-1)]~; if all of those spots are full, we can assign spot *n* itself.
 #+end_quote
 
-Since ~length [0..(n-1)]~ coincidentally happens to be just *n*, the total number of spots taken into consideration for this problem is *n + 1* --- parking spots ~[0..(n-1)]~ and spot ~n~ itself.
+(This statement may seem elementary, but it plays a crucial role in the divide-and-conquer approach discussed later).
+Now, since ~length [0..(n-1)]~ coincidentally happens to be just *n*, the total number of spots taken into consideration for this problem is *n + 1* --- parking spots ~[0..(n-1)]~ and spot ~n~ itself.
 And so we can reduce the free set to just ~[0..(n-1)] ++ [n]~, or the equivalent ~[0 .. length xs]~ and ignore all other possible free spots. [fn::It is for this reason, apart from looping indefinitely, that justifies the *break* condition for the outer loop in Algorithm P1.]
 To restate, our answer to the original problem statement lies somewhere in this range ~[0 .. length xs]~, which we will call *reducedFrees*.
 
