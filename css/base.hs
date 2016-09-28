@@ -178,6 +178,27 @@ myStylesheet = do
 									p ? do
 										paddingBottom (em 1)
 					-- <pre><code> is generated if there is multiline (``` ... ```) code
+					blockquote ? do
+						noMargin
+						vh padding 0 $ px 0
+						"-moz-tab-size" -: "4"
+						"-o-tab-size" -: "4"
+						"tab-size" -: "4"
+						display block
+						overflow auto
+						-- we indent a little bit more here compared to
+						-- table.sourceCode, because here we have to
+						-- compensate for the fact that we don't have line
+						-- numbers to push our code a little bit further
+						-- right
+						paragraphIndent0
+						color (grayish 51)
+						backgroundColor quoteBg
+						ev borderRadius (px 0)
+						"border-style" -: "none"
+						boxBorders
+						marginBottom (em 1)
+						paddingTop (em 1)
 					pre ? do
 						noMargin
 						vh padding 0 $ px 0
@@ -251,14 +272,21 @@ myStylesheet = do
 	shadowHex = 0xdcdcd0
 	codeBgHex :: Int
 	codeBgHex = 0xfdf6e3
+	quoteBgHex :: Int
+	quoteBgHex = 0xeeeeee
 	footnotesBgHex :: Int
 	footnotesBgHex = 0xe9f7ff
 	codeBg :: Color
 	codeBg = rgbHex codeBgHex
 	footnotesBg :: Color
 	footnotesBg = rgbHex footnotesBgHex
+	quoteBg :: Color
+	quoteBg = rgbHex quoteBgHex
 	headerIndent = "padding-left" -: "12%"
 	headerIndentRight = "padding-right" -: "12%"
+	paragraphIndent0 = do
+		"padding-left" -: "6%"
+		paragraphIndentRight
 	paragraphIndent = do
 		"padding-left" -: "12%"
 		paragraphIndentRight
