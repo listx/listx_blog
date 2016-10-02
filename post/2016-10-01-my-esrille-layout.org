@@ -1,0 +1,164 @@
+---
+title: "My Esrille Layout: The ZQ Layout"
+tags: programming, c, hardware
+---
+
+#+STARTUP: indent showall
+
+* The ZQ Keyoard Layout
+
+I've spent quite some time on keyboards in my previous posts, and this post is no different.
+After several months of tweaking my [[./2016-04-14-esrille-nisse-keyboard.html][original layout]], I have more or less settled on the final design.
+You can get the sources at my repo [[https://github.com/listx/new-keyboard][here]].
+
+Is for the name "ZQ", it was originally chosen from the way these keys were arranged; the location of these keys have sence changed, but the name has stuck.
+
+** Base Layer
+
+#+begin_src
+    □ □ □ □ □ □     □ □ □ □ □ □
+    ! # * □ □         □ □ / ~ $
+□ □ ; y o p v 1     1 m f t r _ □ □
+□ 2 a i e u w 3     2 h j k l n 3 □ <--- Home row
+  4 z x q ' "         b d g c s 4
+      5 6 7 8 9     5 , 6 7 8 <--------- Thumb row
+
+Left-side legend
+
+1) PageUp
+2) Escape
+3) Tab
+4) Shift
+5) Insert
+6) Super (Windows key)
+7) Space
+8) Caps Lock (remapped with xmodmap to Hyper key)
+9) Control
+
+Right-side legend
+
+1) PageDown
+2) Return
+3) Delete
+4) Shift
+5) FN2
+6) FN
+7) Alt
+8) Right Alt (aka "AltGr" for US International Layout)
+#+end_src
+
+
+** FN Layer
+
+#+begin_src
+    □ □ □ □ □ □     □ □ □ □ □ □
+    □ □ □ □ □         □ □ □ □ □
+□ □ ? 7 8 9 = a     a ` \ . : & □ □
+□ □ - 4 5 6 + ^     @ b { ( ) } □ □ <--- Home row
+  □ 0 1 2 3 %         | [ < > ] □
+      □ □ b □ □     □ □ □ □ □ <--------- Thumb row
+
+Left-side legend
+
+a) Home
+b) Space
+
+Right-side legend
+
+a) End
+b) Backspace
+#+end_src
+
+** FN2 Layer
+
+#+begin_src
+    □ □ □ □ □ □     □ □ □ □ □ □
+    □ □ □ □ □         □ □ □ □ □
+□ □ l g h i □ □     □ □ □ □ □ □ □ □
+□ □ k d e f □ □     □ a b c d □ □ □ <--- Home row
+  □ j a b c □         □ □ □ □ □ □
+      □ □ □ □ □     □ □ □ □ □ <--------- Thumb row
+
+Left-side legend
+
+a) F1
+b) F2
+c) F3
+d) F4
+e) F5
+f) F6
+g) F7
+h) F8
+i) F9
+j) F10
+k) F11
+l) F12
+
+Right-side legend
+
+a) Left Arrow
+b) Down Arrow
+c) Up Arrow
+d) Right Arrow
+#+end_src
+
+** Keycap Arrangement
+
+I have not covered this topic before, but I think it is worth mentioning.
+On the underside of each keycap, there is a number; presumably for the row that the keycap is designed for.
+I've rearranged the default keycap placement to better reflect how I use my keys.
+The biggest change from the default Esrille setup is that I vertically flip the thumb row keys, so that they are "upside-down".
+I find this arrangement more comfortable for my thumbs.
+
+#+begin_src
+    n n n n n n     n n n n n n
+    n n n n n         n n n n n
+n 3 3 3 3 3 3 n     n 3 3 3 3 3 3 n
+3 3 2 2 2 2 2 n     n 2 2 2 2 2 3 3 <--- Home row
+  1 2 1 1 1 2         2 1 1 1 2 1
+      1 1 1 1 1     1 1 1 1 1 <--------- Thumb row*
+
+Legend
+
+n) No number
+1) Row 1
+2) Row 2
+3) Row 3
+
+*The thumb row keycaps are flipped upside-down for better comfort.
+#+end_src
+
+* Typing Speed
+
+After some time, I realized that the end goal was to design a layout that was not more "optimal" in the sense of mechanical efficiency, but rather to design something more /comfortable/ to use.
+I can readily say that even at this early stage, I tend to like this layout more over Qwerty because my hands stay put as I type.
+The only time I move my wrists from their default position is when I need to reach the six keys up top in the base layer (=!#*/~$=).
+
+It may turn out that this new layout does not really improve raw typing speed; but really I don't care because home-row access to parentheses and the backspace key are too good to let go.
+
+* Other Thoughts
+
+The design has changed quite a bit in these past few months.
+After some initial trials, I realized that the arrangement recommended by my [[https://github.com/listx/keylo][program]] was not really optimized the way I wanted it to be.
+For one, the corpus I fed into the program was not very good because it didn't realy reflect my real-world use-case; I use Vim-style HJKL keys almost everywhere, and really to get a truly representative histogram of keypresses, I should have used a keylogger for some months to record my actual usage.
+As time was of the essence, I decided to just evolve the layout gradually, tweaking bits I found annoying.
+
+One hurdle was simply trying to avoid using the same finger in succession.
+In the current ZQ layout, the right index finger is charged with six keys: MHBFJD.
+It took a lot of trial and error to arrive at this combination.
+
+I also just kept the original Qwerty placement of the HJKL keys.
+The main reason is that I use these keys all the time, so much that they deserve their original home-row placement.
+And, actually they helped in reducing same-finger consecutiveness (J and K are rare letters in English).
+
+Another point of concern was the interaction of some key combinations like YN and <Return>.
+It is common to type either Y or N and press <Return> immediately after, when dealing with interactive torminal programs.
+The same goes for some UNIX-y combinations like =~/= for the home directory in the filesystem, or =*= and =/= for interactive search in vim(1) and less(1), respectvely.
+The current design of ZQ strives to make these combinations easy to type.
+
+Lastly, I paid a great deal of attention for certain common letter combinations --- in particular, "gh", "ch", "sh", "th", and "wh".
+Because I decided to keep HJKL keys on the home row, and because H was assigned to the right index finger, I had to make sure that I place the GCSTW keys either on the left side of the keyboard (as I did with "W"), or place them for the other fingers.
+This effort alone resulted in dictating where most of the keys ended up.
+
+After all that's been said, time will tell if I truly do end up using this layout.
+I have a friend who uses Dvorak for work and Qwerty for gaming; perhaps I'll end up in a similar boat.
