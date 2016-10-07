@@ -5,7 +5,7 @@ import Data.Bits
 import Data.Monoid
 import qualified Data.Text.Lazy as T
 import qualified Data.Text.Lazy.IO as T
-import Clay
+import Clay hiding (vh)
 import qualified Clay.Display as CD
 import Clay.Font
 import qualified Clay.Text as CT
@@ -264,7 +264,7 @@ myStylesheet = do
 					textAlign $ alignSide sideCenter
 	where
 	div' = Clay.div
-	cPageWidth :: Integer
+	cPageWidth :: Double
 	cPageWidth = 900
 	bgHex :: Int
 	bgHex = 0xc8c8d2
