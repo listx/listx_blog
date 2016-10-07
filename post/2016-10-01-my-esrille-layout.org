@@ -11,7 +11,7 @@ I've spent quite some time on keyboards in my previous posts, and this post is n
 After several months of tweaking my [[./2016-04-14-esrille-nisse-keyboard.html][original layout]], I have more or less settled on the final design.
 You can get the sources at my repo [[https://github.com/listx/new-keyboard][here]].
 
-Is for the name "ZQ", it was originally chosen from the way these keys were arranged; the location of these keys have sence changed, but the name has stuck.
+Is for the name "ZQ", it was originally chosen from the way these keys were arranged; the location of these keys have since changed, but the name has stuck.
 
 ** Base Layer
 
