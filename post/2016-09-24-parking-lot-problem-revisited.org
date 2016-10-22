@@ -97,7 +97,7 @@ This leads us to the main theorem of this problem (let's call it the *Fullness T
 For any *n* cars parked, we can consider the spots numbered ~[0..(n-1)]~; if all of those spots are full, we can assign spot *n* itself.
 #+end_quote
 
-(This statement may seem elementary, but it plays a crucial role in the divide-and-conquer approach discussed later).
+(This statement may seem elementary, but it plays a crucial role in the divide-and-conquer approach discussed later.)
 Now, since ~length [0..(n-1)]~ coincidentally happens to be just *n*, the total number of spots taken into consideration for this problem is *n + 1* --- parking spots ~[0..(n-1)]~ and spot ~n~ itself.
 And so we can reduce the free set to just ~[0..(n-1)] ++ [n]~, or the equivalent ~[0 .. length xs]~ and ignore all other possible free spots. [fn::It is for this reason, apart from looping indefinitely, that justifies the *break* condition for the outer loop in Algorithm P1.]
 To restate, our answer to the original problem statement lies somewhere in this range ~[0 .. length xs]~, which we will call *reducedFrees*.
@@ -205,7 +205,7 @@ Here is the code:
 - i 2016-09-24-parking-lot-problem-revisited/array2.hs
 
 .
-The use of the ST monad here reduces memory overhead, and according to Bird it is the most efficient approach using and imperative style on top of arrays.
+The use of the ST monad here reduces memory overhead, and according to Bird it is the most efficient approach using an imperative style on top of arrays.
 
 * Divide and Conquer via Recursion
 
