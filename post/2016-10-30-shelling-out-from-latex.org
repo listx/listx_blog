@@ -1,0 +1,55 @@
+---
+title: Shelling Out From Latex
+tags: programming, latex
+---
+
+#+STARTUP: indent showall
+
+* The Problem
+
+For years, whenever I wanted to interact with the outer shell environment from Latex, I would use one of two methods:
+
+1) perform some shell step separately from Latex and inject it into the Latex sources, or
+2) save it somewhere else and pull it in from Latex with ~\input{foo}~.
+
+But I learned recently that it can be done much more simply, if you are willing to use Luatex!
+
+* Enter Luatex
+
+Let's assume that you keep your Latex document in source control and want to inject the Git hash into the document.
+First, define a new command called ~\shell~.
+
+#+begin_src
+% Call shell! See http://tex.stackexchange.com/a/114939/30920.
+\newcommand\shell[1]{\directlua{
+    local handle, err = io.popen([[#1]])
+    if not handle then
+        tex.print(err)
+        os.exit(1)
+    end
+    local result = handle:read("*a")
+    handle:close()
+    tex.print(result)
+}}
+#+end_src
+
+Then use it like this:
+
+#+begin_src
+\shell{TZ='America/Los_Angeles' date}
+
+\shell{git describe --always}%
+\shell{(( $(git --no-pager diff 2>/dev/null | wc -l) + $(git --no-pager diff --cached 2>/dev/null | wc -l) > 0 )) && echo '*'}
+#+end_src
+
+.
+I then use ~lualatex --shell-escape foo.tex~ to compile it.
+This is actual code from a Luatex document of mine.
+
+I am not sure which shell program gets invoked, but for most things it should not matter much.
+
+* Conclusion
+
+Now you know how to shell out from Latex!
+
+Happy hacking!
