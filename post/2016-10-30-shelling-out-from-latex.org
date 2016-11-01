@@ -1,6 +1,6 @@
 ---
 title: Shelling Out From Latex
-tags: programming, latex
+tags: programming, tex
 ---
 
 #+STARTUP: indent showall
