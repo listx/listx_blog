@@ -1,0 +1,20 @@
+---
+title: Replaying Vim Macros
+tags: programming, emacs, vim
+---
+
+#+STARTUP: indent showall
+
+I've been using Vim (and now, Emacs with Evil mode) for years --- and still, every once in a while I get a pleasant surprise.
+Today I learned that you can replay macros from Visual Line mode!
+So you don't always have to record something like ~j0~ at the end of your macro to get down to the next line.
+I.e., after recording your macro for just 1 line, select other lines that you want to replay the macro against with Visual Line mode (~V~).
+To replay, do
+
+#+begin_src
+:'<,'>g/^/norm @q
+#+end_src
+
+(assuming that you recorded your macro into the ~q~ register with ~qq...q~).
+
+Thanks to [[https://twitter.com/chris_mccord/status/530770735107547136][Chris McCord]] for the tip (seek to about 3:20 in the [[https://youtu.be/3wAeFiGv_yE?t=3m20s][video]]).
