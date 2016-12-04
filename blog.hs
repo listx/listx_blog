@@ -5,6 +5,7 @@ import Hakyll
 import System.FilePath.Posix
 import Text.Pandoc (WriterOptions (..), HTMLMathMethod (MathJax))
 import Text.Pandoc.Definition
+import qualified Text.Printf as TF
 
 main :: IO ()
 main = hakyll $ do
@@ -139,6 +140,7 @@ postCtx :: Context String
 postCtx = mconcat
 	[ dateField "date" "%Y-%m-%d"
 	, fileNameField "filename"
+	, bytesField "bytes"
 	, defaultContext
 	]
 
@@ -186,6 +188,13 @@ postList tags pattern sortFilter = do
 fileNameField :: String -> Context String
 fileNameField key = field key $ \item -> do
 	return . toFilePath $ itemIdentifier item
+
+bytesField :: String -> Context String
+bytesField key = field key $ \item -> do
+	return . showKChars . length . filter (flip notElem $ (" \t" :: String)) $ itemBody item
+	where
+	showKChars :: Int -> String
+	showKChars n = TF.printf "%.1f" (fromIntegral n / 1000.0 :: Double)
 
 transformer :: Pandoc -> Compiler Pandoc
 transformer (Pandoc m bs0) = do

@@ -158,6 +158,9 @@ myStylesheet = do
 						border solid (px 1) (grayish 204)
 						ev borderRadius (px 3)
 						vh padding 0 (px 4)
+						".plain" & do
+							backgroundColor $ rgbHex 0xffffff
+							border solid (px 0) (grayish 204)
 					div' ? do
 						".figure" & do
 							-- center images
@@ -228,15 +231,27 @@ myStylesheet = do
 						"tab-size" -: "4"
 						paddingRight $ px 0
 						marginBottom (em 1)
+						borderSpacing2 (px 0) (px 1)
 						-- posts archive
 						".ul" & do
 							paragraphIndent
 							marginBottom $ px 0
 							paddingBottom (em 1)
+							thead ? do
+								tr ? do
+									th ? do
+										borderCollapse separate
+										borderBottom solid (px 1) (rgbHex 0x000000)
+										".label" & do
+											textAlign $ alignSide sideCenter
 							tr ? do
 								td ? do
+									vh padding 0 $ px 5
+									"vertical-align" -: "text-top"
 									".date" & do
-										"vertical-align" -: "text-top"
+										whiteSpace nowrap
+									".bytes" & do
+										textAlign $ alignSide sideRight
 										whiteSpace nowrap
 						".gallery" & do
 							headerIndent
