@@ -37,23 +37,18 @@ myStylesheet = do
 			width (px cPageWidth)
 			vh margin (px 0) auto
 			a ? do
-				let
-					hoverLink = do
-						textDecoration none
-						hover & do
-							textShadow (px 0) (px 0) (px 2)
-								(rgbHex $ shadowHex - 0x222222)
+				outline none (px 1) (rgbHex 0x000000)
+				textDecoration none
 				link & do
 					color (rgbHex 0x0077ff)
 				visited & do
 					color (rgbHex 0x007020)
 				hover & do
-					textDecoration none
-				".history" & hoverLink
-				".raw" & hoverLink
+					textDecoration underline
+					".section-heading" & do
+						textDecoration underline
 				".section-heading" & do
 					color textColor
-					textDecoration none
 			sup ? do
 				"vertical-align" -: "top"
 				fontSizeCustom Clay.Font.small
