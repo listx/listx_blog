@@ -1,0 +1,55 @@
+---
+title: Open-sourcing My Dotfiles
+tags: programming
+---
+
+#+STARTUP: indent showall
+
+* Newsflash!
+
+I just open-sourced my dotfiles!
+The repo is probably one of the older Git repos out there and has over 2000 commits!
+The [[https://github.com/listx/syscfg/commit/7ef106b306c1f2a5a7f622f67f1571976e8097ef][first commit]] was made in March 10, 2009, over 7 years ago.
+Mind you, even by that time I had accumulated a whole suite of configs, and I even had an exotic setup with XMonad 0.8.1!
+
+Here are some takeaways:
+
+** Maintain clean, meaningful commit history
+
+It's nice to have clean commit history --- every line of code can answer *why* it exists.
+You are doing yourself a disservice (in the long run) if you have overly terse commit messages.
+Generally speaking, be as verbose as you can be, but within reason.
+Keeping the first line of the commit message down to less than 80 characters goes a long way in setting the tone for any auxiliary paragraphs that follow.
+
+I am quite proud of the richness of my commit messages.
+Pretty much everything makes sense and I don't have to use Google to reason about my choices.
+
+** Keep your build system simple
+
+I've used a stupidly simple build system of creating symlinks to "install" my configuration --- all with the help of a single ~Makefile~.
+It's not very flexible, and to be honest my Shell sklls are much better than what they used to be such that I could replace this setup with a script.
+But alas, the need for such a change has not been serious enough to warrant it.
+
+Moreover, having a simple "build" system ensures robustness; the more I get older, the more I value systems that have a long "bit-rot halflife".
+I admire Knuth's TEX system for this very same reason.
+And this is the same reason why I will probably not use anything higher-level than a shell script for the job.
+
+** Delete dead code
+
+Every long-living code repository ends up collecting clutter over the years.
+It's important to delete such code (and of course any corresponding comments), to keep the codebase nimble.
+Ultimately, the less code you have to maintain, the better.
+
+** Don't settle
+
+Software evolves.
+Always be on the lookout for better software, and new ways to configure them!
+Leverage the power of open source (free upgrades!) and make it work for you.
+
+* Do you track your configs?
+
+If not, you should definitely consider it --- what have you got to lose?
+I think that keeping track of configuration files
+Keeping a configuration repo (distributed across home computers) is probably the best way for you to learn how to use a distributed source control system; indeed it was how I learned to use Git properly.
+
+Happy hacking!
