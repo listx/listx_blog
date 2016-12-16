@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 
+import Data.Char hiding (Space)
 import Hakyll
 import System.FilePath.Posix
 import Text.Pandoc (WriterOptions (..), HTMLMathMethod (MathJax))
@@ -191,7 +192,7 @@ fileNameField key = field key $ \item -> do
 
 bytesField :: String -> Context String
 bytesField key = field key $ \item -> do
-	return . showKChars . length . filter (flip notElem $ (" \t" :: String)) $ itemBody item
+	return . showKChars . length . filter isAlphaNum $ itemBody item
 	where
 	showKChars :: Int -> String
 	showKChars n = TF.printf "%.1f" (fromIntegral n / 1000.0 :: Double)
