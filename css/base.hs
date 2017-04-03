@@ -159,7 +159,7 @@ myStylesheet = do
 					div' ? do
 						".figure" & do
 							-- center images
-							display CD.table
+							display CD.displayTable
 							vh margin (px 0)auto
 						".footnotes" & do
 							backgroundColor footnotesBg
