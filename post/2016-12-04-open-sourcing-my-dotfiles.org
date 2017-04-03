@@ -49,7 +49,6 @@ Leverage the power of open source (free upgrades!) and make it work for you.
 * Do you track your configs?
 
 If not, you should definitely consider it --- what have you got to lose?
-I think that keeping track of configuration files
 Keeping a configuration repo (distributed across home computers) is probably the best way for you to learn how to use a distributed source control system; indeed it was how I learned to use Git properly.
 
 Happy hacking!
