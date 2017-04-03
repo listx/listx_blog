@@ -1,0 +1,106 @@
+---
+title: Calling C from Haskell
+tags: programming, haskell
+mathjax: off
+---
+
+#+STARTUP: indent showall
+
+Yesterday I made a minimal working example of calling C from Haskell, where I call a simple C function to compute the greatest common denominator, or "GCD".
+The Haskell portion only serves as a wrapper around the C function.
+This post is a brief look at the whole setup.
+
+* The Setup
+
+I used =ghc= 8.0.1, and =gcc= 5.4.0. [fn:: The version of gcc should not matter at all -- actually, any decent C compiler should work.]
+
+** Folder Structure
+
+#+begin_src
+2017-04-02-calling-c-from-haskell
+├── build.sh
+├── c
+│   ├── gcd.c
+│   └── gcd.h
+└── hs
+    ├── ffi.hs
+    └── GCD.hs
+
+2 directories, 5 files
+#+end_src
+
+** File Contents
+
+- i 2017-04-02-calling-c-from-haskell/c/gcd.h
+- i 2017-04-02-calling-c-from-haskell/c/gcd.c
+- i 2017-04-02-calling-c-from-haskell/hs/GCD.hs
+- i 2017-04-02-calling-c-from-haskell/hs/ffi.hs
+- i 2017-04-02-calling-c-from-haskell/build.sh
+
+* Discussion
+
+To compile the example, run the =build.sh= script.
+Here is the expected output of the built executable:
+
+#+begin_src
+ $ ./hs/ffi
+4
+15
+12
+#+end_src
+
+.
+The =gcd()= C function is easy to work with because it is a pure function without side effects.
+You can run the =ffi= binary against =valgrind= to make sure that we are not leaking any memory (sample output below).
+
+#+begin_src
+ $ valgrind --error-exitcode=1 --leak-check=yes ./hs/ffi
+==14582== Memcheck, a memory error detector
+==14582== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
+==14582== Using Valgrind-3.12.0 and LibVEX; rerun with -h for copyright info
+==14582== Command: ./hs/ffi
+==14582==
+==14582== Warning: set address range perms: large range [0x4200000000, 0x14200100000) (noaccess)
+4
+15
+12
+==14582==
+==14582== HEAP SUMMARY:
+==14582==     in use at exit: 0 bytes in 0 blocks
+==14582==   total heap usage: 48 allocs, 48 frees, 60,006 bytes allocated
+==14582==
+==14582== All heap blocks were freed -- no leaks are possible
+==14582==
+==14582== For counts of detected and suppressed errors, rerun with: -v
+==14582== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+#+end_src
+
+** Caveats
+
+Below are some things I tried, but could not get to work.
+
+- I tried to delete the =gcd.c= file by moving the function definition in =gcd.c= to =gcd.h= (and delete =gcd.c= entirely). I compiled the object file with =gcc -c -Wall -Wextra -Werror -o gcd.o gcd.h= but then I got this error:
+
+#+begin_src
+ $ ghc --make ffi.hs ../c/gcd.o
+[1 of 2] Compiling GCD              ( GCD.hs, GCD.o )
+[2 of 2] Compiling Main             ( ffi.hs, ffi.o )
+Linking ffi ...
+../c/gcd.o: file not recognized: File format not recognized
+collect2: error: ld returned 1 exit status
+`cc' failed in phase `Linker'. (Exit code: 1)
+#+end_src
+
+- In =GCD.hs= you can see the line =foreign import ccall "gcd.h gcd"﻿=. Instinctively I thought that the =gcd.h= in =﻿"gcd.h gcd"﻿= served as a kind of disambiguator, for where the =gcd()= function came from. So then I defined another function named =gcd()= in a different C header file (=gcd_other.h=), compiled it separately, but got a "multple definition" error:
+
+#+begin_src
+ $ ghc --make ffi.hs ../c/gcd.o ../c/gcd_other.o
+[1 of 2] Compiling GCD              ( GCD.hs, GCD.o )
+[2 of 2] Compiling Main             ( ffi.hs, ffi.o )
+Linking ffi ...
+../c/gcd_other.o: In function `gcd':
+gcd_other.c:(.text+0x0): multiple definition of `gcd'
+../c/gcd.o:gcd.c:(.text+0x0): first defined here
+collect2: error: ld returned 1 exit status
+`cc' failed in phase `Linker'. (Exit code: 1)
+#+end_src
