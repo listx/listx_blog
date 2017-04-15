@@ -1,6 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-import Control.Monad
 import Data.Bits
 import Data.Monoid
 import qualified Data.Text.Lazy as T
@@ -27,10 +26,7 @@ myStylesheet = do
 	html ? do
 		noMargin
 		ev padding $ px 0
-		let
-			bgHexColor = 0xd1dbbd
-			textColor = grayish 30
-		backgroundColor $ rgbHex bgHexColor
+		backgroundColor $ rgbHex bgHex
 		color textColor
 		overflowY scroll
 		body ? do
@@ -38,11 +34,12 @@ myStylesheet = do
 			vh margin (px 0) auto
 			a ? do
 				outline none (px 1) (rgbHex 0x000000)
+				fontWeight bold
 				textDecoration none
 				link & do
-					color (rgbHex 0x0077ff)
+					color (rgbHex linkHex)
 				visited & do
-					color (rgbHex 0x007020)
+					color (rgbHex linkVisitedHex)
 				hover & do
 					textDecoration underline
 					".section-heading" & do
@@ -63,9 +60,7 @@ myStylesheet = do
 					vh padding (em 0.5) 0
 					textAlign $ alignSide sideCenter
 				"#content" & do
-					ev borderRadius (px 6)
-					backgroundColor $ rgbHex 0xffffff
-					boxShadow (px 0) (px 0) (px 3) (rgbHex 0x666666)
+					backgroundColor $ rgbHex bgHex
 					paddingBottom (em 2)
 					h1 <> h2 <> h3 <> h4 <> h5 ? do
 						noMargin
@@ -80,7 +75,7 @@ myStylesheet = do
 						-- For the title of the page, center-align it.
 						".center" & do
 							noMargin
-							paddingTop (em 1)
+							paddingTop (em 0.2)
 							paddingBottom (em 0.5)
 							fontSize (pt 30)
 							fontWeight bold
@@ -110,24 +105,42 @@ myStylesheet = do
 						-- This is when we use our custom 'import source code'
 						-- syntax with '- i <filename>'.
 						".code-and-raw" & do
+							hSymmetricGradient (rgbHex bgHex) codeBg 80
 							marginBottom (em 1)
-							boxBorders
 							table ? do
 								".sourceCode" & do
 									-- if a table is part of "code-and-raw",
 									-- reduce bottom margin to 0
 									marginBottom $ px 0
-									paddingTop (em 0.5)
 									paddingBottom (em 0.5)
 									"border-style" -: "none"
-									display block
-									overflow auto
-									backgroundColor codeBg
-								sourceCodeMarkdownNumberlines False
+									tbody ? do
+										tr ? do
+											td ? do
+												pre ? do
+													code ? do
+														backgroundImage none
+														fontWeight normal
 						".raw-link" & do
-							backgroundColor $ rgbHex (codeBgHex - 0x080808)
-							fontSizeCustom Clay.Font.small
-							textAlign $ alignSide sideCenter
+							table ? do
+								".noPaddingBottom" & do
+									paddingBottom (em 0)
+							color $ rgbHex lineNumHex
+							code ? do
+								vh padding (px 0) (px 0)
+								paddingLeft $ em 1
+							a ? do
+								".raw" & do
+									marginLeft $ em 0
+								visited & do
+									color (rgbHex linkHex)
+								fontWeight bold
+						".lineCntMax100" & do
+							marginLeft (em (-0.58))
+						".lineCntMax1000" & do
+							marginLeft (em (-1.16))
+						".lineCntMax10000" & do
+							marginLeft (em (-2.32))
 					ol ? do
 						noMargin
 						paragraphListIndent
@@ -146,24 +159,18 @@ myStylesheet = do
 						noMargin
 						paddingBottom (em 1)
 						paragraphIndent
+						textAlign justify
 					-- single-line `code`
 					code ? do
-						color (grayish 51)
-						backgroundColor codeBg
-						border solid (px 1) (grayish 204)
-						ev borderRadius (px 3)
-						vh padding 0 (px 4)
-						".plain" & do
-							backgroundColor $ rgbHex 0xffffff
-							border solid (px 0) (grayish 204)
+						vh padding 0 (em 0.10)
+						fontWeight bold
 					div' ? do
 						".figure" & do
 							-- center images
 							display CD.displayTable
-							vh margin (px 0)auto
+							vh margin (px 0) auto
 						".footnotes" & do
-							backgroundColor footnotesBg
-							boxBorders
+							hSymmetricGradient (rgbHex bgHex) footnotesBg 80
 							hr ? do
 								display displayNone
 							paddingBottom $ px 0
@@ -182,19 +189,13 @@ myStylesheet = do
 						"-moz-tab-size" -: "4"
 						"-o-tab-size" -: "4"
 						"tab-size" -: "4"
-						display block
-						overflow auto
 						-- we indent a little bit more here compared to
 						-- table.sourceCode, because here we have to
 						-- compensate for the fact that we don't have line
 						-- numbers to push our code a little bit further
 						-- right
 						paragraphIndent0
-						color (grayish 51)
-						backgroundColor quoteBg
-						ev borderRadius (px 0)
-						"border-style" -: "none"
-						boxBorders
+						hSymmetricGradient (rgbHex bgHex) quoteBg 80
 						marginBottom (em 1)
 						paddingTop (em 1)
 					pre ? do
@@ -205,21 +206,19 @@ myStylesheet = do
 							"-o-tab-size" -: "4"
 							"tab-size" -: "4"
 							display block
-							overflow auto
 							-- we indent a little bit more here compared to
 							-- table.sourceCode, because here we have to
 							-- compensate for the fact that we don't have line
 							-- numbers to push our code a little bit further
 							-- right
 							paragraphIndent'
-							color (grayish 51)
-							backgroundColor codeBg
+							hSymmetricGradient (rgbHex bgHex) codeBg 80
 							ev borderRadius (px 0)
 							"border-style" -: "none"
-							boxBorders
 							marginBottom (em 1)
 							paddingTop (em 1)
 							paddingBottom (em 1)
+							fontWeight normal
 					table ? do -- code with line numbers
 						"-moz-tab-size" -: "4"
 						"-o-tab-size" -: "4"
@@ -227,9 +226,9 @@ myStylesheet = do
 						paddingRight $ px 0
 						marginBottom (em 1)
 						borderSpacing2 (px 0) (px 1)
-						-- posts archive
+						-- table for list of all blog posts
 						".ul" & do
-							paragraphIndent
+							headerIndent
 							marginBottom $ px 0
 							paddingBottom (em 1)
 							thead ? do
@@ -248,6 +247,8 @@ myStylesheet = do
 									".bytes" & do
 										textAlign $ alignSide sideRight
 										whiteSpace nowrap
+									code ? do
+										fontWeight normal
 						".gallery" & do
 							headerIndent
 							headerIndentRight
@@ -269,29 +270,36 @@ myStylesheet = do
 					-- spacing of the footer.
 					marginTop (em 1)
 					paddingBottom (em 1)
-					color (grayish 100)
 					fontSizeCustom Clay.Font.medium
 					textAlign $ alignSide sideCenter
 	where
 	div' = Clay.div
 	cPageWidth :: Double
 	cPageWidth = 900
-	bgHex :: Int
-	bgHex = 0xc8c8d2
 	shadowHex :: Int
 	shadowHex = 0xdcdcd0
 	codeBgHex :: Int
-	codeBgHex = 0xfdf6e3
+	codeBgHex = bgHex
 	quoteBgHex :: Int
-	quoteBgHex = 0xeeeeee
+	quoteBgHex = bgHex - 0x0f0f0f
 	footnotesBgHex :: Int
-	footnotesBgHex = 0xe9f7ff
+	footnotesBgHex = bgHex - 0x0f0f0f
+	bgHex :: Int
+	bgHex = 0xffffff
+	textColor :: Color
+	textColor = rgbHex 0x000000
 	codeBg :: Color
 	codeBg = rgbHex codeBgHex
 	footnotesBg :: Color
 	footnotesBg = rgbHex footnotesBgHex
 	quoteBg :: Color
 	quoteBg = rgbHex quoteBgHex
+	lineNumHex :: Int
+	lineNumHex = bgHex - 0x555555
+	linkHex :: Int
+	linkHex = 0x0033ff
+	linkVisitedHex :: Int
+	linkVisitedHex = 0x007033
 	headerIndent = "padding-left" -: "12%"
 	headerIndentRight = "padding-right" -: "12%"
 	paragraphIndent0 = do
@@ -308,22 +316,16 @@ myStylesheet = do
 	paragraphListIndent = do
 		"padding-left" -: "18%"
 		paragraphIndentRight
-	sourceCodeMarkdownNumberlines addBorder = ".sourceCode" & do
+	sourceCodeMarkdownNumberlines _ = ".sourceCode" & do
 		paragraphIndent
-		paddingTop (em 0.5)
 		paddingBottom (em 0.5)
-		display block
-		overflow auto
-		backgroundColor codeBg
-		when addBorder $ do
-			boxBorders
 		tr ? do
 			td ? do
 				".lineNumbers" & do
 					pre ? do
 						noMargin
+						color (rgbHex lineNumHex)
 						textAlign $ alignSide sideRight
-						color (rgbHex $ bgHex - 0x151515)
 				".sourceCode" & do
 					paddingLeft $ px 0
 					pre ? do
@@ -349,10 +351,14 @@ myStylesheet = do
 			: (toEnum 0x00a0) -- nonbreaking space character
 			: (toEnum 0x00a0) -- nonbreaking space character
 			: []
-	boxBorders = do
-		borderTop solid (px 1) (grayish 204)
-		borderBottom solid (px 1) (grayish 204)
-		boxShadow (px 0) (px 0) (px 3) (rgbHex shadowHex)
+	hSymmetricGradient colorSides colorMiddle middleWidth
+		= backgroundImage
+		$ linearGradient
+			(straight sideRight)
+			[ (colorSides, pct 0)
+			, (colorMiddle, pct $ 50 - middleWidth / 2)
+			, (colorMiddle, pct $ 50 + middleWidth / 2)
+			, (colorSides, pct 100)]
 -- | A horizontal/vertical size helper. It accepts a function and two sizes for
 -- the horizontal and vertical parts. E.g., instead of calling
 -- 		padding (px 6) (px 10) (px 6) (px 10)

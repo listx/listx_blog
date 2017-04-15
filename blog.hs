@@ -2,6 +2,9 @@
 {-# LANGUAGE RecordWildCards #-}
 
 import Data.Char hiding (Space)
+import Data.Monoid
+import Data.Time.Calendar
+import Data.Time.LocalTime
 import Hakyll
 import System.FilePath.Posix
 import Text.Pandoc (WriterOptions (..), HTMLMathMethod (MathJax))
@@ -12,22 +15,23 @@ main :: IO ()
 main = hakyll $ do
 	-- Build tags
 	tags <- buildTags "post/*" (fromCapture "tag/*.html")
-
+	(currentYear, _, _) <- toGregorian . localDay . zonedTimeToLocalTime <$> preprocess (getZonedTime)
 	tagsRules tags $ \tag pattern -> do
 		let
-			title = "&ldquo;" ++ tag ++ "&rdquo;"
+			title = "&ldquo;" <> tag <> "&rdquo;"
 		route idRoute
 		compile $ do
 			list <- postList tags pattern recentFirst
 			makeItem ""
-				>>= loadAndApplyTemplate "template/archive.html" (mconcat
+				>>= loadAndApplyTemplate "template/index.html" (mconcat
 					[ constField "body" list
-					, archiveCtx tags
+					, homeCtx tags
 					, defaultContext
 					])
 				>>= loadAndApplyTemplate "template/default.html" (mconcat
 					[ constField "title" title
 					, mathCtx
+					, copyrightCtx currentYear
 					, defaultContext
 					])
 				>>= relativizeUrls
@@ -56,6 +60,7 @@ main = hakyll $ do
 		compile $ pandocCompiler
 			>>= loadAndApplyTemplate "template/default.html" (mconcat
 				[ mathCtx
+				, copyrightCtx currentYear
 				, defaultContext
 				])
 			>>= relativizeUrls
@@ -83,11 +88,12 @@ main = hakyll $ do
 			>>= saveSnapshot "content"
 			>>= loadAndApplyTemplate "template/default.html" (mconcat
 				[ mathCtx
+				, copyrightCtx currentYear
 				, tagsCtx tags
 				])
 			>>= relativizeUrls
 
-	create ["archive.html"] $ do
+	create ["index.html"] $ do
 		route idRoute
 		compile $ do
 			posts <- loadAll "post/*"
@@ -95,26 +101,12 @@ main = hakyll $ do
 			itemTpl <- loadBody "template/post-item.html"
 			list <- applyTemplateList itemTpl postCtx sorted
 			makeItem list
-				>>= loadAndApplyTemplate "template/archive.html"
-					(archiveCtx tags)
+				>>= loadAndApplyTemplate "template/index.html"
+					(homeCtx tags)
 				>>= loadAndApplyTemplate "template/default.html" (mconcat
 					[ mathCtx
-					, archiveCtx tags
-					])
-				>>= relativizeUrls
-
-	create ["index.html"] $ do
-		route idRoute
-		compile $ do
-			posts <- loadAll "post/*"
-			sorted <- fmap (take 5) $ recentFirst posts
-			itemTpl <- loadBody "template/post-item.html"
-			list <- applyTemplateList itemTpl postCtx sorted
-			makeItem list
-				>>= loadAndApplyTemplate "template/index.html" (homeCtx list)
-				>>= loadAndApplyTemplate "template/default.html" (mconcat
-					[ mathCtx
-					, homeCtx list
+					, copyrightCtx currentYear
+					, homeCtx tags
 					])
 				>>= relativizeUrls
 
@@ -145,24 +137,26 @@ postCtx = mconcat
 	, defaultContext
 	]
 
-archiveCtx :: Tags -> Context String
-archiveCtx tags = mconcat
-	[ constField "title" "Archive"
+homeCtx :: Tags -> Context String
+homeCtx tags = mconcat
+	[ constField "title" "Linus's Blog"
 	, field "taglist" (\_ -> renderTagList tags)
 	, defaultContext
+	]
+
+copyrightCtx :: Integer -> Context String
+copyrightCtx currentYear = mconcat
+	[ constField "copyright"
+    $ unwords
+			[ "Copyright (C) 2013-" <> show currentYear <> " Linus Arver."
+			, "All rights reserved."
+			]
 	]
 
 tagsCtx :: Tags -> Context String
 tagsCtx tags = mconcat
 	[ tagsField "prettytags" tags
 	, postCtx
-	]
-
-homeCtx :: String -> Context String
-homeCtx list = mconcat
-	[ constField "post" list
-	, constField "title" "Linus's Blog"
-	, defaultContext
 	]
 
 mathCtx :: Context a
@@ -226,6 +220,7 @@ cbExpandRawInput block = case block of
 	where
 	bList :: Block -> Compiler (Bool, Block)
 	bList (Plain [(Str "i"), Space, (Str fp)]) = do
+		raw <- unsafeCompiler . readFile $ "code/" <> fp
 		let
 			codeLang = case takeExtensions fp of
 				".c" -> ["c"]
@@ -235,31 +230,37 @@ cbExpandRawInput block = case block of
 				".sh" -> ["bash"]
 				".xorg.conf" -> ["xorg"]
 				_ -> []
-			httpTarget = "/code/" ++ fp
+			httpTarget = "/code/" <> fp
 			fn = takeFileName fp
-			attr = ("", ["numberLines"] ++ codeLang, [("input", "code/" ++ fp)])
-		raw <- unsafeCompiler . readFile $ "code/" ++ fp
+			(lineCntClass, bulletSpaces)
+				| length (lines raw) < 10 = ("10", s 0)
+				| length (lines raw) < 100 = ("100", s 1)
+				| length (lines raw) < 1000 = ("1000", s 2)
+				| otherwise = ("10000", s 3)
+				where
+				s = concat . flip replicate "&nbsp;"
+			attr = ("", ["numberLines"] <> codeLang, [("input", "code/" <> fp)])
+			filename_link_raw =
+				RawInline
+					"html" $
+					unwords
+						[ "<table class=\"sourceCode numberLines noPaddingBottom\"><tbody><tr class=\"sourceCode\"><td class=\"lineNumbers\"><pre>" <> bulletSpaces <> "■</pre></td><td class=\"sourceCode\"><pre><code><a"
+						, "class=\"raw\""
+						, "href="
+						, dquote httpTarget
+						, "mimetype=text/plain"
+						, ">" <> fn <> "</a></code></pre></td></tr></tbody></table>"
+						]
 		return
 			( True
 			,
-				( Div ("", ["code-and-raw"], [])
-					[ CodeBlock attr raw
-					, Div ("", ["raw-link"], [])
+				( Div ("", ["code-and-raw", "lineCntMax" <> lineCntClass], [])
+					[ Div ("", ["raw-link", "sourceCode"], [])
 						[ Plain
-							[ RawInline
-								"html" $
-								unwords
-									[ "<a"
-									, " class=\"raw\""
-									, " href="
-									, dquote httpTarget
-									, " mimetype=text/plain"
-									, ">"
-									, fn
-									, "</a>"
-									]
+							[ filename_link_raw
 							]
 						]
+					, CodeBlock attr raw
 					]
 				)
 			)
@@ -279,4 +280,4 @@ atomFeedConf = FeedConfiguration
 	}
 
 dquote :: String -> String
-dquote str = "\"" ++ str ++ "\""
+dquote str = "\"" <> str <> "\""
