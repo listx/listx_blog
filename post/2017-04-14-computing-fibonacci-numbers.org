@@ -1,0 +1,194 @@
+---
+title: "The Fastest Way to Compute the Nth Fibonacci Number: The Doubling Method"
+tags: programming, python
+mathjax: on
+---
+
+#+STARTUP: indent showall
+
+* Introduction
+
+The Fibonacci Sequence is defined as follows:
+
+\[
+\mathrm{F}_{0} = 0\\
+\mathrm{F}_{1} = 1\\
+\mathrm{F}_{n} = \mathrm{F}_{n - 2} + \mathrm{F}_{n - 1}.
+\]
+
+That is, each Fibonacci number \(\mathrm{F}_{n}\) is the sum of the previous two Fibonacci numbers, except the very first two numbers which are defined to be 0 and 1.
+[fn:: We can choose to define the first two terms as 1 and 1 instead, but this distinction is needlessly arbitrary.]
+
+From the definition above, it appears that computing \(\mathrm{F}_{n}\) requires one to always compute \(\mathrm{F}_{n - 2}\) and \(\mathrm{F}_{n - 1}\).
+*This is false:* enter the "doubling method".
+[fn:: There is actually a known formula for our purposes, where \[ \mathrm{F}_{n} = \frac{\varphi^n - (-\varphi)^{-n}}{2\varphi - 1}\] where \(\varphi = \frac{1 + \sqrt{5}}{2} \approx 1.6180339887\cdots\) (the golden ratio). Unfortunately this requires arbitrary-precision floating point calculations.]
+[fn:: For more discussion, see https://www.nayuki.io/page/fast-fibonacci-algorithms.]
+
+* The Genesis of the Doubling Method
+
+The doubling method uses a couple of mathematical formulas derived from matrix multiplication as it applies to calculating Fibonacci numbers; it can be seen as an improvement over the matrix multiplication method, although it does not use matrix multplication itself.
+The matrix multiplication method uses the following formula:
+
+\[
+\begin{bmatrix}
+1 & 1\\
+1 & 0
+\end{bmatrix}^n
+=
+\begin{bmatrix}
+\mathrm{F}_{n + 1} & \mathrm{F}_{n}\\
+\mathrm{F}_{n} & \mathrm{F}_{n - 1}
+\end{bmatrix}.
+\]
+
+This result is quite interesting in its own right; to find \(\mathrm{F}_{n}\) you only need to raise the matrix
+
+\[
+\begin{bmatrix}
+1 & 1\\
+1 & 0
+\end{bmatrix}
+\]
+
+to the \(n\)th power.
+To be more precise, this method is matrix /exponentiation/.
+The only downside is that much of the answer is wasted --- we don't care about \(\mathrm{F}_{n - 1}\), not to mention how \(\mathrm{F}_{n}\) is redundantly computed twice.
+
+** Thinking in Terms of \(\mathrm{F}_{n}\)
+
+What if we could find \(\mathrm{F}_{n}\) not by multiplying or adding some numbers, but by multiplying and adding /other Fibonacci terms/?
+Of course, we're not talking about adding \(\mathrm{F}_{n - 2}\) and \(\mathrm{F}_{n - 1}\) because that would be too slow.
+Let's have a look at the matrix identity again (reversed for easier reading):
+
+\[
+\begin{bmatrix}
+\mathrm{F}_{n + 1} & \mathrm{F}_{n}\\
+\mathrm{F}_{n} & \mathrm{F}_{n - 1}
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 & 1\\
+1 & 0
+\end{bmatrix}^n.
+\]
+
+If we substitute in \(2n\) for \(n\), we get
+
+\[
+\begin{align}
+\begin{bmatrix}
+\mathrm{F}_{2n + 1} & \mathrm{F}_{2n}\\
+\mathrm{F}_{2n} & \mathrm{F}_{2n - 1}
+\end{bmatrix}
+& =
+  \begin{bmatrix}
+  1 & 1\\
+  1 & 0
+  \end{bmatrix}^{2n} \\
+& =
+  \bigg(\begin{bmatrix}
+  1 & 1\\
+  1 & 0
+  \end{bmatrix}^{n}\bigg)^2
+\end{align}
+\]
+
+and we can substitute in our matrix identity from above to rewrite this as
+
+\[
+\begin{align}
+& =
+  \bigg(\begin{bmatrix}
+  \mathrm{F}_{n + 1} & \mathrm{F}_{n}\\
+  \mathrm{F}_{n} & \mathrm{F}_{n - 1}
+  \end{bmatrix}\bigg)^2
+\end{align}
+\]
+
+and carry out the squaring to get
+
+\[
+\begin{align}
+& =
+  \begin{bmatrix}
+  {{\mathrm{F}_{n + 1}}^2 + {\mathrm{F}_{n}}^2} & {{\mathrm{F}_{n + 1}\mathrm{F}_{n}} + {\mathrm{F}_{n}\mathrm{F}_{n - 1}}}\\
+  {{\mathrm{F}_{n}\mathrm{F}_{n + 1}} + {\mathrm{F}_{n - 1}\mathrm{F}_{n}}} & {{\mathrm{F}_{n}}^2 + {\mathrm{F}_{n - 1}}^2}
+  \end{bmatrix}
+\end{align}.
+\]
+
+The top right and bottom left terms are identical; we can also rewrite them to be a bit simpler.
+
+\[
+\begin{align}
+  {{\mathrm{F}_{n + 1}\mathrm{F}_{n}} + {\mathrm{F}_{n}\mathrm{F}_{n - 1}}}
+& =
+  \mathrm{F}_{n}(\mathrm{F}_{n + 1} + \mathrm{F}_{n - 1}) \\
+& =
+  \mathrm{F}_{n}[\mathrm{F}_{n + 1} + (\mathrm{F}_{n + 1} - \mathrm{F}_{n})] \\
+& =
+  \mathrm{F}_{n}(2\mathrm{F}_{n + 1} - \mathrm{F}_{n}).
+\end{align}
+\]
+
+This simplication achieves an important task --- it obviates \(\mathrm{F}_{n - 1}\) by cleverly defining it as \(\mathrm{F}_{n + 1} - \mathrm{F}_{n}\). Putting everything together, whe have
+
+\[
+\begin{align}
+\begin{bmatrix}
+\mathrm{F}_{2n + 1} & \mathrm{F}_{2n}\\
+\mathrm{F}_{2n} & \mathrm{F}_{2n - 1}
+\end{bmatrix}
+& =
+  \begin{bmatrix}
+  {{\mathrm{F}_{n + 1}}^2 + {\mathrm{F}_{n}}^2} & {\mathrm{F}_{n}(2\mathrm{F}_{n + 1} - \mathrm{F}_{n})}\\
+  {\mathrm{F}_{n}(2\mathrm{F}_{n + 1} - \mathrm{F}_{n})} & {{\mathrm{F}_{n}}^2 + {\mathrm{F}_{n - 1}}^2}
+  \end{bmatrix}
+\end{align}
+\]
+
+where the first row (or column) gives us two very useful identities
+
+\[
+\begin{align}
+\mathrm{F}_{2n}
+& =
+  {\mathrm{F}_{n}(2\mathrm{F}_{n + 1} - \mathrm{F}_{n})} \\
+\mathrm{F}_{2n + 1}
+& =
+  {{\mathrm{F}_{n}}^2 + {\mathrm{F}_{n + 1}}^2}.
+\end{align}
+\]
+
+As these identities form the heart of the doubling method, let's call them the /doubling identities/.
+
+And now we just need one more piece to formulate our doubling method; we need to borrow an idea from number theory.
+Given any positive integer \(n\), it is the same as either \(2m\) (even) or \(2m + 1\) (odd), where \(m = \lfloor\frac{n}{2}\rfloor\); for our purposes, let us call this property the "halving property".
+
+Whereas the doubling identities allow us to "double" our way into bigger numbers, the halving property allows us to halve our way down to smaller and smaller numbers.
+The marriage of these two concepts gives rise to the doubling method.
+
+* The Doubling Method
+
+To compute the \(n\)th Fibonacci term we break \(n\) itself down into its halves (\(2m\)) recursively, until we go down to \(n = 0\).
+At this point we multiply our way back up using the doubling identities.
+Because halving and doubling by themselves always calculate \(\mathrm{F}_{2m}\), we have to manually return \(\mathrm{F}_{2m + 1}\) if our current sequence index number \(n\) is odd.
+
+- i 2017-04-14-computing-fibonacci-numbers/fibonacci-doubling.py
+
+Line 12 is where we do the halving.
+We use the right-shift operator to do this.
+Lines 13 and 14 are our doubling identities (I use the left-shift operator here because it feels more natural to me).
+The if-condition on line 15 returns \(\mathrm{F}_{2m + 1}\) if \(n\) was odd, and  \(\mathrm{F}_{2m}\) otherwise.
+
+For comparison, here is an iterative version.
+On the one hand it avoids Python's recursion limit, but the downside is a small loss of elegance (we have to loop twice --- first to build up the halving/doubling points, and again for the main loop).
+
+- i 2017-04-14-computing-fibonacci-numbers/fibonacci-doubling-iter.py
+
+* Conclusion
+
+I hope you enjoyed reading about this method of calculationg Fibonacci numbers as much as I enjoyed learning the math behind it.
+This algorithm can be sped up if it uses a faster multiplication algorithm as =a= and =b= get very large (e.g., Karatsuba multiplication).
+Time complexity is \(\Theta(\log{n})\); it reminds me of the binary search algorithm, in how the problem space is halved repeatedly.
+Neat!
