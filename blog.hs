@@ -226,6 +226,7 @@ cbExpandRawInput block = case block of
 				".c" -> ["c"]
 				".el" -> ["commonlisp"]
 				".hs" -> ["haskell"]
+				".py" -> ["python"]
 				".rb" -> ["ruby"]
 				".sh" -> ["bash"]
 				".xorg.conf" -> ["xorg"]
