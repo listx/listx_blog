@@ -190,5 +190,6 @@ On the one hand it avoids Python's recursion limit, but the downside is a small 
 
 I hope you enjoyed reading about this method of calculationg Fibonacci numbers as much as I enjoyed learning the math behind it.
 This algorithm can be sped up if it uses a faster multiplication algorithm as =a= and =b= get very large (e.g., Karatsuba multiplication).
+[fn:: Python already uses Karatsuba multiplication natively for large integers.]
 Time complexity is \(\Theta(\log{n})\); it reminds me of the binary search algorithm, in how the problem space is halved repeatedly.
 Neat!
