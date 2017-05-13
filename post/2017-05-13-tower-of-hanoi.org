@@ -1,0 +1,247 @@
+---
+title: The Math Behind the Tower of Hanoi
+tags: math
+mathjax: on
+---
+
+#+STARTUP: indent showall
+
+In the very first chapter of the book [[https://en.wikipedia.org/wiki/Concrete_Mathematics][/Concrete Mathematics/ 2ed]] there is a discussion about the [[https://en.wikipedia.org/wiki/Tower_of_Hanoi][Tower of Hanoi]].
+This post is a distillation of that discussion.
+
+* The Problem
+
+There are 3 rods, with 8 discs (with holes) resting on one rod; the discs are sorted in size like a pyramid, with the smallest disc on top.
+We want to move all discs to another rod, but with the following rules: (1) a move consists of moving a single disc onto a rod; (2) you may never place a bigger disc on top of a smaller one.
+A question arises --- *how many steps are required to move the entire tower of disks onto another rod?*
+
+* Finding the Recurrence
+
+First consider the simplest case, without any discs.
+Because there are no discs to move, we cannot make any moves, and so the number of steps required is 0.
+We can write this as
+
+\[
+S_0 = 0
+\]
+
+with \(S\) meaning the number of steps and the subscript representing the number of discs in the tower.
+
+Now let's consider how the problem scales.
+With 1 disc, the answer is a single step since the one disc is itself the entire tower.
+With 2 discs, the answer is three steps --- one step to move the top (small) disc to another rod, one step to move the big disc to the destination rod, and lastly one step to move the small disc on top of the big disc.
+With 3 discs, the answer is seven steps --- the insight here is that we treat the top two discs exactly the same as the previous problem; so we need 3 moves to move the top two to another rod, then one move to move the biggest disc to the destination rod, then again 3 moves to move the 2-disc sub-tower to the destination rod.
+
+The example with 3 discs is quite telling.
+We can use the insights gained there to set an upper bound to the number of steps required for the general case of \(n\) discs; if we take more steps than this upper bound, we would know that we made mistakes.
+For a tower of size \(n\), we require \(S_{n - 1}\) steps to move all discs except the biggest one, then move the biggest disc, then move the sub-tower on top of that disc with (again) \(S_{n - 1}\) steps.
+So the upper bound is
+
+\[
+\begin{equation} \label{eq:recurrence}
+  S_n =
+  \begin{cases}
+    0                   & \text{if } n = 0 \\
+    2 * (S_{n - 1}) + 1 & \text{if } n > 0.
+  \end{cases}
+\end{equation}
+\]
+
+If that's the upper bound, then is there a separate formula for the /lower bound/ (optimal solution)?
+Nope!
+It's because there must come a time in solving the puzzle where we move the biggest disc to the destination rod.
+To get to the biggest disc, we must have moved all discs on top of it to another rod (the sub-tower); and, after having moved the biggest disc, we must move this sub-tower back on top of that rod (back onto the biggest disc).
+Because of these constraints stemming the definition of the puzzle itself, we know that for \(n\) > 0 we must take /at least/ \(2 * (S_{n - 1}) + 1\) steps.
+
+The upper and lower bounds agree in their formulation, and this formulation (Equation \(\ref{eq:recurrence}\)) is our recurrence.
+In mathematics, a [[https://en.wikipedia.org/wiki/Recurrence_relation][recurrence relation]] is basically a recursively-defined equation, where a /base case/ in the recurrence defines the starting point.
+In Equation \(\ref{eq:recurrence}\), the base case is \(n = 0\); for \(n > 0\), we define the number of steps required in a recursive manner.
+
+In our discussion of finding the upper and lower bounds, there were two key concepts --- the need to move the biggest disc, and the need to move the sub-tower twice (before and after moving the biggest disc).
+Our recurrence clearly agrees with these two concepts.
+The "\(+ 1\)" in the non-base case is the step of moving the biggest disc, whereas the \(2 * (S_{n - 1})\) is the number of steps required to move the sub-tower /twice/.
+
+* Simplifying the Recurrence
+
+Recurrences are great, but they are painful to compute.
+For example, it's not immediately clear what \(S_{11}\) or \(S_{54}\) evaluates to.
+It would be really nice if we could avoid defining \(S_n\) recursively.
+
+And this is where math meets science.
+In the scientific method, we have to come up with a hypothesis and then test that hypothesis with one or more experiments.
+We can do the same thing here by trying to guess the solution to the recurrence.
+
+For one thing, we know that \(S_n\) grows as \(n\) grows (it will never be the case that \(S_n\) somehow plateaus or decreases down the road).
+The more discs there are, the more work we have to do, right?
+So let's look at small cases to see how the numbers grow, and see if there is a pattern to the growth rate of \(S_n\).
+
+| <c>   | <c>     |
+| \(n\) | \(S_n\) |
+|-------+---------|
+| 0     | 0       |
+| 1     | 1       |
+| 2     | 3       |
+| 3     | 7       |
+| 4     | 15      |
+| 5     | 31      |
+| 6     | 63      |
+| 7     | 127     |
+| 8     | 255     |
+
+We don't have to actually simulate the puzzle to derive these values; using the recurrence Equation \(\ref{eq:recurrence}\) we start off from the first row (the base case) and then calculate our way down, reusing \(S_n\) from the previous row as \(S_{n - 1}\). [fn:: In computer science, this process of avoiding the recalculation of previously known values is called /memoization/ and is useful in generating the first N values of a recursive algorithm in \(O(N)\) (linear) time.]
+
+Anyway, the values of \(S_n\) sure look familiar --- especially if we use base 2.
+
+| <c>   | <r>             |
+| \(n\) | binary(\(S_n\)) |
+|-------+-----------------|
+| 0     | \(0_2\)         |
+| 1     | \(1_2\)         |
+| 2     | \(11_2\)        |
+| 3     | \(111_2\)       |
+| 4     | \(1111_2\)      |
+| 5     | \(11111_2\)     |
+| 6     | \(111111_2\)    |
+| 7     | \(1111111_2\)   |
+| 8     | \(11111111_2\)  |
+
+It looks like our recurrence simplifies to just
+
+\[
+\begin{equation} \label{eq:solution}
+  S_n = 2^n - 1 \quad \text{for } n \geq 0,
+\end{equation}
+\]
+
+except it is no longer a recurrence as there is no need to define a base case.
+We'll call it a /solution/ to the recurrence.
+
+* Proving the Solution
+
+Although the empirical evidence looks very good, we have not formally proved that the solution (Equation \(\ref{eq:solution}\)) holds for /all/ \(n\).
+It's one thing to say that something is true for all /observed/ cases (scientific experiment), and quite another to say that something is true for /all/ cases (mathematical proof).
+
+Can we prove it?
+Yes!
+Fortunately for us, Equation \(\ref{eq:recurrence}\) lends itself to proof by [[https://en.wikipedia.org/wiki/Mathematical_induction][induction]].
+Induction requires you to first prove some number \(k_0\) as a starting point (the base case) using some proposition \(P\).
+Then you prove that \(P\) holds for \(k + 1\) (the next number); i.e., show that going from \(k\) to \(k + 1\) does not change \(P\).
+This is the /inductive step/.
+In this way, we prove the "totality" of \(P\) as it applies to all numbers in the range \([k_0, k_{m}]\) and we are done. [fn:: Note that if \(k_0 = 0\), then \([k_0, k_{m}]\) is the set of all natural numbers (zero plus the positive integers).]
+
+Here we want to prove that Equation \(\ref{eq:solution}\) holds for all \(n\) (all natural numbers). [fn:: There is no need to prove the recurrence (Equation \(\ref{eq:recurrence}\)) as we have already proved it in the process of deriving it.]
+For this proof let's rewrite Equation \(\ref{eq:solution}\) to use \(k\) instead of \(n\):
+
+\[
+\begin{equation} \label{eq:proposition}
+  S_k = 2^k - 1 \quad \text{for } k \geq 0.
+\end{equation}
+\]
+
+Equation \(\ref{eq:proposition}\) is our proposition \(P\).
+The base case is easy enough to prove: \(S_0 = 0\) because there are no disks to move.
+For the inductive step, we use the non-base part of our recurrence from Equation \(\ref{eq:recurrence}\) to get
+
+\[
+  \begin{align}
+  S_k &= 2 * (S_{k - 1}) + 1 \label{eq:induct1}
+  \end{align}
+\]
+
+and rewrite it in terms of \(k + 1\):
+
+\[
+  \begin{align}
+  S_{k + 1} &= 2 * (S_{k}) + 1. \label{eq:induct2}
+  \end{align}
+\]
+
+Now the critical part: we replace \(S_k\) with Equation \(\ref{eq:proposition}\) (our proposition), because we assume that our proposition is true for all steps up to \(k\) (but not \(k + 1\), which is what we're trying to prove):
+
+\[
+  \begin{align}
+  S_{k + 1} &= 2 * (2^k - 1) + 1.
+  \end{align}
+\]
+
+In case you forgot algebra, \(2 * 2^k = 2^1 * 2^k = 2^{k + 1}\) and we can use this to simplify our equation.
+
+\[
+  \begin{align}
+  S_{k + 1} &= 2 * (2^k - 1) + 1\\
+  &= [2 * (2^k - 1)] + 1\\
+  &= [(2 * 2^k - 2)] + 1\\
+  &= (2^{k + 1} - 2) + 1\\
+  &= 2^{k + 1} - 1 \label{eq:induct3}.
+  \end{align}
+\]
+
+And now we can see that Equation \(\ref{eq:induct3}\) (our "evolved" proposition \(P\), if you will) is the same as our solution (Equation \(\ref{eq:solution}\)), even though we increased \(k\) to \(k + 1\)!
+This is because simple substitution allows us to replace "\(k + 1\)" with "\(n\)".
+We have completed our proof by induction. [fn:: In /Concrete Mathematics/ 2 ed. p. 3 (where the book uses \(T_n\) instead of \(S_n\)), the proof is simply a one-liner:
+\[
+T_n = 2(T_{n - 1}) + 1 = 2(2^{n - 1} - 1) + 1 = 2^n - 1.
+\]
+But I find it a bit too terse for my tastes.]
+
+* Alternate Recurrence and Solution
+
+The book offers an alternate recurrence to Equation \(\ref{eq:recurrence}\), by adding 1 to both sides:
+
+\[
+\begin{align}
+  (S_n) + 1 &=
+  \begin{cases}
+    0 + 1                   & \text{if } n = 0 \\
+    2 * (S_{n - 1}) + 1 + 1 & \text{if } n > 0 \\
+  \end{cases}\\
+          &=
+  \begin{cases}
+    1                   & \text{if } n = 0 \\
+    2 * (S_{n - 1}) + 2 & \text{if } n > 0. \label{eq:recurrence2}
+  \end{cases}
+\end{align}
+\]
+
+This recurrence is the same as the original, except that it adds 1 to the answer.
+Now we let \(W_n = (S_n) + 1\) and \(W_{n - 1} = (S_{n - 1}) + 1\) and rewrite everything in terms of \(W\):
+
+\[
+\begin{align}
+  W_n &=
+  \begin{cases}
+    1                   & \text{if } n = 0 \\
+    2 * (W_{n - 1})     & \text{if } n > 0. \label{eq:recurrence3}
+  \end{cases}
+\end{align}
+\]
+
+Notice how the "\( + 2\)" in Equation \(\ref{eq:recurrence2}\) goes away, because the coefficient \(2\) in Equation \(\ref{eq:recurrence3}\) will multiply with the "\( + 1\)" from \(W_{n - 1}\) to get it back.
+Using this alternate recurrence, it's easy to see that the solution is just \(W_n = 2^n\), because \(W\) can only grow by multiplying \(2\) to itself!
+Hence
+
+\[
+\begin{align}
+W_n = (S_n) + 1 = 2^n
+\end{align}
+\]
+
+and subtracting 1 from all sides gives us
+
+\[
+\begin{align}
+(W_n) - 1 =S_n = 2^n - 1.
+\end{align}
+\]
+
+The lesson here is that if it is difficult to find the solution to a recurrence, we can use basic algebra rules to transform the recurrence to something more amenable.
+In this case, all it took was adding 1 to the original recurrence.
+
+* Conclusion
+
+I thoroughly enjoyed figuring this stuff out because possibly for the first time in my life I used my programming experience (recurrence/recursion, memoization) to help myself understand mathematics --- not the other way around.
+The other way around was not even enjoyable --- calculating what ~i~ is in some \(n\)th iteration of a ~for~-loop never really excited me.
+
+I hope this explanation helps you better understand the first few pages of /Concrete Mathematics/; I had to read that part three times over to really "get it" (never having learned what induction was).
+And henceforth, I will never look at a string of consecutive 1's in binary the same way again.
+😃
