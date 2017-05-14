@@ -49,7 +49,7 @@ Write shell scripts if you need to.
 
 Take advantage of your shell's ability to save history.
 
-#### Use a build tool to automate their scientific workflows.
+#### Use a build tool to automate workflows.
 
 You can use *GNU Make* not only to compile code, but to describe a dependency graph of your workflow (do X before Y).
 
@@ -57,7 +57,7 @@ You can use *GNU Make* not only to compile code, but to describe a dependency gr
 
 #### Software tools should be used to track computational work automatically, to achieve provenance.
 
-The ability to reproduce your results, you should record everything needed to re-create the output[^provenance], and such record-keeping should be done automatically.
+To reproduce your results, you should record everything needed to re-create the output[^provenance], and such record-keeping should be done automatically.
 In a software development context, the most immediate example is version control, which keeps all of the code necessary to recreate the desired program behavior.
 However, there are several other things which you should also keep track of in your development notebook:
 
