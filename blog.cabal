@@ -15,7 +15,7 @@ cabal-version: >=1.10
 
 executable blog
   main-is: blog.hs
-  ghc-options: -Wall -Werror -fno-warn-tabs
+  ghc-options: -Wall -Werror -fno-warn-tabs -threaded
   -- other-modules:
   other-extensions: OverloadedStrings
   build-depends:
