@@ -30,7 +30,6 @@ main = hakyll $ do
 					])
 				>>= loadAndApplyTemplate "template/default.html" (mconcat
 					[ constField "title" title
-					, mathCtx
 					, copyrightCtx currentYear
 					, defaultContext
 					])
@@ -59,8 +58,7 @@ main = hakyll $ do
 		route   $ setExtension "html"
 		compile $ pandocCompiler
 			>>= loadAndApplyTemplate "template/default.html" (mconcat
-				[ mathCtx
-				, copyrightCtx currentYear
+				[ copyrightCtx currentYear
 				, defaultContext
 				])
 			>>= relativizeUrls
@@ -87,8 +85,7 @@ main = hakyll $ do
 			>>= loadAndApplyTemplate "template/post.html"    (tagsCtx tags)
 			>>= saveSnapshot "content"
 			>>= loadAndApplyTemplate "template/default.html" (mconcat
-				[ mathCtx
-				, copyrightCtx currentYear
+				[ copyrightCtx currentYear
 				, tagsCtx tags
 				])
 			>>= relativizeUrls
@@ -104,8 +101,7 @@ main = hakyll $ do
 				>>= loadAndApplyTemplate "template/index.html"
 					(homeCtx tags)
 				>>= loadAndApplyTemplate "template/default.html" (mconcat
-					[ mathCtx
-					, copyrightCtx currentYear
+					[ copyrightCtx currentYear
 					, homeCtx tags
 					])
 				>>= relativizeUrls
@@ -158,17 +154,6 @@ tagsCtx tags = mconcat
 	[ tagsField "prettytags" tags
 	, postCtx
 	]
-
-mathCtx :: Context a
-mathCtx = field "mathjax" $ \item -> do
-	metadata <- getMetadata $ itemIdentifier item
-	return $ case lookupString "mathjax" metadata of
-		Just _ -> concat
-			[ "<script src=\""
-			, "http://cdn.mathjax.org/mathjax/latest/MathJax.js"
-			, "?config=TeX-AMS-MML_HTMLorMML\"></script>"
-			]
-		Nothing -> ""
 
 postList
 	:: Tags
