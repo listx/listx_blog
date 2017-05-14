@@ -11,9 +11,11 @@ mathjax: on
 The Fibonacci Sequence is defined as follows:
 
 \[
+\begin{align}
 \mathrm{F}_{0} = 0\\
 \mathrm{F}_{1} = 1\\
 \mathrm{F}_{n} = \mathrm{F}_{n - 2} + \mathrm{F}_{n - 1}.
+\end{align}
 \]
 
 That is, each Fibonacci number \(\mathrm{F}_{n}\) is the sum of the previous two Fibonacci numbers, except the very first two numbers which are defined to be 0 and 1.
@@ -30,6 +32,7 @@ The doubling method uses a couple of mathematical formulas derived from matrix m
 The matrix multiplication method uses the following formula:
 
 \[
+\begin{equation}
 \begin{bmatrix}
 1 & 1\\
 1 & 0
@@ -39,6 +42,7 @@ The matrix multiplication method uses the following formula:
 \mathrm{F}_{n + 1} & \mathrm{F}_{n}\\
 \mathrm{F}_{n} & \mathrm{F}_{n - 1}
 \end{bmatrix}.
+\end{equation}
 \]
 
 This result is quite interesting in its own right; to find \(\mathrm{F}_{n}\) you only need to raise the matrix
@@ -61,6 +65,7 @@ Of course, we're not talking about adding \(\mathrm{F}_{n - 2}\) and \(\mathrm{F
 Let's have a look at the matrix identity again (reversed for easier reading):
 
 \[
+\begin{equation}
 \begin{bmatrix}
 \mathrm{F}_{n + 1} & \mathrm{F}_{n}\\
 \mathrm{F}_{n} & \mathrm{F}_{n - 1}
@@ -70,6 +75,7 @@ Let's have a look at the matrix identity again (reversed for easier reading):
 1 & 1\\
 1 & 0
 \end{bmatrix}^n.
+\end{equation}
 \]
 
 If we substitute in \(2n\) for \(n\), we get
