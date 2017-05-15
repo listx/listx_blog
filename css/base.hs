@@ -97,8 +97,7 @@ myStylesheet = do
           -- For raw tables (e.g., org-mode's tables.)
           table ? do
             -- horizontally center it
-            headerIndent
-            headerIndentRight
+            vh margin (px 0) auto
           div' ? do
             ".info" & do
               paddingBottom (em 1)
@@ -220,47 +219,48 @@ myStylesheet = do
               paddingBottom (em 1)
               fontWeight normal
           table ? do -- code with line numbers
-            "-moz-tab-size" -: "4"
-            "-o-tab-size" -: "4"
-            "tab-size" -: "4"
-            paddingRight $ px 0
-            marginBottom (em 1)
-            borderSpacing2 (px 0) (px 1)
-            -- table for list of all blog posts
-            ".ul" & do
-              headerIndent
-              marginBottom $ px 0
-              paddingBottom (em 1)
-              thead ? do
+            ".sourceCode" & do
+              "-moz-tab-size" -: "4"
+              "-o-tab-size" -: "4"
+              "tab-size" -: "4"
+              noMargin
+              marginBottom (em 1)
+              borderSpacing2 (px 0) (px 1)
+              -- table for list of all blog posts
+              ".ul" & do
+                headerIndent
+                marginBottom $ px 0
+                paddingBottom (em 1)
+                thead ? do
+                  tr ? do
+                    th ? do
+                      borderCollapse separate
+                      borderBottom solid (px 1) (rgbHex 0x000000)
+                      ".label" & do
+                        textAlign $ alignSide sideCenter
                 tr ? do
-                  th ? do
-                    borderCollapse separate
-                    borderBottom solid (px 1) (rgbHex 0x000000)
-                    ".label" & do
-                      textAlign $ alignSide sideCenter
-              tr ? do
-                td ? do
-                  vh padding 0 $ px 5
-                  "vertical-align" -: "text-top"
-                  ".date" & do
-                    whiteSpace nowrap
-                  ".bytes" & do
-                    textAlign $ alignSide sideRight
-                    whiteSpace nowrap
-                  code ? do
-                    fontWeight normal
-            ".gallery" & do
-              headerIndent
-              headerIndentRight
-              marginBottom $ em 0
-              fontSizeCustom Clay.Font.small
-              tr ? do
-                textAlign $ alignSide sideCenter
-                "#header" & do
-                  fontSizeCustom Clay.Font.medium
-                  fontWeight bold
-                  textDecoration underline
-            sourceCodeMarkdownNumberlines True
+                  td ? do
+                    vh padding 0 $ px 5
+                    "vertical-align" -: "text-top"
+                    ".date" & do
+                      whiteSpace nowrap
+                    ".bytes" & do
+                      textAlign $ alignSide sideRight
+                      whiteSpace nowrap
+                    code ? do
+                      fontWeight normal
+              ".gallery" & do
+                headerIndent
+                headerIndentRight
+                marginBottom $ em 0
+                fontSizeCustom Clay.Font.small
+                tr ? do
+                  textAlign $ alignSide sideCenter
+                  "#header" & do
+                    fontSizeCustom Clay.Font.medium
+                    fontWeight bold
+                    textDecoration underline
+              sourceCodeMarkdownNumberlines True
         "#footer" & do
           -- Margins of adjacent elements are *overlap*, unlike
           -- padding. We use a 1em top-side margin here, because,
@@ -317,7 +317,7 @@ myStylesheet = do
     "padding-left" -: "18%"
     paragraphIndentRight
   sourceCodeMarkdownNumberlines _ = ".sourceCode" & do
-    paragraphIndent
+    headerIndent
     paddingBottom (em 0.5)
     tr ? do
       td ? do
