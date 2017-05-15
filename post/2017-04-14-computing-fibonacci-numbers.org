@@ -119,8 +119,8 @@ and carry out the squaring to get
   \begin{bmatrix}
   {{\mathrm{F}_{n + 1}}^2 + {\mathrm{F}_{n}}^2} & {{\mathrm{F}_{n + 1}\mathrm{F}_{n}} + {\mathrm{F}_{n}\mathrm{F}_{n - 1}}}\\
   {{\mathrm{F}_{n}\mathrm{F}_{n + 1}} + {\mathrm{F}_{n - 1}\mathrm{F}_{n}}} & {{\mathrm{F}_{n}}^2 + {\mathrm{F}_{n - 1}}^2}
-  \end{bmatrix}
-\end{align}.
+  \end{bmatrix}.
+\end{align}
 \]
 
 The top right and bottom left terms are identical; we can also rewrite them to be a bit simpler.
