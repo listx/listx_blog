@@ -98,6 +98,7 @@ myStylesheet = do
           table ? do
             -- horizontally center it
             vh margin (px 0) auto
+            marginBottom (em 1)
           div' ? do
             ".info" & do
               paddingBottom (em 1)
