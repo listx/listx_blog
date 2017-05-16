@@ -1,6 +1,6 @@
 ---
 title: The Parking Lot Problem, or "Smallest Free Number"
-tags: programming, haskell
+tags: math, programming, haskell
 mathjax: on
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: "The Fastest Way to Compute the Nth Fibonacci Number: The Doubling Method"
-tags: programming, python
+tags: math, programming, python
 mathjax: on
 ---
 
