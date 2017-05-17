@@ -240,8 +240,8 @@ In this case, all it took was adding 1 to the original recurrence.
 * Conclusion
 
 I thoroughly enjoyed figuring this stuff out because possibly for the first time in my life I used my programming experience (recurrence/recursion, memoization) to help myself understand mathematics --- not the other way around.
-The other way around was not even enjoyable --- calculating what ~i~ is in some \(n\)th iteration of a ~for~-loop never really excited me.
+The other way around was not even enjoyable --- calculating what ~i~ was in some \(n\)th iteration of a ~for~-loop never really excited me.
 
-I hope this explanation helps you better understand the first few pages of /Concrete Mathematics/; I had to read that part three times over to really "get it" (never having learned what induction was).
+I hope this explanation helps you better understand the first few pages of /Concrete Mathematics/; I had to read that part three times over to really "get it" (never having learned what induction is).
 And henceforth, I will never look at a string of consecutive 1's in binary the same way again.
 😃
