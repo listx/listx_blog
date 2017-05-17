@@ -186,7 +186,7 @@ But I find it a bit too terse for my tastes.]
 
 * Alternate Recurrence and Solution
 
-The book offers an alternate recurrence to Equation \(\ref{eq:recurrence}\), by adding 1 to both sides:
+The book goes on to offer an alternate recurrence to Equation \(\ref{eq:recurrence}\), by adding 1 to both sides:
 
 \[
 \begin{align}
