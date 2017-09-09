@@ -23,7 +23,7 @@ That is, each Fibonacci number \(\mathrm{F}_{n}\) is the sum of the previous two
 
 From the definition above, it appears that computing \(\mathrm{F}_{n}\) requires one to always compute \(\mathrm{F}_{n - 2}\) and \(\mathrm{F}_{n - 1}\).
 *This is false:* enter the "doubling method".
-[fn:: There is actually a known formula for our purposes, where \[ \mathrm{F}_{n} = \frac{\varphi^n - (-\varphi)^{-n}}{2\varphi - 1}\] where \(\varphi = \frac{1 + \sqrt{5}}{2} \approx 1.6180339887\cdots\) (the golden ratio). Unfortunately this requires arbitrary-precision floating point calculations.]
+[fn:: There is actually a known formula for our purposes, where \[ \mathrm{F}_{n} = \frac{\varphi^n - (-\varphi)^{-n}}{2\varphi - 1}\] and \(\varphi = \frac{1 + \sqrt{5}}{2} \approx 1.6180339887\cdots\) (the golden ratio). Unfortunately this requires arbitrary-precision floating point calculations.]
 [fn:: For more discussion, see https://www.nayuki.io/page/fast-fibonacci-algorithms.]
 
 * The Genesis of the Doubling Method
