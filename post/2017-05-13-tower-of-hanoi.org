@@ -1,5 +1,5 @@
 ---
-title: The Math Behind the Tower of Hanoi
+title: The Math Behind the Tower of Hanoi Problem
 tags: math
 mathjax: on
 ---
