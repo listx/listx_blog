@@ -50,7 +50,7 @@ After a few days, I got a response back --- from the principal maintainer of Git
 ## The Response?
 
 He was very polite, and true to his duty as maintainer, very thorough.
-You can see the discussion that took place over at the [mailing list archive](http://thread.gmane.org/gmane.comp.version-control.git/254705).
+You can see the discussion that took place over at the [mailing list archive][first].
 I sent off my second version of my 7-commit patch series after a few days, and waited.
 
 And waited.
@@ -77,7 +77,7 @@ And, be patient with your patches --- especially if the project you are contribu
 
 Happy hacking!
 
-[first]: http://thread.gmane.org/gmane.comp.version-control.git/254705
-[patches]: http://thread.gmane.org/gmane.comp.version-control.git/255050
+[first]: https://marc.info/?l=git&m=140700284616433&w=2
+[patches]: https://marc.info/?l=git&m=140751902721342&w=2
 [merged]: https://github.com/git/git/commit/4645b014c5c82a3b75337
 [^merge-window]: This is the period of time when the maintainer of a project accepts patches for the next release.
