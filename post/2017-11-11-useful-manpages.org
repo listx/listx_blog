@@ -1,0 +1,52 @@
+---
+title: Useful Manpages
+tags: linux, git
+---
+
+#+STARTUP: indent showall
+
+A while ago I discovered that [[https://www.reddit.com/r/linux/comments/74msho/til_there_is_a_manpage_for_the_ascii_character_set/][there is a manpage for the ASCII character set]].
+It got a bunch of upvotes, and since then I wondered what other manpages were worth knowing about.
+Below is a small table of manpages that I found interesting.
+
+| Manpage                | Description                                                            |
+|------------------------+------------------------------------------------------------------------|
+| =ascii(7)=             | the ASCII character set (in octal, decimal, and hex)                   |
+| =units(7)=             | megabytes vs mebibytes, etc.                                           |
+| =hier(7)=              | traditional filesystem hierarchy (e.g., =/bin= vs =/usr/bin=)          |
+| =file-hierarchy(7)=    | (systemd) filesystem hierarchy                                         |
+| =operator(7)=          | C operator precedence rules (listed in descending order)               |
+| =console_codes(4)=     | Linux console escape and control sequences                             |
+| =terminal-colors.d(5)= | among other things, ANSI color sequences                               |
+| =boot(7)=              | UNIX System V Release 4 bootup process                                 |
+| =daemon(7)=            | (systemd) how to write/package daemons                                 |
+| =proc(5)=              | proc filesystem (=/proc=)                                              |
+| =ip(7)=                | Linux IPv4 protocol implementation (a bit low-level, but still useful) |
+| =ipv6(7)=              | Linux IPv6 protocol implementation                                     |
+| =socket(7)=            | Linux socket interface                                                 |
+| =unix(7)=              | UNIX domain sockets                                                    |
+| =fifo(7)=              | named pipes                                                            |
+
+Note that you need to run
+
+#+begin_src
+sudo mandb
+#+end_src
+
+to be able to invoke =apropos <SEARCH_TERM>= or =man -k <SEARCH_TERM>= (=man -k= is equivalent to =apropos= --- see =man(1)=).
+
+** Git-specific
+
+You probably knew already that Git has many manpages dedicated to each of its subcommands, such as =git-clone(1)= or =git-commit(1)=, but did you know that it also comes with a suite of tutorials?
+Behold!
+
+| Manpage               | Description                                                              |
+|-----------------------+--------------------------------------------------------------------------|
+| =giteveryday(7)=      | the top ~20 useful git commands you should know                          |
+| =gitglossary(7)=      | a glossary of all git concepts (blob object, working tree, etc.)         |
+| =gittutorial(7)=      | a high-level view of using git                                           |
+| =gittutorial-2(7)=    | explains the object database and index file (git architecture internals) |
+| =gitcore-tutorial(7)= | like =gittutorial-2(7)=, but much more detailed                          |
+| =gitworkflows(7)=     | recommended workflows, esp. branching strategies for maintainers         |
+
+Happy hacking!
