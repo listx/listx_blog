@@ -99,6 +99,16 @@ myStylesheet = do
             -- horizontally center it
             vh margin (px 0) auto
             marginBottom (em 1)
+            borderCollapse collapse
+            td ? do
+              vh padding (em 0) (em 0.5)
+            td |+ td ? do
+              borderLeft solid (px 1) (rgbHex 0x000000)
+          table ? do
+            ".ul" & do
+              borderCollapse separate
+              td ? do
+                "border-style" -: "none"
           div' ? do
             ".info" & do
               paddingBottom (em 1)
