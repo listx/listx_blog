@@ -115,6 +115,7 @@ myStylesheet = do
             -- This is when we use our custom 'import source code'
             -- syntax with '- i <filename>'.
             ".code-and-raw" & do
+              paragraphIndent
               hSymmetricGradient (rgbHex bgHex) codeBg 80
               marginBottom (em 1)
               table ? do
