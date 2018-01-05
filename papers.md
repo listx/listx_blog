@@ -13,12 +13,6 @@ Here is a list of more serious work.
 
 I wrote this paper originally in 2011--2012, but it was not released until it was finally revised in 2014.
 
-
-## Haskell for Newbies (tentative title, coming 2016)
-
-This will be a short PDF on getting started writing Haskell programs.
-The goal of the paper will be to introduce Haskell to beginners, and to explain things *without* any reference to mathematics dealing with category theory.
-
 # Slides
 
 ## Git: Your Favorite Tool (July 2015)
