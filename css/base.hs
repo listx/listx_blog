@@ -115,7 +115,6 @@ myStylesheet = do
             -- This is when we use our custom 'import source code'
             -- syntax with '- i <filename>'.
             ".code-and-raw" & do
-              paragraphIndent
               hSymmetricGradient (rgbHex bgHex) codeBg 80
               marginBottom (em 1)
               table ? do
@@ -152,6 +151,11 @@ myStylesheet = do
               marginLeft (em (-1.16))
             ".lineCntMax10000" & do
               marginLeft (em (-2.32))
+            ".sourceCode" & do
+              paragraphIndent
+              pre ? do
+                code ? do
+                  "padding-left" -: "0"
           ol ? do
             noMargin
             paragraphListIndent
