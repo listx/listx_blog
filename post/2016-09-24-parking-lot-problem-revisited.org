@@ -110,7 +110,7 @@ The set *reducedXs* is found by removing all elements in *xs* that are too big f
 
 Using the insight gained above, we can restate the problem as follows:
 
-- i 2016-09-24-parking-lot-problem-revisited/array2.hs
+- i 2016-09-24-parking-lot-problem-revisited/array1.hs
 
 .
 
