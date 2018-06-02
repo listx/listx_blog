@@ -11,9 +11,9 @@ search = length . takeWhile id . elems
 -- range *reducedXs*.
 checklist :: [Int] -> Array Int Bool
 checklist xs = accumArray
-	(||) -- accumulating function
-	False -- initial value
-	(0, n) -- bounds of the array
-	(zip (filter (<n) xs) (repeat True)) -- association list of `(index, value)' pairs
-	where
-	n = length xs
+  (||) -- accumulating function
+  False -- initial value
+  (0, n) -- bounds of the array
+  (zip (filter (<n) xs) (repeat True)) -- association list of `(index, value)' pairs
+  where
+  n = length xs

@@ -9,8 +9,8 @@ search = length . takeWhile id . elems
 
 checklist :: [Int] -> Array Int Bool
 checklist xs = runSTArray $ do
-	a <- newArray (0, n) False
-	sequence [writeArray a x True | x <- xs, x < n]
-	return a
-	where
-	n = length xs
+  a <- newArray (0, n) False
+  sequence [writeArray a x True | x <- xs, x < n]
+  return a
+  where
+  n = length xs
