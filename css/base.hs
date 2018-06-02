@@ -292,8 +292,6 @@ myStylesheet = do
   div' = Clay.div
   cPageWidth :: Double
   cPageWidth = 900
-  shadowHex :: Int
-  shadowHex = 0xdcdcd0
   codeBgHex :: Int
   codeBgHex = bgHex
   quoteBgHex :: Int
@@ -345,12 +343,10 @@ myStylesheet = do
         ".sourceCode" & do
           paddingLeft $ px 0
           pre ? do
-            ev margin $ px 0
+            noMargin
             code ? do
-              ev margin $ px 0
+              noMargin
               padding 0 0 0 (em 1)
-              "border-style" -: "none"
-              boxShadow (px 0) (px 0) (px 0) (rgbHex shadowHex)
   uBlackSquare = 0x25a0
   uWhiteSquare = 0x25a1
   uDoubleSquare = 0x25a3
