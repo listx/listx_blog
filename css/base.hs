@@ -1,7 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 import Data.Bits
-import Data.Monoid
 import qualified Data.Text.Lazy as T
 import qualified Data.Text.Lazy.IO as T
 import Clay hiding (vh)

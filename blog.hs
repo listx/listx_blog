@@ -2,7 +2,6 @@
 {-# LANGUAGE RecordWildCards #-}
 
 import Data.Char hiding (Space)
-import Data.Monoid
 import Data.Time.Calendar
 import Data.Time.LocalTime
 import Hakyll
