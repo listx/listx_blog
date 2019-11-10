@@ -1,0 +1,53 @@
+---
+title: Status Update
+tags: status
+mathjax: off
+---
+
+#+STARTUP: indent showall
+
+It's been a year since my last blog post.
+Many things have happened since that time.
+
+Below are some of the more interesting items.
+
+* IMVU to Google
+
+I got laid off at [[https://imvu.com][IMVU]] in September 2017.
+It was a difficult time for me as I had become good friends with the people there.
+After almost 2 months of searching for jobs, I somehow managed to land a job at Google!
+My title is Release Engineer.
+I've been there almost a year now and I am still happy and excited to work there.
+
+* Golang
+
+I started learning Golang a few months ago, because, I felt that this is the best time to learn it (while I'm employed by Google).
+I haven't really done any of the advanced things yet, but I like how the language tries really hard to keep the syntax simple.
+It's a lot like C in that regard.
+
+The only pain point in Go for me is the packaging/installation system.
+The whole opintionated $GOPATH thing just feels a bit clunky because of the shared folder namespace with other projects.
+But I guess that's unavoidable in any language's ecosystem.
+
+* Git Book
+
+I started writing a short (informal) book on Git.
+I am using LuaTeX to write it; I started in March 2018 but have yet to cross the 1/2 way mark.
+Hopefully I'll get it done before March 2019 rolls around.
+
+* Haskell book
+
+Back in [[./2016-01-04-status-update.html][2016's status update]] I said that I still planned to finish the Haskell book I was working on.
+That project is definitely dead.
+One reason is that due to the rising popularity of the language, I feel that other people have already said what I had meant to say in my book.
+
+* Shen, Rust, Erlang, Idris, Factor
+
+I've grown interested in these languages because well, I feel like they are important.
+My hope is to find some interesting problems that can be solved idiomatically in each language.
+That might take years, but, it is my hope that in the future I'll be able to write about these languages.
+
+* HTTPS for this site
+
+Apparently HTTPS support for custom domains on Github have been a thing since earlier this year.
+I never got around to it but thanks to [[https://medium.com/@goelanirudh/add-https-to-your-namecheap-domain-hosted-on-github-pages-d66fd96308b5][this post]] I finally enabled it.
