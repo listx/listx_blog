@@ -1,0 +1,29 @@
+---
+title: Status Update
+tags: status
+mathjax: off
+---
+
+#+STARTUP: indent showall
+
+It's been another year since my last blog post!
+
+* On work
+
+I'm still happily employed at Google.
+
+* Git Book
+
+I'm still working on this project.
+It is hard because I'm trying to create real repositories and situations that the reader should be able to check out and follow along.
+Still, I should be able to finish this next year.
+
+* Programming Languages
+
+I've started dabbling in Clojure, Rust, and Elixir.
+This list is not the same list of programming languages in my last post (which mentioned Shen, Rust, Erlang, Idris, and Factor), but it's something to chew on for quite some time.
+
+* Future
+
+I will post again when the Git book is ready.
+Stay tuned!
