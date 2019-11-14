@@ -1,5 +1,5 @@
 ---
-title: A Nice Blog Post
+title: "A Nice Blog Post"
 tags: programming, haskell
 mathjax: on
 ---
