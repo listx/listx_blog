@@ -1,14 +1,13 @@
 *.hi
 *.o
-.cabal-sandbox/
+.stack-work
 _cache/
 _site/
 blog
-cabal.sandbox.config
 code/toy/binary-search-c
 code/toy/binary-search-hs
 code/2017-04-02-calling-c-from-haskell/hs/ffi
-dist/
 draft
 listx.github.io
+stack.yaml.lock
 Setup.hs
