@@ -1,5 +1,4 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards #-}
 
 import Data.Char hiding (Space)
 import Data.Time.Calendar
@@ -14,13 +13,13 @@ main :: IO ()
 main = hakyll $ do
   -- Build tags
   tags <- buildTags "post/*" (fromCapture "tag/*.html")
-  (currentYear, _, _) <- toGregorian . localDay . zonedTimeToLocalTime <$> preprocess (getZonedTime)
-  tagsRules tags $ \tag pattern -> do
+  (currentYear, _, _) <- toGregorian . localDay . zonedTimeToLocalTime <$> preprocess getZonedTime
+  tagsRules tags $ \tag pat -> do
     let
       title = "&ldquo;" <> tag <> "&rdquo;"
     route idRoute
     compile $ do
-      list <- postList tags pattern recentFirst
+      list <- postList tags pat recentFirst
       makeItem ""
         >>= loadAndApplyTemplate "template/index.html" (mconcat
           [ constField "body" list
@@ -63,7 +62,7 @@ main = hakyll $ do
       >>= relativizeUrls
 
   -- Add static content
-  mapM_ (flip match (route idRoute >> compile copyFileCompiler))
+  mapM_ (`match` (route idRoute >> compile copyFileCompiler))
     [ "CNAME"
     -- Although not tailored to the actual deployed site itself, it still
     -- has some rules that make it easier to git add/push new content.
@@ -159,18 +158,19 @@ postList
   -> Pattern
   -> ([Item String] -> Compiler [Item String])
   -> Compiler String
-postList tags pattern sortFilter = do
-  posts <- sortFilter =<< loadAll pattern
+postList tags pat sortFilter = do
+  posts <- sortFilter =<< loadAll pat
   itemTpl <- loadBody "template/post-item.html"
   applyTemplateList itemTpl (tagsCtx tags) posts
 
 fileNameField :: String -> Context String
-fileNameField key = field key $ \item -> do
-  return . toFilePath $ itemIdentifier item
+fileNameField key = field key $
+  \item -> return . toFilePath $ itemIdentifier item
 
 bytesField :: String -> Context String
-bytesField key = field key $ \item -> do
-  return . showKChars . length . filter isAlphaNum $ itemBody item
+bytesField key = field key $
+  \item -> return . showKChars . length . filter isAlphaNum
+    $ itemBody item
   where
   showKChars :: Int -> String
   showKChars n = TF.printf "%.1f" (fromIntegral n / 1000.0 :: Double)
@@ -199,11 +199,11 @@ transformer (Pandoc m bs0) = do
 -- easier to write in actual blog posts.
 cbExpandRawInput :: Block -> Compiler [Block]
 cbExpandRawInput block = case block of
-  (BulletList xs) -> return . maybeBullets =<< mapM (mapM bList) xs
+  (BulletList xs) -> maybeBullets <$> mapM (mapM bList) xs
   _ -> return [block]
   where
   bList :: Block -> Compiler (Bool, Block)
-  bList (Plain [(Str "i"), Space, (Str fp)]) = do
+  bList (Plain [Str "i", Space, Str fp]) = do
     raw <- unsafeCompiler . readFile $ "code/" <> fp
     let
       codeLang = case takeExtensions fp of
@@ -238,16 +238,14 @@ cbExpandRawInput block = case block of
             ]
     return
       ( True
-      ,
-        ( Div ("", ["code-and-raw", "lineCntMax" <> lineCntClass], [])
-          [ Div ("", ["raw-link", "sourceCode"], [])
-            [ Plain
-              [ filename_link_raw
-              ]
+      , Div ("", ["code-and-raw", "lineCntMax" <> lineCntClass], [])
+        [ Div ("", ["raw-link", "sourceCode"], [])
+          [ Plain
+            [ filename_link_raw
             ]
-          , CodeBlock attr raw
           ]
-        )
+        , CodeBlock attr raw
+        ]
       )
   bList x = return (False, x)
   maybeBullets [] = [BulletList []]
