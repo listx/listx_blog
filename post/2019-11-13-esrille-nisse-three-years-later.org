@@ -1,0 +1,161 @@
+---
+title: "The Esrille Nisse: Three Years Later"
+tags: hardware, esrille, cherry mx
+---
+
+#+STARTUP: indent showall
+#+OPTIONS: ^:nil
+
+Over three years ago, I wrote [[./2016-04-14-esrille-nisse-keyboard.html][a post]] describing the Esrille Nisse keyboard.
+This post is a reflection on the keyboard, more than 3 years later.
+
+* Layout
+
+Ultimately I settled on a different layout than the one described in the old blog post.
+This was a result of many hands-on trial-and-error sessions over a period of weeks which turned into many months.
+In my old post I described writing a program to help find the optimal layout.
+This proved very difficult in practice, because encoding the optimization rules turned out to be non-trivial.
+One aspect that was particularly difficult was that the actualy physical shape of my own fingers played a part (some fingers were not as versatile as others, for example the pinky finger, and so the key-distance for certain fingers had to have different "weights", and this was too much to translate into code).
+
+Anyway, I read [[https://norvig.com/mayzner.html][this post by Peter Norvig]] forwards and backwards, and used the values there to guide the design of my layout.
+One big realization after actual usage was that I could not let go of the QWERTY ~hjkl~ keys on the home row.
+There was just so much muscle memory built into these four keys (the only other key I could not let go of was the spacebar key that I used my left thumb for), that I had to "fix" them on the layout first.
+I then focused on getting the commonly-used keys right.
+
+All that being said, here is my current layout.
+
+#+begin_src
+      LEFT-SIDE     RIGHT-SIDE
+    ---------------------------
+    □ □ □ □ □ □     □ □ □ □ □ □
+    □ □ 0 □ □         □ □ 0 □ 1
+□ □ □ y o p z 1     2 f d t r □ □ □
+2 / a i e u w ;     " h j k l n 4 : <--- Home row
+  3 . x q v '         b m g c s 3
+      8 5 6 7 4     5 , 6 7 8 <--------- Thumb row
+
+
+Left-side legend
+0) Escape
+1) PgDn
+2) Enter
+3) Shift
+4) Control
+5) Super (Windows key)
+6) Space
+7) Caps Lock (remapped with xmodmap to Hyper key)
+8) Right Alt (aka "AltGr" for US International Layout)
+
+Right-side legend
+0) Tab
+1) Delete
+2) PgUp
+3) Shift
+4) Backspace
+5) FN2
+6) FN
+7) Alt
+8) Right Alt (aka "AltGr" for US International Layout)
+#+end_src
+
+The main thing to note is the reduced number of keys that are mapped at all.
+I like this aspect a lot (not having to move my fingers around much at all) --- I never have to reach for a particular key because everything is just so close.
+
+I also dedicated a key just for the colon symbol (as a "Shift + semicolon" macro), because it comes up often enough in programming.
+
+I should also note that the function keys (F1-F12) are situated on the topmost row, left-to-right.
+I just didn't bother adding them to the legend because of symbol space constraints.
+
+FN layer.
+
+#+begin_src
+      LEFT-SIDE     RIGHT-SIDE
+    ---------------------------
+    □ □ □ □ □ □     □ □ □ □ □ □
+    □ □ a □ □         □ □ □ □ □
+□ □ □ 7 8 9 □ □     □ □ \ _ = □ □ □
+□ □ 0 4 5 6 □ b     b - { ( ) } a : <--- Home row
+  c . 1 2 3 `         □ [ < > ] c
+      □ □ □ □ □     □ □ □ □ □ <--------- Thumb row
+
+Left-side legend
+a) ~/ (a macro that inserts the string "~/")
+b) End
+c) Shift
+
+Right-side legend
+a) Backspace
+b) Home
+c) Shift
+#+end_src
+
+The FN layer has the majority of the punctuation keys I need.
+You might notice that some symbols like ~!@#$&*^~ are not in here.
+This is because the numeral keys on the left side are actually the same numeral keys on the top row (*not* the Numpad) of a typical QWERTY layout.
+This means that I can just press FN+Shift to get these keys.
+This is the main trick that allowed me to reduce the number of keys used overall.
+
+The "~/" macro in the left side is particularly useful as well.
+
+FN2 layer.
+
+#+begin_src
+      LEFT-SIDE     RIGHT-SIDE
+    ---------------------------
+    □ □ □ □ □ □     □ □ □ □ □ □
+    □ □ □ □ □         □ □ □ □ □
+□ □ □ □ □ □ □ □     □ □ □ □ □ □ □ □
+□ □ □ □ □ □ □ □     □ a b c d □ □ □ <--- Home row
+  □ □ □ □ □ □         □ □ □ □ e □
+      □ □ □ □ □     □ □ □ □ □ <--------- Thumb row
+
+
+Right-side legend
+a) Left Arrow
+b) Down Arrow
+c) Up Arrow
+d) Right Arrow
+e) Shift + Insert macro (for pasting X primary buffer)
+#+end_src
+
+This layer is mostly empty, but it is used surprisingly frequently.
+I really like how the arrow keys line up with my ~hjkl~ keys in the main layer.
+
+For the latest changes to my layout, check out [[https://github.com/listx/new-keyboard][this repo]].
+
+* Typing Speed
+
+It took me roughly 3 months of everyday use to get somewhat familiar with the layout, and probably another month or two to reach upwards of 60wpm.
+
+It was painstakingly slow at first (it felt a lot like learning how to type all over again), but still "fun" because I noticed that I was getting better with time.
+
+I think these days (after having used this keyboard every day for both my home and work PCs (yes, I have two of these!)) I can go higher than 60wpm.
+
+Suffice it to say that there is never a time when I think "oh, I wish I could type faster" on this layout.
+My speed on this keyboard is about on par as with my old typing speed on QWERTY.
+
+My typing speed on the old QWERTY layout hasn't really changed.
+I still have to use it for when I use the keyboard on laptops.
+And surprisingly, my brain knows to "switch" to QWERTY when I'm typing on there --- granted, this instinct took some time to kick in.
+
+* Was it worth it?
+
+Yes.
+
+The biggest thing I love about this layout is that I don't have to move my right hand around when reaching for the typical "hard" keys on QWERTY (such as `[]{}`).
+I rarely (if ever) have typos when typing punctuation keys.
+The numeral keys being just underneath my left hand in a different layer is nice, too.
+
+There are some "downsides" though in everyday life:
+
+- it's hard to play games because the key mappings are usually designed for QWERTY;
+- when I make typos using this layout, they look rather unusual from a "QWERTY" perspective (as a contrived example, I might type "yen" instead of "yes" because the "n" and "s" keys are next to each other on my layout)
+
+I don't really play games that much though, and when I do I am usually on the separate gaming PC that just use a regular QWERTY layout so it's not really a negative.
+
+I guess the biggest downside of all is that the keyboard form factor on the Nisse is one-of-a-kind on the planet.
+If Esrille goes under, I would be worried about taking very good care of my keyboards in case one of the components breaks for whatever reason.
+I imagine that at that point, I would have to just create my own keyboard or make do with a shabby imitation using ErgoDox or some other form factor.
+I sincerely hope that that day never comes...!
+
+Happy hacking!
