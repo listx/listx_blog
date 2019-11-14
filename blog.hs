@@ -43,12 +43,10 @@ main = hakyll $ do
     route $ setExtension "css"
     compile $ getResourceString
       >>= withItemBody
-        (unixFilter "cabal"
+        (unixFilter "stack"
         [ "exec"
         , "--"
-        , "runghc"
-        , "--"
-        , "-fno-warn-tabs"
+        , "base"
         ])
 
   -- Add some default pages
