@@ -5,6 +5,7 @@ mathjax: on
 ---
 
 #+STARTUP: indent showall
+#+OPTIONS: ^:nil
 
 Hello world!
 
