@@ -4,6 +4,7 @@ tags: programming
 ---
 
 #+STARTUP: indent showall
+#+OPTIONS: ^:nil
 
 * Motivation
 
@@ -28,8 +29,8 @@ The name of the repo is prepended/appended to the output as well to further disa
 Here are the functions:
 
 - i 2016-07-17-git-diff-improved/gdf
-- i 2016-07-17-git-diff-improved/vertical\_label
-- i 2016-07-17-git-diff-improved/git\_find\_repo
+- i 2016-07-17-git-diff-improved/vertical_label
+- i 2016-07-17-git-diff-improved/git_find_repo
 
 I use Zsh as my shell, so I wrote the above in Zsh.
 I simply drop these files inside my autoloaded directory, which is defined like this:
