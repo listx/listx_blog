@@ -1,13 +1,15 @@
-sync: rebuild
+all: sync
+
+sync: build-site
 	./sync.sh
 
 build-binaries:
 	stack build
 
-rebuild: build-binaries
+build-site: build-binaries
 	stack exec -- blog rebuild
 
 watch: build-binaries
 	stack exec -- blog watch
 
-.PHONY: sync nosync
+.PHONY: sync
