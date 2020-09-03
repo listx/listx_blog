@@ -4,17 +4,18 @@ title: About
 
 Hello!
 My name is Linus Arver and this is my blog.
+You can visit my [LinkedIn][linkedin] page to see what I'm up to professionally, although probably [Github][github] is more direct.
 
 Please email me at [linus@ucla.edu](mailto:linus@ucla.edu) for anything related to this blog.
-I have long since graduated from UCLA, but they gave me a lifetime email address. ;)
+I have long since graduated from UCLA, but they gave me a lifetime email address. Thank you, UCLA!
 
-# Programming
-
-My [Github](https://github.com/listx).
+# On Programming
 
 I have fun writing computer programs.
-It is by far my favorite hobby.
-I like C, Python, and Haskell; I know some Emacs Lisp because of necessity (as it is my editor of choice).
+It is by far my favorite hobby, ever since I rediscovered it in 2009.
+There's just something about making the computer solve your problems that just never gets old...!
+
+I originally started a blog about various programming-related things [here][old-blog], but I wanted more control over how the content is generated/stored, and so I created this site.
 
 # Recommended Software
 
@@ -22,34 +23,29 @@ I use free/open-source software almost exclusively as much as possible.
 Below are some of them.
 
 - [NixOS][nixos] - my favorite OS
-- [dm-crypt/LUKS][crypto] - my choice for full disk encryption
 - [Terminus][terminus] - my favorite monospaced font
-- [rxvt-unicode][urxvt] (aka `urxvt`) - the only sane Unicode-aware terminal emulator
+- [alacritty][alacritty] - a modern terminal
 - [Xmonad][xmonad] - the crash-proof tiled window manager
 - [Vim][vim] - an advanced text editor
 - [Emacs][emacs] - an even more advanced text editor
 - [evil][evil] - an Emacs addon that makes it behave like Vim
-- [git][git] - distributed data versioning
-- [GnuPG][gpg] (aka `gpg`) - a way to ensure secure communications
-- [Qutebrowser][qb] - a lightweight browser that makes it behave like Vim
+- [Qutebrowser][qutebrowser] - a lightweight browser with Vim bindings
 - [Texlive][texlive] - the modern TeX environment (LuaTeX being my preferred engine)
-- [Lilypond][lily] - if TeX is the sophisticated typesetting system, then Lilypond is the sophisticated sheet-music-setting system
 
+[linkedin]: https://www.linkedin.com/in/linusarver/
+[github]: https://github.com/listx
 [nixos]: https://nixos.org
-[crypto]: https://wiki.archlinux.org/index.php/LUKS
-[terminus]: https://www.archlinux.org/packages/community/any/terminus-font/
-[urxvt]: https://www.archlinux.org/packages/community/x86_64/rxvt-unicode/
+[terminus]: http://terminus-font.sourceforge.net/
+[alacritty]: https://github.com/alacritty/alacritty
 [xmonad]: http://xmonad.org/
-[vim]: https://www.archlinux.org/packages/extra/x86_64/gvim/
-[emacs]: https://www.archlinux.org/packages/extra/x86_64/emacs/
-[evil]: https://aur.archlinux.org/packages/emacs-evil-git/
-[git]: https://www.archlinux.org/packages/extra/x86_64/git/
-[gpg]: https://www.archlinux.org/packages/core/x86_64/gnupg/
-[qb]: https://github.com/The-Compiler/qutebrowser
-[texlive]: https://www.archlinux.org/packages/extra/any/texlive-core/
-[lily]: https://www.archlinux.org/packages/community/x86_64/lilypond/
+[vim]: https://github.com/vim/vim
+[emacs]: https://github.com/emacs-mirror/emacs
+[evil]: https://github.com/emacs-evil/evil
+[qutebrowser]: https://github.com/The-Compiler/qutebrowser
+[texlive]: https://www.tug.org/texlive/
+[old-blog]: https://zuttobenkyou.wordpress.com/
 
-# This Site
+# Elsewhere on the Web
 
-Everything except links on this site will be self-contained and safely accessible forever.
-Hakyll comes with a link checker for the entire site so dead links should be a non-issue.
+- [DeviantArt account](https://www.deviantart.com/magic-byte) (sadly ignored for years)
+- [Twitter account](https://twitter.com/linusarver) (no tweets yet...)

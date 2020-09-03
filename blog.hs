@@ -50,7 +50,7 @@ main = hakyll $ do
         ])
 
   -- Add some default pages
-  match (fromList ["about.md", "art.md", "code.md", "papers.md"]) $ do
+  match (fromList ["about.md", "art.md", "papers.md"]) $ do
     route   $ setExtension "html"
     compile $ pandocCompiler
       >>= loadAndApplyTemplate "template/default.html" (mconcat
