@@ -174,6 +174,9 @@ myStylesheet = do
             paddingBottom (em 1)
             paragraphIndent
             textAlign justify
+            "#taglist" & do
+              paddingTop $ em 2
+              paddingBottom $ px 0
           -- single-line `code`
           code ? do
             vh padding 0 (em 0.10)
@@ -241,29 +244,6 @@ myStylesheet = do
               noMargin
               marginBottom (em 1)
               borderSpacing2 (px 0) (px 1)
-              -- table for list of all blog posts
-              ".ul" & do
-                headerIndent
-                marginBottom $ px 0
-                paddingBottom (em 1)
-                thead ? do
-                  tr ? do
-                    th ? do
-                      borderCollapse separate
-                      borderBottom solid (px 1) (rgbHex 0x000000)
-                      ".label" & do
-                        textAlign $ alignSide sideCenter
-                tr ? do
-                  td ? do
-                    vh padding 0 $ px 5
-                    "vertical-align" -: "text-top"
-                    ".date" & do
-                      whiteSpace nowrap
-                    ".bytes" & do
-                      textAlign $ alignSide sideRight
-                      whiteSpace nowrap
-                    code ? do
-                      fontWeight normal
               ".gallery" & do
                 headerIndent
                 headerIndentRight
@@ -276,6 +256,32 @@ myStylesheet = do
                     fontWeight bold
                     textDecoration underline
               sourceCodeMarkdownNumberlines True
+            -- table for list of all blog posts
+            ".posts-index" & do
+              headerIndent
+              marginBottom $ px 0
+              paddingBottom (em 1)
+              thead ? do
+                tr ? do
+                  th ? do
+                    "border-style" -: "none"
+                    ".label" & do
+                      textAlign $ alignSide sideCenter
+                    ".title" & do
+                      paddingLeft $ em 1
+                      textAlign $ alignSide sideLeft
+              tr ? do
+                td ? do
+                  vh padding 0 $ em 0.5
+                  "border-style" -: "none"
+                  "vertical-align" -: "text-top"
+                  ".date" & do
+                    whiteSpace nowrap
+                  ".bytes" & do
+                    textAlign $ alignSide sideRight
+                    whiteSpace nowrap
+                  code ? do
+                    fontWeight normal
         "#footer" & do
           -- Margins of adjacent elements are *overlap*, unlike
           -- padding. We use a 1em top-side margin here, because,
