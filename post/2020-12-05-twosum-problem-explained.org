@@ -67,9 +67,17 @@ This is the step that removes the largest element =b= in the list from considera
 How can this be correct?
 
 Well, let's consider an example.
-If *N* is 50 but =a + b= is 85, we have to look for a smaller number.
+If *N* is 50 but =a + b= is 85, we must look for a smaller sum.
+This much is obvious.
+
+We just used =a= and =b= to get to 85, but because we *must* get to a smaller sum, we would like to swap out either =a= or =b= (or both, eventually) with another number from the list.
+The question is, which one do we swap out?
+
 We can't replace =a= with the next bigger number (or any other number between =a= and =b=), because doing so will result in a sum that is at least as big as 85 (or bigger).
-And so, we throw out =b= and replace it with the next biggest number, which is guaranteed to be less than or equal to the just-thrown-out =b=.
+So =a= has to stay --- we can't rule out other combinations of =a= with some number other than =b= (maybe =a= and its next-biggest neighbor, etc).
+
+That leaves us with =b=.
+We throw out =b= and replace it with the next biggest number, which is guaranteed to be less than or equal to the just-thrown-out =b=.
 
 In other words, /all pairs/ of =b= and every other element in the list already sums up to 85 or some other /higher number/.
 So =b= is a red herring that's leading us astray.
@@ -95,7 +103,7 @@ For sake of completeness, here is the pseudocode for the same algorithm.
 You will see how using pointers (instead of deleting elements outright as described in Steps 3 and 4) doesn't change the algorithm at all.
 
 #+begin_src
-# Partial implementation of Step 5. Early exit if list is too small.
+# Partial implementation of Step 5. Early exit if list is too small to begin with.
 if length(numbers) < 2:
   return error
 
