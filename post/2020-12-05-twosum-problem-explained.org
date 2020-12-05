@@ -77,7 +77,7 @@ We can't replace =a= with the next bigger number (or any other number between =a
 So =a= has to stay --- we can't rule out other combinations of =a= with some number other than =b= (maybe =a= and its next-biggest neighbor, etc).
 
 That leaves us with =b=.
-We throw out =b= and replace it with the next biggest number, which is guaranteed to be less than or equal to the just-thrown-out =b=.
+We throw out =b= and replace it with the next biggest number, which is guaranteed to be less than or equal to the just-thrown-out =b=, because the list is sorted.
 
 In other words, /all pairs/ of =b= and every other element in the list already sums up to 85 or some other /higher number/.
 So =b= is a red herring that's leading us astray.
