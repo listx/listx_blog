@@ -57,7 +57,7 @@ Below is the algorithm in plain English:
 4. If the sum of =a + b= is smaller than *N*, delete =a= from the list. Go back to Step 1.
 5. If the list becomes smaller than 2 elements, stop (obviously, because there are no more pairs to consider). Optionally return an error.
 
-The algorithm described above can be equivalently coded with pointers, so there is no material difference in "flavor".
+The algorithm described above can be equivalently coded with pointers, so there is no material difference to discuss in terms of implementation.
 
 Anyway, we just need to make sense of the critical Steps, namely Steps 3, 4, and 5, and that should be enough to quell any worries about correctness.
 
