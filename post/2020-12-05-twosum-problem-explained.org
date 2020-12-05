@@ -1,0 +1,143 @@
+---
+title: "The Two Sum Problem Explained"
+tags: algorithms, math
+---
+
+#+STARTUP: indent showall
+#+OPTIONS: ^:nil
+
+Just over three years ago, I watched [[https://youtu.be/XKu_SEDAykw][this video]] that goes over the so-called "Two Sum" problem for the first time.
+The problem statement is as follows:
+
+#+begin_quote
+Given a sorted list of integers (unimaginitively called *numbers*), determine if any 2 integers in the list sum up to a number *N*.
+#+end_quote
+
+To be honest I did not understand why the proposed optimal solution that uses 2 pointers works the way it does, without missing any possible pairs.
+The [[https://youtu.be/XKu_SEDAykw?t=300][explanation given by the interview candidate in the video]] always struck me as way too hand-wavy for my tastes.
+
+And to be really honest I never bothered to convince myself that the 2-pointer approach is correct.
+Until today.
+This post is about the correctness behind the 2-pointer method, because I have yet to see a clear explanation about this topic.
+
+* Brute force approach
+
+First let's look at the brute-force solution.
+The brute-force solution looks at every single possible pair of numbers by using a double-for-loop.
+This is a very common pattern (nested looping) whenever one wants to consider all possible combinations, where each for-loop corresponds to a single "dimension" we want to exhaustively pore over.
+In this case there are 2 dimensions because there are 2 numbers we need to look at, so we must use 2 for-loops.
+
+Here is the basic pseudocode [fn:: Of course, this pseudocode ignores edge-cases, but I didn't want to clutter the code listing with non-essential ideas.]:
+
+#+begin_src
+for i in numbers:
+  for j in numbers:
+    if i + j == N:
+      return i, j
+#+end_src
+
+I think even beginner programmers can see that the brute force approach works.
+We just look at every possible 2-number combination to see if they will add up to *N*, and if so, we stop the search.
+Simple! [fn:: As an added benefit, the brute-force approach works even if the input list is not sorted.]
+
+* 2-pointer method
+
+The 2-pointer method boils down to the following observation:
+
+#+begin_quote
+Remove numbers from the pairwise search if they cannot be used (with any other number) to sum up to *N*.
+#+end_quote
+
+Although the solution posted in countless places online involve pointers, it is more intuitive to think of /modifying the list/ after each pairwise inspection.
+Below is the algorithm in plain English:
+
+1. Construct a pair of numbers =(a, b)= such that =a= is the smallest number and =b= is the biggest number in the list. That is, these are the leftmost and rightmost ends of the sorted list, respectively.
+2. If the sum of =a + b= is equal to *N*, of course we're done.
+3. If the sum of =a + b= is bigger than *N*, delete =b= from the list. Go back to Step 1.
+4. If the sum of =a + b= is smaller than *N*, delete =a= from the list. Go back to Step 1.
+5. If the list becomes smaller than 2 elements, stop (obviously, because there are no more pairs to consider). Optionally return an error.
+
+The algorithm described above can be equivalently coded with pointers, so there is no material difference in "flavor".
+
+Anyway, we just need to make sense of the critical Steps, namely Steps 3, 4, and 5, and that should be enough to quell any worries about correctness.
+
+* Step 3
+
+This is the step that removes the largest element =b= in the list out of contention /for all future iterations/.
+How can this be correct?
+
+Well, let's consider an example.
+If *N* is 50 but =a + b= is 85, we have to look for a smaller number.
+We can't replace =a= with the next bigger number (or any other number between =a= and =b=), because doing so will result in a sum that is at least as big as 85 (or bigger).
+And so, we throw out =b= and replace it with the next biggest number, which is guaranteed to be less than or equal to the just-thrown-out =b=.
+
+In other words, /all pairs/ of =b= and every other element in the list already sums up to 85 or some other /higher number/.
+So =b= is a red herring that's leading us astray.
+We must throw it out.
+
+* Step 4
+
+This is the "mirror" of Step 3.
+Here we throw out the smallest number out of future pairwise searches, because we know that =a=, no matter which number it is paired with (even with the biggest one, =b=), is too small to meet the target *N*.
+In other words, =a= fails to give enough of a "boost" to /any/ other number to reach *N*.
+It is very much useless to the remaining other candidates, and so we throw it out.
+
+* Step 5
+
+This Step's analogy when using pointers is to consider the condition when the pointers "cross".
+The pointers "crossing", in and of itself, doesn't seem particularly significant.
+However when we view this condition by looking at the dwindling size of the overall list (by chopping off the left and right ends in Steps 4 and 3), the point becomes obvious.
+We must stop when the list becomes too small to make Step 1 impossible to fulfill (namely, the construction of the pair =(a, b)=), due to the fact that there aren't enough elements in the list (singleton or empty list).
+
+* 2-pointer method, in pseudocode
+
+For sake of completeness, here is the pseudocode for the same algorithm.
+You will see how using pointers (instead of deleting elements outright as described in Steps 3 and 4) doesn't change the algorithm at all.
+
+#+begin_src
+# Partial implementation of Step 5. Early exit if list is too small.
+if length(numbers) < 2:
+  return error
+
+# Step 1.
+a_idx = 0
+b_idx = length(numbers) - 1
+sum = numbers[a_idx] + numbers[b_idx]
+
+# Begin search, but only if we have to search.
+while sum != N:
+  # Step 3
+  if sum > N:
+    b_idx -= 1
+  # Step 4
+  elif sum < N:
+    a_idx += 1
+
+  # Step 5
+  if a_idx == b_idx:
+    return error
+
+  # Step 1 (again, because we didn't find a match above).
+  sum = numbers[a_idx] + numbers[b_idx]
+
+# Step 2
+return numbers[a_idx], numbers[b_idx]
+#+end_src
+
+It may be of interest to readers who are fairly new to programming that Step 2 comes in at the very end.
+Getting the "feel" for converting plain-English algorithms into actual code is something that requires experience, and can only be acquired with practice over time.
+
+** Do the pointers ever skip over each other?
+
+It is worth pointing out that the condition ~a_idx == b_idx~ is well-formed.
+That is, there will never be a case where =a_idx= and =b_idx= will somehow "skip over" each other, rendering the =if=-condition useless.
+This is because we only ever increment =a_idx= or decrement =b_idx=, /exclusively/ --- that is, we never modify both of them within the same iteration.
+So, the variables only ever change by =±1=, and at some point, if the search goes on long enough, the indices are bound to converge at the same numerical value.
+
+* Conclusion
+
+I think the beauty of this problem is that it's so simple, and yet it is also a very cool way of looking at the problem of /search/.
+Steps 3 and 4 are essentially very aggressive (and correct!) eliminations of bad search paths.
+There's just something refreshing about eliminating entire branches of a search tree to speed things up.
+
+Hope this helps!
