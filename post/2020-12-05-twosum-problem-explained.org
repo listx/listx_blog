@@ -63,7 +63,7 @@ Anyway, we just need to make sense of the critical Steps, namely Steps 3, 4, and
 
 * Step 3
 
-This is the step that removes the largest element =b= in the list out of contention /for all future iterations/.
+This is the step that removes the largest element =b= in the list from consideration /for all future iterations/.
 How can this be correct?
 
 Well, let's consider an example.
