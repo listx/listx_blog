@@ -140,4 +140,8 @@ I think the beauty of this problem is that it's so simple, and yet it is also a 
 Steps 3 and 4 are essentially very aggressive (and correct!) eliminations of bad search paths.
 There's just something refreshing about eliminating entire branches of a search tree to speed things up.
 
+If you compare the 2-pointer method with the brute force approach, it is in essence doing the same logical thing, with fewer steps.
+Whereas the brute force approach performs a pairwise comparison across all possible combinations, the 2-pointer method preemptively discards many combinations by removing elements outright from future consideration.
+That's the kind of power you need to go from \(O(n^2)\) to \(O(n)\)!
+
 Hope this helps!
