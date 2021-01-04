@@ -1,0 +1,67 @@
+---
+title: "Thoughts on Baduk"
+tags: baduk
+mathjax: off
+---
+
+#+STARTUP: indent showall
+#+OPTIONS: ^:nil
+
+* My history with Baduk
+
+I've started playing Baduk more during the pandemic, and I thought I should write about this fascinating game.[fn:: I use the Korean word "Baduk" (바둑) because the usual Japanese loanword "Go" overlaps with the name "Go" of the Go programming language.]
+
+When I was a child growing up in Korea, I remember seeing newspapers with pictures of Baduk positions with professional commentary.
+Unfortunately, no one in my immediate family had any interest in the game, so my initial curiosity of the game came and went.[fn::  Years later I learned that my uncle is an amateur 5-dan.]
+
+Later in the United States, I picked up chess during high school.
+Chess had the advantage that there were many more people who already know how to play the game.
+And also, carrying around a lightweight board with some pieces wasn't difficult at all.
+I recall whipping out my chess board for a quick game during lunch, recess, and any other time I could find an opponent.
+
+I took a step back from chess during college and later years.
+I started to lose interest after I kept playing the same openings.
+
+Around 2016 I re-learned how to play Baduk.
+One reason I picked it up again was that at this time, Baduk was still played best by humans (a computer AI had not yet defeated a master human player on an even game).
+This was just before the great "AlphaGo" match with Lee Sedol, and at the time most people believed that AI supremacy in this game was still another decade away.
+
+I started playing and losing a ton of games against the AI on 9x9 at [[https://online-go.com/player/213337/funloop][online-go.com]], especially around 2019 when sometimes I played marathon 9x9 games, over and over against the computer.
+The most memorable game from this period is [[https://online-go.com/game/16295331][this one]] where I won by 0.5 points against a 7-stone handicap.
+That victory was a pleasant surprise, but it also left me with a sense of obligation to study the game with a little more seriousness.
+
+After a brief pause, I returned to the game in the fall of 2020.
+During this time I watched some videos from [[https://www.youtube.com/channel/UCfA0tTDLNooBB0ymdoI5M7w][this YouTube channel]], which I was able to roughly understand thanks to my knowledge of Korean.
+I began to realize large gaps in my style of play, and it was only after this realization that I started improving my results.
+
+* Baduk vs. Chess
+
+Having a working knowledge of both chess and Baduk, I would have to say that the biggest difference between them for me is that there is far, far more room for strategy in Baduk.
+This is because you can ignore threats and play for bigger moves on the more much more often than in chess, especially in the opening and middlegame.
+There is more wiggle room for creativity!
+
+Speaking of openings, because the Baduk board has 4 symmetrical corners, there are actually 4 areas of openings in each game.
+You can have 4 different "openings" in each game.
+In chess there is only 1 "center" of the board where the vast majority of opening theory takes place.
+
+The handicap system is far more elegant in Baduk as well.
+In chess, the handicap is usually to remove a pawn (or two), but this drastically alters the nature of the game.
+Not so for Baduk!
+The weaker player gets up to 9 extra stones on the board before the start of the game.
+This way you can play with opponents at different levels without getting completely crushed from the very beginning.
+
+Perhaps the best part of the game is that each game is decided by a score (where the score is the amount of "territory" you control).
+A win is technically a win, sure, but the "wins" can be judged against each other by their score.
+
+Finally, the game is more forgiving in terms of errors.
+In chess if you lose your queen (without adequate compensation), the game is pretty much over.
+In baduk, even if you lose a sizable group, you can still come back.
+Actually, the bigger your group of stones, the harder it is to get them captured outright, and so there is a natural, automatic tendency for your strongest "pieces", if you will, to resist capture.[fn:: In Baduk as long as a group gets 2 "eyes", it becomes uncapturable --- and the bigger the group, the easier it is to make such eyes.]
+Brilliant!
+
+* Conclusion
+
+If you haven't learned the game yet, I strongly recommend this game!
+I used the book [[https://www.amazon.com/Go-Complete-Introduction-Beginner-Elementary/dp/4906574505]["Go: A Complete Introduction to the Game"]] to get a nice overview.[fn:: The author of this book is Cho Chikun, one of the top players of the 20th century.]
+
+Have fun!
