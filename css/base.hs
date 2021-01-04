@@ -9,7 +9,7 @@ import Clay.Font
 import qualified Clay.Text as CT
 
 main :: IO ()
-main = T.putStr $ renderWith pretty [] myStylesheet
+main = T.putStrLn $ renderWith pretty [] myStylesheet
 
 rgbHex :: Int -> Color
 rgbHex rgb'
