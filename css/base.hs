@@ -29,6 +29,7 @@ myStylesheet = do
     color textColor
     overflowY scroll
     body ? do
+      fontFamily ["Source Serif Pro"] [serif]
       width (px cPageWidth)
       vh margin (px 0) auto
       a ? do
