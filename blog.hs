@@ -44,7 +44,10 @@ main = hakyll $ do
     compile $ getResourceString
       >>= withItemBody
         (unixFilter "stack"
-        [ "exec"
+        -- Use "run" over "exec" because "exec" merely re-runs a built binary if
+        -- it already exists. Using "run" guarantees that the underlying *.hs
+        -- file will *always* get re-evaluated from source.
+        [ "run"
         , "--"
         , "base"
         ])
