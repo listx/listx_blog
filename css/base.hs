@@ -16,8 +16,8 @@ rgbHex rgb'
   | rgb' > 0xffffff || rgb' < 0 = error "invalid hex range"
   | otherwise = rgb rr gg bb
   where
-  rr = fromIntegral $ (shiftR rgb' 16) .&. 0xFF
-  gg = fromIntegral $ (shiftR rgb' 8) .&. 0xFF
+  rr = fromIntegral $ shiftR rgb' 16 .&. 0xFF
+  gg = fromIntegral $ shiftR rgb' 8 .&. 0xFF
   bb = fromIntegral $ rgb' .&. 0xFF
 
 myStylesheet :: Css
@@ -365,9 +365,9 @@ myStylesheet = do
     where
     symbol = T.toStrict
       . T.pack
-      $ (toEnum hex)
-      : (toEnum 0x00a0) -- nonbreaking space character
-      : (toEnum 0x00a0) -- nonbreaking space character
+      $ toEnum hex
+      : toEnum 0x00a0 -- nonbreaking space character
+      : toEnum 0x00a0 -- nonbreaking space character
       : []
   hSymmetricGradient colorSides colorMiddle middleWidth
     = backgroundImage
