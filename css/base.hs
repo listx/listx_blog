@@ -171,7 +171,7 @@ myStylesheet = do
             paddingBottom (em 1)
             ul ? do
               noMargin
-              headerIndent
+              paragraphIndent0
               paddingBottom $ px 0
           p ? do
             noMargin
