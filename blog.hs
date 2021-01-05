@@ -137,7 +137,7 @@ postCtx = mconcat
 
 homeCtx :: Tags -> Context String
 homeCtx tags = mconcat
-  [ constField "title" "Linus's Blog"
+  [ constField "title" "Linus’s Blog"
   , field "taglist" (\_ -> renderTagList tags)
   , defaultContext
   ]
@@ -259,7 +259,7 @@ cbExpandRawInput block = case block of
 
 atomFeedConf :: FeedConfiguration
 atomFeedConf = FeedConfiguration
-  { feedTitle = "Linus's Blog"
+  { feedTitle = "Linus’s Blog"
   , feedDescription = "The latest blog posts from Linus (listx on Github)!"
   , feedAuthorName  = "Linus Arver"
   , feedAuthorEmail = ""
