@@ -1,13 +1,15 @@
+{-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 import Data.Char hiding (Space)
+import Data.Text qualified as T
 import Data.Time.Calendar
 import Data.Time.LocalTime
 import Hakyll
 import System.FilePath.Posix
 import Text.Pandoc (WriterOptions (..), HTMLMathMethod (MathJax))
 import Text.Pandoc.Definition
-import qualified Text.Printf as TF
+import Text.Printf qualified as TF
 
 main :: IO ()
 main = hakyll $ do
@@ -43,10 +45,7 @@ main = hakyll $ do
     route $ setExtension "css"
     compile $ getResourceString
       >>= withItemBody
-        (unixFilter "stack"
-        -- Use "run" over "exec" because "exec" merely re-runs a built binary if
-        -- it already exists. Using "run" guarantees that the underlying *.hs
-        -- file will *always* get re-evaluated from source.
+        (unixFilter "cabal"
         [ "run"
         , "--"
         , "base"
@@ -208,9 +207,9 @@ cbExpandRawInput block = case block of
   where
   bList :: Block -> Compiler (Bool, Block)
   bList (Plain [Str "i", Space, Str fp]) = do
-    raw <- unsafeCompiler . readFile $ "code/" <> fp
+    raw <- unsafeCompiler . readFile . T.unpack $ "code/" <> fp
     let
-      codeLang = case takeExtensions fp of
+      codeLang = case takeExtensions $ T.unpack fp of
         ".c" -> ["c"]
         ".el" -> ["commonlisp"]
         ".hs" -> ["haskell"]
@@ -220,7 +219,7 @@ cbExpandRawInput block = case block of
         ".xorg.conf" -> ["xorg"]
         _ -> []
       httpTarget = "/code/" <> fp
-      fn = takeFileName fp
+      fn = takeFileName $ T.unpack fp
       (lineCntClass, bulletSpaces)
         | length (lines raw) < 10 = ("10", s 0)
         | length (lines raw) < 100 = ("100", s 1)
@@ -230,13 +229,12 @@ cbExpandRawInput block = case block of
         s = concat . flip replicate "&nbsp;"
       attr = ("", ["numberLines"] <> codeLang, [("input", "code/" <> fp)])
       filename_link_raw =
-        RawInline
-          "html" $
+        RawInline "html" . T.pack $
           unwords
             [ "<table class=\"sourceCode numberLines noPaddingBottom\"><tbody><tr class=\"sourceCode\"><td class=\"lineNumbers\"><pre>" <> bulletSpaces <> "■</pre></td><td class=\"sourceCode\"><pre><code><a"
             , "class=\"raw\""
             , "href="
-            , dquote httpTarget
+            , dquote $ T.unpack httpTarget
             , "mimetype=text/plain"
             , ">" <> fn <> "</a></code></pre></td></tr></tbody></table>"
             ]
@@ -248,7 +246,7 @@ cbExpandRawInput block = case block of
             [ filename_link_raw
             ]
           ]
-        , CodeBlock attr raw
+        , CodeBlock attr $ T.pack raw
         ]
       )
   bList x = return (False, x)

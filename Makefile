@@ -7,12 +7,12 @@ sync: build-site
 	./sync.sh
 
 build-binaries:
-	stack build
+	nix-shell --command "cabal build"
 
 build-site: build-binaries
-	stack exec -- blog rebuild
+	nix-shell --command "cabal run -- blog rebuild"
 
 watch: build-binaries
-	stack exec -- blog watch --host $(BLOG_IP) --port $(BLOG_PORT)
+	nix-shell --command "cabal run -- blog watch --host $(BLOG_IP) --port $(BLOG_PORT)"
 
 .PHONY: sync

@@ -15,7 +15,7 @@ cabal-version: >=1.10
 
 executable blog
   main-is: blog.hs
-  ghc-options: -Wall -Werror -fno-warn-tabs -threaded
+  ghc-options: -Wall -Werror -O2 -fno-warn-tabs -threaded
   -- other-modules:
   other-extensions: OverloadedStrings
   build-depends:
@@ -27,6 +27,7 @@ executable blog
     , clay >= 0.8.0.1
     , filepath >= 1.3.0.2
     , pandoc-types >= 1.12.4.1
+    , text >= 1.0
     , time >= 1.6.0.1
   -- hs-source-dirs:
   default-language: Haskell2010
@@ -59,7 +60,7 @@ executable test_game_button_seq
 
 executable analyze
   main-is: analyze.hs
-  ghc-options: -Wall -Werror -O2 -fno-warn-tabs
+  ghc-options: -Wall -Werror -fno-warn-tabs
   other-modules: TextFreq
   build-depends:
       base >=4.7
