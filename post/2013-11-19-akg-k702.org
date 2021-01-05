@@ -1,0 +1,71 @@
+---
+title: "Review: AKG K702 Headphones"
+tags: hardware, audio, akg
+---
+
+#+STARTUP: indent showall
+#+OPTIONS: ^:nil
+
+I got a pair of the famous AKG K702 (manufacturer refurbished for $210)
+fullsize headphones, and well, here's my review. Previously, I was using
+the Nuforce NE600M (purchased new December 2012 for $30) earbuds.
+Comparing these two is unfair, because they are not really designed to
+compete with each other; however, I must say that I was shocked by how
+much better the K702s sounded. As a side note, I only use these
+headphones for my laptop/PC, and I always use the Total Bithead
+headphone amp/DAC.
+
+* Pros
+   :PROPERTIES:
+   :CUSTOM_ID: pros
+   :END:
+
+- Made in Austria.
+- The K702s have a very large /soundstage/. This is probably because of
+  the open back design --- the earcups have holes and allow some of the
+  sound to leak out. I listen to a lot of classical music and this makes
+  piano sonatas sound absolutely divine.
+- The highs and mids are very sharp and well-defined, allowing for good
+  sound separation (I can hear different instruments much more easily in
+  the same song).
+- The headphone cable is detachable.
+- The big earpads are comfortable, and also detachable for cleaning.
+
+* Cons
+   :PROPERTIES:
+   :CUSTOM_ID: cons
+   :END:
+
+- The headband feels a little tight, and I can feel it pressing down on
+  my head a little too much. Also, there is a clear plastic headband
+  part on each side to secure the leather headband, but this component
+  feels cheap and is prone to breakage down the line.
+- It's not really a con, but the impedance is 62 ohms, which means you
+  will need a dedicated headhpone amp/DAC (unless you want to turn the
+  volume way up to get these headphones to really sing). If you are
+  using a $200-$300 pair of headphones though, you probably already know
+  about the need for a good amp/DAC combo, so that's that.
+
+* Conclusion
+   :PROPERTIES:
+   :CUSTOM_ID: conclusion
+   :END:
+
+I love my K702s. Interestingly, I have gotten used to a much louder
+volume with this pair of headphones than with my 600Ms. Let me explain.
+I usually listen to music on medium/low, but I can now listen to loud
+pop songs on high volume without any discomfort. I think it has
+something to do with the bigger sound stage (open back design, plus the
+way the speakers are physically further away from my eardrums).
+
+My 600Ms don't sound as clean and awesome as they used to; for one, they
+have too much bass and the sound feels very muddied, as if the sound is
+coming from another room with the door closed. I had no idea that a
+simple headphone upgrade could change my attitude to computer audio so
+much. Unfortunately, as much as I loved the 600Ms when I first got them,
+I can't really stand them now...
+
+I strongly recommend these headphones, or another similarly-priced model
+(the Beyerdynamic DT-770 is a longtime competitor) to anyone who has
+never invested more than $50 on a pair of headphones. You will
+definitely hear the difference, given a decent amp/DAC.

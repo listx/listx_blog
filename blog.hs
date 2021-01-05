@@ -78,7 +78,7 @@ main = hakyll $ do
     , "misc.js"
     ]
 
-  match (fromRegex "post/[^/]+\\.(md|org)$") $ do
+  match (fromRegex "post/[^/]+\\.org$") $ do
     route $ setExtension "html"
     compile $ pandocCompilerWithTransformM
       defaultHakyllReaderOptions

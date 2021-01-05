@@ -57,11 +57,12 @@ myStylesheet = do
           textAlign $ alignSide sideCenter
       div' ? do
         "#header" & do
-          vh padding (em 0.5) 0
+          vh padding (em 1) (em 0)
           textAlign $ alignSide sideCenter
+          fontSize (pt 18)
         "#content" & do
           backgroundColor $ rgbHex bgHex
-          paddingBottom (em 2)
+          paddingBottom (px 0)
           h1 <> h2 <> h3 <> h4 <> h5 ? do
             noMargin
             headerIndent
@@ -75,7 +76,7 @@ myStylesheet = do
             -- For the title of the page, center-align it.
             ".center" & do
               noMargin
-              paddingTop (em 0.2)
+              paddingTop (em 0)
               paddingBottom (em 0.5)
               fontSize (pt 30)
               fontWeight bold
@@ -145,6 +146,8 @@ myStylesheet = do
                 visited & do
                   color (rgbHex linkHex)
                 fontWeight bold
+              ".sourceCode" & do
+                paragraphIndent
             ".lineCntMax100" & do
               marginLeft (em (-0.58))
             ".lineCntMax1000" & do
@@ -152,7 +155,7 @@ myStylesheet = do
             ".lineCntMax10000" & do
               marginLeft (em (-2.32))
             ".sourceCode" & do
-              paragraphIndent
+              paragraphIndent'
               pre ? do
                 code ? do
                   "padding-left" -: "0"
@@ -236,7 +239,7 @@ myStylesheet = do
               marginBottom (em 1)
               paddingTop (em 1)
               paddingBottom (em 1)
-              fontWeight normal
+              fontWeight bold
           table ? do -- code with line numbers
             ".sourceCode" & do
               "-moz-tab-size" -: "4"
@@ -283,6 +286,13 @@ myStylesheet = do
                     whiteSpace nowrap
                   code ? do
                     fontWeight normal
+          section ? do
+            ".footnotes" & do
+              hr ? do
+                marginBottom (em 1)
+                fontSizeCustom Clay.Font.small
+              ol ? do
+                paragraphIndent
         "#footer" & do
           -- Margins of adjacent elements are *overlap*, unlike
           -- padding. We use a 1em top-side margin here, because,
@@ -291,9 +301,13 @@ myStylesheet = do
           -- to render both the listing's bottom spacing and the top
           -- spacing of the footer.
           marginTop (em 1)
-          paddingBottom (em 1)
+          paddingBottom (em 2)
           fontSizeCustom Clay.Font.medium
           textAlign $ alignSide sideCenter
+          p ? do
+            "#fleuron" & do
+              fontSize (pt 30)
+              vh margin (px 0) (px 0)
   where
   div' = Clay.div
   cPageWidth :: Double

@@ -1,0 +1,43 @@
+---
+title: "Emacs: Using a Unix Filter"
+tags: emacs
+---
+
+#+STARTUP: indent showall
+#+OPTIONS: ^:nil
+
+In Vim, you can easily call an external text utility on a region of
+text, then replace that selected region with the output of the text
+utility. This is very useful for doing bulk transformations quickly.
+
+I coded up a very stupid commenting program called
+[[https://github.com/listx/nox][=nox=]] that comments/uncomments text.
+Here is how you'd use it straight from the terminal:
+
+#+BEGIN_SRC sh -n
+  $ echo "hi" | nox -l c
+  //hi
+#+END_SRC
+
+By default nox comments text, and the =-l c= option sets it to C-styled
+comments, =//=.
+
+* Emacs
+   :PROPERTIES:
+   :CUSTOM_ID: emacs
+   :END:
+
+I use [[http://gitorious.org/evil/pages/Home][evil-mode]] with Emacs.
+Here is my relevant =.emacs= to set up =nox= correctly:
+
+- i emacs-unix-filter.el
+
+This is certainly not the most beautiful code, but it works.
+
+* References
+    :PROPERTIES:
+    :CUSTOM_ID: references
+    :END:
+
+- [[http://stackoverflow.com/questions/206806/filtering-text-through-a-shell-command-in-emacs]]
+- [[http://stackoverflow.com/questions/1548605/emacs-lisp-shell-command-on-region]]
