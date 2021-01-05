@@ -1,0 +1,40 @@
+---
+title: About
+---
+
+Hello!
+My name is Linus Arver and this is my blog.
+Please email me at [[mailto:linus@ucla.edu][linus@ucla.edu]] for anything related to this blog.
+I have long since graduated from UCLA, but they gave me a lifetime email address. Thank you, UCLA!
+
+* On Programming
+
+I have fun writing computer programs.
+It is by far my favorite hobby, ever since I rediscovered it in 2009.
+There's just something about making the computer solve your problems that just never gets old...!
+
+I originally started a blog about various programming-related things [[https://zuttobenkyou.wordpress.com/][here]], but I wanted more control over how the content is generated/stored, and so I created this site.
+
+* Recommended Software
+
+I use free/open-source software almost exclusively as much as possible.
+Below are some of them.
+
+- [[https://nixos.org][NixOS]] - my favorite OS
+- [[http://terminus-font.sourceforge.net/][Terminus]] - my favorite bitmapped monospaced font
+- [[https://github.com/alacritty/alacritty][Alacritty]] - a modern terminal
+- [[http://xmonad.org/][xmonad]] - the crash-proof tiled window manager
+- [[https://neovim.io/][Neovim]] - an advanced text editor
+- [[https://github.com/emacs-mirror/emacs][Emacs]] - an even more advanced text editor
+- [[https://github.com/emacs-evil/evil][Evil]] - an Emacs addon that makes it behave like Vim
+- [[https://github.com/The-Compiler/qutebrowser][Qutebrowser]] - a lightweight browser with Vim bindings
+- [[https://www.tug.org/texlive/][TeX Live]] - programmable typesetting
+
+* Elsewhere on the Web
+
+- [[https://www.linkedin.com/in/linusarver/][LinkedIn]]
+- [[https://github.com/listx][GitHub]]
+- [[https://twitter.com/linusarver][Twitter]]
+- [[https://online-go.com/player/213337][Online Go Server]]
+- [[https://www.deviantart.com/magic-byte][DeviantArt]]
+- [[https://zuttobenkyou.wordpress.com/][Wordpress (old blog)]]

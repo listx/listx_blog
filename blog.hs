@@ -53,9 +53,12 @@ main = hakyll $ do
         ])
 
   -- Add some default pages
-  match (fromList ["about.md", "art.md", "papers.md"]) $ do
+  match (fromList ["about.org", "etc.org"]) $ do
     route   $ setExtension "html"
-    compile $ pandocCompiler
+    compile $ pandocCompilerWithTransformM
+      defaultHakyllReaderOptions
+      pandocOptions
+      transformer
       >>= loadAndApplyTemplate "template/default.html" (mconcat
         [ copyrightCtx currentYear
         , defaultContext

@@ -1,0 +1,21 @@
+---
+title: "Etc"
+mathjax: on
+---
+
+#+STARTUP: indent showall
+#+OPTIONS: ^:nil
+
+Here is a list of some things I've worked on.
+
+*The Great "k8s.gcr.io" Vanity Domain Flip (November 2020)* ([[https://www.youtube.com/watch?v=F2IFjz7sr9Q][Video]])
+A tale about what happened behind the scenes in the Kubernetes community infrastructure-wise in 2019-2020, while the rest of the world slept.
+Special thanks to [[https://www.linkedin.com/in/stephenaugustus/][Stephen Augustus]] from VMware who pitched the idea for the talk initially and helping with the recording as well.
+
+*Bitscans and De Bruijn Sequences (2014)* ([[https://github.com/listx/listx_blog/blob/master/file/debruijn-sequence-tutorial.pdf][PDF]])
+I wrote this paper originally in 2011--2012, but it was not released until it was finally revised in 2014.
+
+*Git: Your Favorite Tool (July 2015)* ([[https://github.com/listx/listx_blog/blob/master/file/git.org][Source]], [[https://github.com/listx/listx_blog/blob/master/file/git.pdf][PDF]])
+These slides are from a talk I gave internally at [[https://twinprime.com/][Twin Prime]] (they were later acquired by SalesForce).
+I designed the slides so that they are readable as-is, without a real presentation.
+Last but not least, I hereby release these slides into the Public Domain --- do whatever you like with them!
