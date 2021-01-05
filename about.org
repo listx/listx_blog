@@ -33,8 +33,9 @@ Below are some of them.
 * Elsewhere on the Web
 
 - [[https://www.linkedin.com/in/linusarver/][LinkedIn]]
-- [[https://github.com/listx][GitHub]]
+- [[https://github.com/listx][GitHub]] (=listx=)
 - [[https://twitter.com/linusarver][Twitter]]
-- [[https://online-go.com/player/213337][Online Go Server]]
-- [[https://www.deviantart.com/magic-byte][DeviantArt]]
+- [[https://online-go.com/player/213337][Online Go Server]] (=funloop=)
+- [[https://www.reddit.com/user/listx][Reddit]] (=listx=)
+- [[https://www.deviantart.com/magic-byte][DeviantArt]] (=magic-byte=)
 - [[https://zuttobenkyou.wordpress.com/][Wordpress (old blog)]]
