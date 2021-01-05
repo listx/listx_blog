@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 
 dest='listx.github.io/'
 targ='_site/'
@@ -11,5 +11,4 @@ elif [[ ! -d $dest ]]; then
     exit 1
 fi
 
-rsync -ahP --no-whole-file --inplace --delete --exclude=.git $targ $dest
-cp -f .gitignore $dest
+rsync -ahP --no-whole-file --inplace --delete --exclude=.git\* $targ $dest
