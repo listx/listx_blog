@@ -34,7 +34,6 @@ myStylesheet = do
       vh margin (px 0) auto
       a ? do
         outline none (px 1) (rgbHex 0x000000)
-        fontWeight bold
         textDecoration none
         link & do
           color (rgbHex linkHex)
