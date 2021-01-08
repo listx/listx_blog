@@ -291,7 +291,7 @@ nodes), or "Bzets" as coined by the late
 [[http://www.cs.ucla.edu/news/news-archive/2012/2012][Robert Uzgalis]],
 who passed away in 2012. An excellent set of slides are available online
 if you Google them, but I've also uploaded them to my site
-[[http://linusarver.com/upload/grid/file/attachment/fyle/54b437416c30006ac5000000/Bzets.pdf][here]].
+[[../file/bzet.pdf][here]].
 Essentially, the idea is to have a tree with 3 possible values for the
 child nodes: =0 1 T=. A =0= means that you can stop recursing down the
 tree, as all child nodes, recursively are all set to =0=. A =1=,
