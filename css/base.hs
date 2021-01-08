@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedLists #-}
 
 import Data.Bits
 import qualified Data.Text.Lazy as T
@@ -72,6 +73,16 @@ myStylesheet = do
           paragraphIndent
           h1 ? do
             textAlign $ alignSide sideCenter
+          -- See https://stackoverflow.com/a/62366856/437583 for more on box
+          -- shadows (with/without attenuation near the corners).
+          boxShadow
+            [ bsColor (rgbHex 0xdddddd)
+              $ shadowWithSpread
+                (px 0)
+                (px 30)
+                (px 20)
+                (px (-20))
+            ]
       div' ? do
         "#header" & do
           vh padding (em 0.5) (em 0)
