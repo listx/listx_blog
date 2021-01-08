@@ -66,7 +66,7 @@ myStylesheet = do
           -- bullets for h1 (and h2, h3, etc) headings.
           zIndex 1
 
-          hSymmetricGradient (rgbHex bgHex) (rgbHex 0xd0e8f2) 80
+          hSymmetricGradient (rgbHex bgHex) (rgbHex 0xe0f8f2) 80
           vh padding (em 0.5) 0
           marginBottom (em 1)
           paragraphIndent
