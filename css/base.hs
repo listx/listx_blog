@@ -28,9 +28,8 @@ myStylesheet = do
     ev padding $ px 0
     backgroundColor $ rgbHex bgHex
     color textColor
-    overflowY scroll
     body ? do
-      "overflow-y" -: "scroll"
+      overflowY scroll
       fontFamily ["Source Serif Pro"] [serif]
       width (px cPageWidth)
       vh margin (px 0) auto
