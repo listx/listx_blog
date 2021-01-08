@@ -66,7 +66,7 @@ Now we install =hsenv=. We use the forked version from
 been suffering from bitrot for a few months now (the original maintainer
 has disappeared).
 
-#+BEGIN_SRC sh -n
+#+BEGIN_SRC
   git clone --depth 1 git://github.com/tmhedberg/hsenv.git
   cd hsenv
   cabal install
@@ -99,7 +99,7 @@ folder to your new blog's directory.
 Now go to your =myblog= folder and instantiate a =hsenv= sandbox, and
 then install =hakyll= into this sandbox.
 
-#+BEGIN_SRC sh -n
+#+BEGIN_SRC
   cd ~/myblog
   ~/.cabal/bin/hsenv
   source .hsenv_myblog/bin/activate
@@ -121,7 +121,7 @@ shell. Just remember to call =source .hsenv_myblog/bin/activate= when
 you want to make changes to your blog or edit your blog's binary. A
 sample creating/edition session would look something like this:
 
-#+BEGIN_SRC sh -n
+#+BEGIN_SRC
   cd ~/myblog
   source .hsenv_myblog/bin/activate
   # edit some files, including site.hs, the static generator binary
@@ -142,7 +142,7 @@ Your static site will be available at =~/myblog/_site=.
 At your GitHub site/account, create a repo named =username.github.io=.
 Now link it up with your static site:
 
-#+BEGIN_SRC sh -n
+#+BEGIN_SRC
   cd ~/myblog/_site
   git init
   git add *.html # add css, etc.

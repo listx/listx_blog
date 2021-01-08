@@ -50,14 +50,16 @@ myStylesheet = do
         "vertical-align" -: "top"
         fontSizeCustom Clay.Font.small
       hr ? do
-        noMargin
-        height (px 1)
+        fontSizeCustom Clay.Font.small
+        border solid (px 1) $ rgbHex 0x000000
+        margin 0 auto (em 1) auto
+        width (pct 76)
       div' ? do
         ".center" & do
           textAlign $ alignSide sideCenter
       div' ? do
         "#header" & do
-          vh padding (em 1) (em 0)
+          vh padding (em 0.5) (em 0)
           textAlign $ alignSide sideCenter
           fontSize (pt 18)
         "#content" & do
@@ -85,6 +87,8 @@ myStylesheet = do
               textDecoration none
               before & do
                 CT.content (none :: Content)
+            "#page-title" & do
+              paddingBottom (px 0)
           h2 ? do
             addHeadingSymbol uBlackSquare
           h3 ? do
@@ -115,50 +119,40 @@ myStylesheet = do
               paddingBottom (em 1)
             -- This is when we use our custom 'import source code'
             -- syntax with '- i <filename>'.
+            --
+            -- This is the overall block.
             ".code-and-raw" & do
-              hSymmetricGradient (rgbHex bgHex) codeBg 80
+              backgroundColor $ rgbHex bgHex
               marginBottom (em 1)
-              table ? do
+              paddingLeft (px 0)
+              div' ? do
                 ".sourceCode" & do
-                  -- if a table is part of "code-and-raw",
-                  -- reduce bottom margin to 0
-                  marginBottom $ px 0
-                  paddingBottom (em 0.5)
-                  "border-style" -: "none"
-                  tbody ? do
-                    tr ? do
-                      td ? do
-                        pre ? do
-                          code ? do
-                            backgroundImage none
-                            fontWeight normal
-            ".raw-link" & do
-              table ? do
-                ".noPaddingBottom" & do
-                  paddingBottom (em 0)
-              color $ rgbHex lineNumHex
-              code ? do
-                vh padding (px 0) (px 0)
-                paddingLeft $ em 1
-              a ? do
-                ".raw" & do
-                  marginLeft $ em 0
-                visited & do
-                  color (rgbHex linkHex)
-                fontWeight bold
-              ".sourceCode" & do
-                paragraphIndent
-            ".lineCntMax100" & do
-              marginLeft (em (-0.58))
-            ".lineCntMax1000" & do
-              marginLeft (em (-1.16))
-            ".lineCntMax10000" & do
-              marginLeft (em (-2.32))
+                  hSymmetricGradient (rgbHex bgHex) codeBg 80
+                  pre ? do
+                    code ? do
+                      backgroundImage none
+                      marginBottom (px 0)
+                -- One line for the raw link to the injected source code.
+                ".raw-link" & do
+                  hSymmetricGradient (rgbHex bgHex) codeLinkBg 80
+                  hr ? do
+                    border solid (px 1) $ rgbHex 0xcccccc
+                    marginBottom (px 0)
+                    width (pct 76)
+                  p ? do
+                    vh padding (em 0.5) 0
+                    paragraphIndent
+                    a ? do
+                      ".raw" & do
+                        marginLeft $ em 0
+                      visited & do
+                        color (rgbHex linkHex)
+                      fontWeight bold
+            -- Code inside '#+begin_src' in org-mode.
             ".sourceCode" & do
-              paragraphIndent'
-              pre ? do
-                code ? do
-                  "padding-left" -: "0"
+              codeBlock
+          -- Code inside '#+begin_example in org-mode.
+          codeBlock
           ol ? do
             noMargin
             paragraphListIndent
@@ -178,9 +172,6 @@ myStylesheet = do
             paddingBottom (em 1)
             paragraphIndent
             textAlign justify
-            "#taglist" & do
-              paddingTop $ em 2
-              paddingBottom $ px 0
           -- single-line `code`
           code ? do
             vh padding 0 (em 0.10)
@@ -203,67 +194,20 @@ myStylesheet = do
                   paddingLeft $ px 0
                   p ? do
                     paddingBottom (em 1)
-          -- <pre><code> is generated if there is multiline (``` ... ```) code
           blockquote ? do
             noMargin
             vh padding 0 $ px 0
             "-moz-tab-size" -: "4"
             "-o-tab-size" -: "4"
             "tab-size" -: "4"
-            -- we indent a little bit more here compared to
-            -- table.sourceCode, because here we have to
-            -- compensate for the fact that we don't have line
-            -- numbers to push our code a little bit further
-            -- right
-            paragraphIndent0
             hSymmetricGradient (rgbHex bgHex) quoteBg 80
             marginBottom (em 1)
             paddingTop (em 1)
-          pre ? do
-            noMargin
-            vh padding 0 $ px 0
-            code ? do
-              "-moz-tab-size" -: "4"
-              "-o-tab-size" -: "4"
-              "tab-size" -: "4"
-              display block
-              -- we indent a little bit more here compared to
-              -- table.sourceCode, because here we have to
-              -- compensate for the fact that we don't have line
-              -- numbers to push our code a little bit further
-              -- right
-              paragraphIndent'
-              hSymmetricGradient (rgbHex bgHex) codeBg 80
-              ev borderRadius (px 0)
-              "border-style" -: "none"
-              marginBottom (em 1)
-              paddingTop (em 1)
-              paddingBottom (em 1)
-              fontWeight bold
-          table ? do -- code with line numbers
-            ".sourceCode" & do
-              "-moz-tab-size" -: "4"
-              "-o-tab-size" -: "4"
-              "tab-size" -: "4"
-              noMargin
-              marginBottom (em 1)
-              borderSpacing2 (px 0) (px 1)
-              ".gallery" & do
-                headerIndent
-                headerIndentRight
-                marginBottom $ em 0
-                fontSizeCustom Clay.Font.small
-                tr ? do
-                  textAlign $ alignSide sideCenter
-                  "#header" & do
-                    fontSizeCustom Clay.Font.medium
-                    fontWeight bold
-                    textDecoration underline
-              sourceCodeMarkdownNumberlines True
+          table ? do
             -- table for list of all blog posts
             ".posts-index" & do
-              headerIndent
-              marginBottom $ px 0
+              "margin-left" -: "12%"
+              "margin-right" -: "12%"
               paddingBottom (em 1)
               thead ? do
                 tr ? do
@@ -271,26 +215,27 @@ myStylesheet = do
                     "border-style" -: "none"
                     ".label" & do
                       textAlign $ alignSide sideCenter
+                    ".size" & do
+                      paddingLeft (em 0.5)
                     ".title" & do
-                      paddingLeft $ em 1
+                      paddingLeft (em 0.5)
                       textAlign $ alignSide sideLeft
-              tr ? do
-                td ? do
-                  vh padding 0 $ em 0.5
-                  "border-style" -: "none"
-                  "vertical-align" -: "text-top"
-                  ".date" & do
-                    whiteSpace nowrap
-                  ".bytes" & do
-                    textAlign $ alignSide sideRight
-                    whiteSpace nowrap
-                  code ? do
-                    fontWeight normal
+              tbody ? do
+                tr ? do
+                  td ? do
+                    "border-style" -: "none"
+                    "vertical-align" -: "text-top"
+                    ".date" & do
+                      vh padding (px 0) (px 0)
+                      whiteSpace nowrap
+                    ".bytes" & do
+                      paddingLeft (em 1)
+                      textAlign $ alignSide sideRight
+                      whiteSpace nowrap
+                    code ? do
+                      fontWeight normal
           section ? do
             ".footnotes" & do
-              hr ? do
-                marginBottom (em 1)
-                fontSizeCustom Clay.Font.small
               ol ? do
                 paragraphIndent
         "#footer" & do
@@ -313,9 +258,11 @@ myStylesheet = do
   cPageWidth :: Double
   cPageWidth = 900
   codeBgHex :: Int
-  codeBgHex = bgHex
+  codeBgHex = bgHex - 0x0f0f0f
+  codeLinkBgHex :: Int
+  codeLinkBgHex = bgHex - 0x1f1f1f
   quoteBgHex :: Int
-  quoteBgHex = bgHex - 0x0f0f0f
+  quoteBgHex = 0xefffef
   footnotesBgHex :: Int
   footnotesBgHex = bgHex - 0x0f0f0f
   bgHex :: Int
@@ -324,12 +271,12 @@ myStylesheet = do
   textColor = rgbHex 0x000000
   codeBg :: Color
   codeBg = rgbHex codeBgHex
+  codeLinkBg :: Color
+  codeLinkBg = rgbHex codeLinkBgHex
   footnotesBg :: Color
   footnotesBg = rgbHex footnotesBgHex
   quoteBg :: Color
   quoteBg = rgbHex quoteBgHex
-  lineNumHex :: Int
-  lineNumHex = bgHex - 0x555555
   linkHex :: Int
   linkHex = 0x0033ff
   linkVisitedHex :: Int
@@ -344,29 +291,9 @@ myStylesheet = do
     paragraphIndentRight
   paragraphIndentRight = do
     "padding-right" -: "12%"
-  paragraphIndent' = do
-    "padding-left" -: "15%"
-    paragraphIndentRight
   paragraphListIndent = do
     "padding-left" -: "18%"
     paragraphIndentRight
-  sourceCodeMarkdownNumberlines _ = ".sourceCode" & do
-    headerIndent
-    paddingBottom (em 0.5)
-    tr ? do
-      td ? do
-        ".lineNumbers" & do
-          pre ? do
-            noMargin
-            color (rgbHex lineNumHex)
-            textAlign $ alignSide sideRight
-        ".sourceCode" & do
-          paddingLeft $ px 0
-          pre ? do
-            noMargin
-            code ? do
-              noMargin
-              padding 0 0 0 (em 1)
   uBlackSquare = 0x25a0
   uWhiteSquare = 0x25a1
   uDoubleSquare = 0x25a3
@@ -391,6 +318,23 @@ myStylesheet = do
       , (colorMiddle, pct $ 50 - middleWidth / 2)
       , (colorMiddle, pct $ 50 + middleWidth / 2)
       , (colorSides, pct 100)]
+  codeBlock = do
+    pre ? do
+      noMargin
+      vh padding 0 $ px 0
+      code ? do
+        "-moz-tab-size" -: "4"
+        "-o-tab-size" -: "4"
+        "tab-size" -: "4"
+        display block
+        hSymmetricGradient (rgbHex bgHex) codeBg 80
+        ev borderRadius (px 0)
+        marginBottom (em 1)
+        paragraphIndent
+        paddingTop (em 1)
+        paddingBottom (em 1)
+        fontWeight normal
+
 -- | A horizontal/vertical size helper. It accepts a function and two sizes for
 -- the horizontal and vertical parts. E.g., instead of calling
 --     padding (px 6) (px 10) (px 6) (px 10)

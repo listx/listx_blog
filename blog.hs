@@ -219,34 +219,35 @@ cbExpandRawInput block = case block of
         ".xorg.conf" -> ["xorg"]
         _ -> []
       httpTarget = "/code/" <> fp
-      fn = takeFileName $ T.unpack fp
-      (lineCntClass, bulletSpaces)
-        | length (lines raw) < 10 = ("10", s 0)
-        | length (lines raw) < 100 = ("100", s 1)
-        | length (lines raw) < 1000 = ("1000", s 2)
-        | otherwise = ("10000", s 3)
-        where
-        s = concat . flip replicate "&nbsp;"
+      filename = takeFileName $ T.unpack fp
+      lineCntClass
+        | length (lines raw) < 10 = "10"
+        | length (lines raw) < 100 = "100"
+        | length (lines raw) < 1000 = "1000"
+        | otherwise = "10000"
       attr = ("", ["numberLines"] <> codeLang, [("input", "code/" <> fp)])
       filename_link_raw =
         RawInline "html" . T.pack $
           unwords
-            [ "<table class=\"sourceCode numberLines noPaddingBottom\"><tbody><tr class=\"sourceCode\"><td class=\"lineNumbers\"><pre>" <> bulletSpaces <> "■</pre></td><td class=\"sourceCode\"><pre><code><a"
-            , "class=\"raw\""
-            , "href="
-            , dquote $ T.unpack httpTarget
-            , "mimetype=text/plain"
-            , ">" <> fn <> "</a></code></pre></td></tr></tbody></table>"
+            [ "<p>"
+            , "<a class=\"raw\" href="
+              <> dquote (T.unpack httpTarget)
+              <> "mimetype=text/plain>"
+              <> "<code>"
+                <> filename
+                <> "</code>"
+              <> "</a>"
+            , "</p>"
             ]
     return
       ( True
       , Div ("", ["code-and-raw", "lineCntMax" <> lineCntClass], [])
-        [ Div ("", ["raw-link", "sourceCode"], [])
+        [ CodeBlock attr $ T.pack raw
+        , Div ("", ["raw-link", "sourceCode"], [])
           [ Plain
             [ filename_link_raw
             ]
           ]
-        , CodeBlock attr $ T.pack raw
         ]
       )
   bList x = return (False, x)
