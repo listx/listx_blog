@@ -45,10 +45,9 @@ main = hakyll $ do
     route $ setExtension "css"
     compile $ getResourceString
       >>= withItemBody
-        (unixFilter "cabal"
-        [ "run"
-        , "--"
-        , "base"
+        (unixFilter "make"
+        [ "-s"
+        , "gen-css"
         ])
 
   -- Add some default pages

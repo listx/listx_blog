@@ -3,6 +3,10 @@ BLOG_PORT?=8020
 
 all: sync
 
+gen-css:
+	nix-shell --command "cabal build -- base" >/dev/null
+	nix-shell --command "cabal exec -- base"
+
 sync: build-site
 	./sync.sh
 
@@ -15,4 +19,4 @@ build-site: build-binaries
 watch: build-binaries
 	nix-shell --command "cabal run -- blog watch --host $(BLOG_IP) --port $(BLOG_PORT)"
 
-.PHONY: sync
+.PHONY: sync gen-css
