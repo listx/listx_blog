@@ -29,6 +29,7 @@ myStylesheet = do
     color textColor
     overflowY scroll
     body ? do
+      "overflow-y" -: "scroll"
       fontFamily ["Source Serif Pro"] [serif]
       width (px cPageWidth)
       vh margin (px 0) auto
@@ -56,6 +57,17 @@ myStylesheet = do
       div' ? do
         ".center" & do
           textAlign $ alignSide sideCenter
+      div' ? do
+        "#sticky-title" & do
+          position sticky
+          "top" -: "0"
+          zIndex 1
+          hSymmetricGradient (rgbHex bgHex) (rgbHex 0xa7c5eb) 80
+          vh padding (em 0.5) 0
+          marginBottom (em 1)
+          paragraphIndent
+          h1 ? do
+            textAlign $ alignSide sideCenter
       div' ? do
         "#header" & do
           vh padding (em 0.5) (em 0)
@@ -116,6 +128,7 @@ myStylesheet = do
           div' ? do
             ".info" & do
               paddingBottom (em 1)
+          div' ? do
             -- This is when we use our custom 'import source code'
             -- syntax with '- i <filename>'.
             --
@@ -249,9 +262,21 @@ myStylesheet = do
           fontSizeCustom Clay.Font.medium
           textAlign $ alignSide sideCenter
           p ? do
-            "#fleuron" & do
-              fontSize (pt 30)
-              vh margin (px 0) (px 0)
+            paddingTop (em 1)
+            ev margin (px 0)
+          img ? do
+            "#brand-icon" & do
+              -- Lifted from https://stackoverflow.com/a/14068216/437583
+              "image-rendering" -: "optimizeSpeed"
+              "image-rendering" -: "-moz-crisp-edges"
+              "image-rendering" -: "-o-crisp-edges"
+              "image-rendering" -: "-webkit-optimize-contrast"
+              "image-rendering" -: "pixelated"
+              "image-rendering" -: "optimize-contrast"
+              "-ms-interpolation-mode" -: "nearest-neighbor"
+              -- The icon is 13px wide, so the width has to be an increment of
+              -- 13, in this case 39 = 13 * 3.
+              width (px 39)
   where
   div' = Clay.div
   cPageWidth :: Double
@@ -261,7 +286,7 @@ myStylesheet = do
   codeLinkBgHex :: Int
   codeLinkBgHex = bgHex - 0x1f1f1f
   quoteBgHex :: Int
-  quoteBgHex = 0xefffef
+  quoteBgHex = 0xddffdd
   footnotesBgHex :: Int
   footnotesBgHex = bgHex - 0x0f0f0f
   bgHex :: Int
