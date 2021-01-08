@@ -140,7 +140,7 @@ And surprisingly, my brain knows to "switch" to QWERTY when I'm typing on there 
 
 * Was it worth it?
 
-Yes.
+Totally!
 
 The biggest thing I love about this layout is that I don't have to move my right hand around when reaching for the typical "hard" keys on QWERTY (such as `[]{}`).
 I rarely (if ever) have typos when typing punctuation keys.
