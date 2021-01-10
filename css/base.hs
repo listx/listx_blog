@@ -1,3 +1,4 @@
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE OverloadedLists #-}
 
@@ -8,6 +9,7 @@ import Clay hiding (vh)
 import qualified Clay.Display as CD
 import Clay.Font
 import qualified Clay.Text as CT
+import qualified Clay.Stylesheet as CS
 
 main :: IO ()
 main = T.putStrLn $ renderWith pretty [] myStylesheet
@@ -20,6 +22,14 @@ rgbHex rgb'
   rr = fromIntegral $ shiftR rgb' 16 .&. 0xFF
   gg = fromIntegral $ shiftR rgb' 8 .&. 0xFF
   bb = fromIntegral $ rgb' .&. 0xFF
+
+-- Clay doesn't have a "border-image" key yet, so make one up here.
+newtype BorderImage = BorderImage Value
+  deriving (Val, Other, Inherit, None)
+-- The "border-image" key can take on a property that looks like a
+-- BackgroundImage value, so use that directly here.
+borderImage :: BackgroundImage -> Css
+borderImage = CS.key "border-image"
 
 myStylesheet :: Css
 myStylesheet = do
@@ -67,20 +77,21 @@ myStylesheet = do
           zIndex 1
 
           hSymmetricGradient (rgbHex bgHex) (rgbHex 0xe0f8f2) 80
+          hSymmetricGradientBorder (rgbHex bgHex) (rgbHex 0x37a68a) 80 (px 1)
           vh padding (em 0.5) 0
           marginBottom (em 1)
-          paragraphIndent
           h1 ? do
+            paragraphIndent
             textAlign $ alignSide sideCenter
           -- See https://stackoverflow.com/a/62366856/437583 for more on box
           -- shadows (with/without attenuation near the corners).
           boxShadow
-            [ bsColor (rgbHex 0xdddddd)
+            [ bsColor (rgbHex 0xaaaaaa)
               $ shadowWithSpread
-                (px 0)
-                (px 30)
-                (px 20)
-                (px (-20))
+                (px 0)      -- horizontal offset (0 means the "sun" is directly overhead)
+                (px 30)     -- vertical offset (the bigger the lower the shadow)
+                (px 25)     -- blur radius
+                (px (-30))  -- spread (overall shadow size)
             ]
       div' ? do
         "#header" & do
@@ -161,6 +172,8 @@ myStylesheet = do
                 -- One line for the raw link to the injected source code.
                 ".raw-link" & do
                   hSymmetricGradient (rgbHex bgHex) codeLinkBg 80
+                  hSymmetricGradientBorder (rgbHex bgHex) (rgbHex 0x888888) 80 (px 1)
+                  borderTopWidth (px 0)
                   hr ? do
                     border solid (px 1) $ rgbHex 0xcccccc
                     marginBottom (px 0)
@@ -227,6 +240,7 @@ myStylesheet = do
             "-o-tab-size" -: "4"
             "tab-size" -: "4"
             hSymmetricGradient (rgbHex bgHex) quoteBg 80
+            hSymmetricGradientBorder (rgbHex bgHex) (rgbHex 0x8ece8e) 80 (px 1)
             marginBottom (em 1)
             paddingTop (em 1)
           table ? do
@@ -348,14 +362,19 @@ myStylesheet = do
       : toEnum 0x00a0 -- nonbreaking space character
       : toEnum 0x00a0 -- nonbreaking space character
       : []
+  hSymmetricGradientBorder colorSides colorMiddle middleWidth w = do
+    borderImage $ horizontalGradient colorSides colorMiddle middleWidth
+    "border-image-slice" -: "1"
+    borderWidth w
+    borderStyle solid
   hSymmetricGradient colorSides colorMiddle middleWidth
-    = backgroundImage
-    $ linearGradient
-      (straight sideRight)
-      [ (colorSides, pct 0)
-      , (colorMiddle, pct $ 50 - middleWidth / 2)
-      , (colorMiddle, pct $ 50 + middleWidth / 2)
-      , (colorSides, pct 100)]
+    = backgroundImage $ horizontalGradient colorSides colorMiddle middleWidth
+  horizontalGradient colorSides colorMiddle middleWidth = linearGradient
+    (straight sideRight)
+    [ (colorSides, pct 0)
+    , (colorMiddle, pct $ 50 - middleWidth / 2)
+    , (colorMiddle, pct $ 50 + middleWidth / 2)
+    , (colorSides, pct 100)]
   codeBlock = do
     pre ? do
       noMargin
@@ -366,6 +385,7 @@ myStylesheet = do
         "tab-size" -: "4"
         display block
         hSymmetricGradient (rgbHex bgHex) codeBg 80
+        hSymmetricGradientBorder (rgbHex bgHex) (rgbHex 0x888888) 80 (px 1)
         ev borderRadius (px 0)
         marginBottom (em 1)
         paragraphIndent
