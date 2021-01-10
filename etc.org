@@ -5,10 +5,6 @@ title: "Et cetera"
 #+STARTUP: indent showall
 #+OPTIONS: ^:nil
 
-#+BEGIN_EXPORT html
-<br>
-#+END_EXPORT
-
 Here is a list of some other things I've worked on.
 
 *The Great "k8s.gcr.io" Vanity Domain Flip (November 2020)* ([[https://www.youtube.com/watch?v=F2IFjz7sr9Q][Video]]).

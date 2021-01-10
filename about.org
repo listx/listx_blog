@@ -2,10 +2,6 @@
 title: About this site
 ---
 
-#+BEGIN_EXPORT html
-<br>
-#+END_EXPORT
-
 Hello!
 My name is Linus Arver and this is my blog.
 Please email me at [[mailto:linus@ucla.edu][linus@ucla.edu]] for anything related to this blog.

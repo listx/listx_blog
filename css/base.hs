@@ -79,7 +79,7 @@ myStylesheet = do
           hSymmetricGradient (rgbHex bgHex) (rgbHex 0xe0f8f2) 80
           hSymmetricGradientBorder (rgbHex bgHex) (rgbHex 0x37a68a) 80 (px 1)
           vh padding (em 0.5) 0
-          marginBottom (em 1)
+          marginBottom (em 2)
           h1 ? do
             paragraphIndent
             textAlign $ alignSide sideCenter
