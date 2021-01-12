@@ -86,8 +86,7 @@ packages with =nix-env -qaP=. For us, we're interested in the
 =nixpkgs.haskellPackages.cabal2nix=. However, the =haskellPackages=
 prefix refers to the old system that has been more or less deprecated as
 of
-[[http://article.gmane.org/gmane.linux.distributions.nixos/15513][January
-2015]]. We need to use the =haskellngPackages= (note the =ng=) prefix
+[[https://releases.nixos.org/nix-dev/2015-January/015591.html][January 2015]]. We need to use the =haskellngPackages= (note the =ng=) prefix
 instead. I know that =nixpkgs.haskellngPackages.cabal2nix= isn't listed
 with the =nix-env -qaP= command, but I believe that's for legacy
 reasons. You can still install it! Let's do that now:

@@ -77,7 +77,7 @@ If you have not learned
 These editors are very powerful and Emacs especially is infinitely
 customizable --- /programmable/. You will use these editors for decades,
 probably, because they are that good at what they do. I personally use
-Emacs with [[http://gitorious.org/evil/pages/Home][evil]], because I
+Emacs with [[https://github.com/emacs-evil/evil][evil]], because I
 like Emacs' configuration/customization system better.
 
 * Final Thoughts

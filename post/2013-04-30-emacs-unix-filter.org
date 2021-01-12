@@ -27,7 +27,7 @@ comments, =//=.
    :CUSTOM_ID: emacs
    :END:
 
-I use [[http://gitorious.org/evil/pages/Home][evil-mode]] with Emacs.
+I use [[https://github.com/emacs-evil/evil][evil-mode]] with Emacs.
 Here is my relevant =.emacs= to set up =nox= correctly:
 
 - i emacs-unix-filter.el
