@@ -3,6 +3,10 @@ BLOG_PORT?=8020
 
 all: sync
 
+# Check for broken links.
+check:
+	nix-shell --command "cabal run -- blog check"
+
 gen-css:
 	nix-shell --command "cabal build -- base" >/dev/null
 	nix-shell --command "cabal exec -- base"
@@ -19,4 +23,4 @@ build-site: build-binaries
 watch: build-binaries
 	nix-shell --command "cabal run -- blog watch --host $(BLOG_IP) --port $(BLOG_PORT)"
 
-.PHONY: sync gen-css
+.PHONY: check sync gen-css
