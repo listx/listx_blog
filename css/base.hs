@@ -180,7 +180,7 @@ myStylesheet = do
                     width (pct 76)
                   p ? do
                     vh padding (em 0.5) 0
-                    paragraphIndent
+                    textAlign $ alignSide sideCenter
                     a ? do
                       ".raw" & do
                         marginLeft $ em 0
