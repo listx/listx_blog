@@ -1,0 +1,510 @@
+---
+title: "Bresenham's Circle Drawing Algorithm"
+tags: programming, math
+mathjax: on
+---
+
+#+STARTUP: indent showall
+#+OPTIONS: ^:nil
+
+Some years ago, during a technical programming interview, I was given the following problem:
+
+#+begin_quote
+Write a function ~draw_circle(r)~ that draws a circle with radius ~r~. Use the given method ~draw_pixel(x, y)~ which takes a 2-dimensional point ~(x, y)~ and colors it in on the computer screen.
+#+end_quote
+
+For the solution, you can either collect all pixels (tuples) of $x$ and $y$ coordinate pairs, or just call ~draw_pixel()~ on them during the "search" for those pixels that must be filled in.
+
+This post goes over several solutions, ultimately arriving at Bresenham's algorithm.
+The content of this post is merely a distillation of Section 3.3 from the book "Computer Graphics: Principles and Practice (1996)".[fn:: Foley, J. D., van Dam, A., Feiner, S. K., Hughes, J. F. (1996). Basic Raster Graphics Algorithms for Drawing 2D Primitives, Scan Converting Circles. /Computer Graphics: Principles and Practice/ (pp. 81--87). Addison-Wesley. ISBN: 0201848406]
+The authors of the book state that the solutions given in the book results in code "essentially the same as that specified in patent 4,371,933 [a.k.a. Bresenham's algorithm]."[fn::
+Bresenham, J.E., D.G. Grice, and S.C. Pi, "Bi-Directional Display of Circular Arcs,"  US Patent 4,371,933. February 1, 1983. /Note: unfortunately, trying to understand the original text of the patent is perhaps equally as difficult as inventing the algorithm on your own from scratch. Hence this blog post./ ]
+
+I apologize in advance for the lack of pictures to illustrate my points.
+Please refer to the referenced book for some helpful drawings.
+
+* Constraints
+
+** Drawable canvas
+
+Before we start, let's define the drawable surface (canvas) of pixels for this problem.
+The pixels are arranged in a 2-dimensional, odd-numbered square array, say 17 by 17 in size, with the pixel at the very center of the square being the origin, or coordinate ~(0, 0)~.
+The canvas dimensions are odd, because we want to have an equal number of pixels to the right, left, top, and bottom.
+
+For this problem, the radius will be between 0 and 17.
+Or more generally, if $canvas\_width = 2n + 1$ for integer $n \geq 0$, then $0 \leq radius \leq n$. In the example, we are using $n = 17$ to get canvas width (and height) as 35 and radius to be between 0 and 17, inclusive.
+
+#+begin_src
+# "+" denotes the center pixel (0, 0).
+# "·" denotes all other pixels.
+# Total pixel area can be calculated with the formula (2*n + 1)^2.
+
+# Canvas size n=0, or width 1 (1 pixel). Only valid "drawable" pixel is (0, 0) itself.
+
++
+
+# Canvas size n=1, or width 3 (9 pixels). Valid drawable pixels are:
+#
+#   Top row:    (-1, 1), ( 0, 1), ( 1, 1)
+#   Middle row: (-1, 0), ( 0, 0), ( 1, 0)
+#   Bottom row: (-1,-1), ( 0,-1), ( 1,-1)
+
+···
+·+·
+···
+
+# Canvas size n=2, or width 5 (25 pixels).
+#
+#   Top row:    (-2, 2), (-1, 2), ( 0, 2), ( 1, 2), ( 2, 2)
+#               (-2, 1), (-1, 1), ( 0, 1), ( 1, 1), ( 2, 1)
+#   Middle row: (-2, 0), (-1, 0), ( 0, 0), ( 1, 0), ( 2, 0)
+#               (-2,-1), (-1,-1), ( 0,-1), ( 1,-1), ( 2,-1)
+#   Bottom row: (-2,-2), (-1,-2), ( 0,-2), ( 1,-2), ( 2,-2)
+
+
+·····
+·····
+··+··
+·····
+·····
+
+# Canvas size n=3, or width 7 (49 pixels).
+#
+# (Valid pixels list skipped for brevity.)
+
+·······
+·······
+·······
+···+···
+·······
+·······
+·······
+
+# Canvas size n=17, or width 35 (1225 pixels).
+#
+# (Valid pixels list skipped for brevity.)
+
+···································
+···································
+···································
+···································
+···································
+···································
+···································
+···································
+···································
+···································
+···································
+···································
+···································
+···································
+···································
+···································
+···································
+·················+·················
+···································
+···································
+···································
+···································
+···································
+···································
+···································
+···································
+···································
+···································
+···································
+···································
+···································
+···································
+···································
+···································
+···································
+
+#+end_src
+
+** Mathematical definitions
+
+The exact definition of a circle (given infinite precision, as on the traditional Cartesian plane) centered at the origin is
+
+\[
+\begin{equation} \label{eq:circle}
+x^2 + y^2 = r^2.
+\end{equation}
+\]
+
+This resembles the Pythagorean Theorem
+
+\[
+a^2 + b^2 = c^2,
+\]
+
+for any right-angled triangle with sides $a$ and $b$ and hypotenuse $c$.
+The resemblance is not a coincidence, because an infinite number of such triangles exists within the top right quadrant of the plane (that is, the part of the plane such that $x \geq 0$ and $y \geq 0$); in this quadrant (let's call it /Quadrant I/[fn:: There are 4 such [[https://en.wikipedia.org/wiki/Quadrant_(plane_geometry)][quadrants]]: I, II, III, and IV.]), for all points $(x,y)$ that make up this portion (or arc) of the circle, their radii is the same as the hypotenuses of these triangles (whose sides are $x$ and $y$).
+
+Anyway, solving for $y$ in Equation \(\ref{eq:circle}\) gives
+
+\[
+\begin{equation} \label{eq:circle-y}
+y = \pm\sqrt{r^2 - x^2}.
+\end{equation}
+\]
+
+Consider the function $y = x$.
+This function has slope 1 and is a diagonal line where all values of $x = y$.
+Now consider how this line intersects the arc of the circle in Quadrant I.
+This intersection point evenly divides the arc into 2 halves, and is where
+
+\[
+x = y = \tfrac{r}{\sqrt{2}},
+\]
+
+or simply
+
+\[
+(\tfrac{r}{\sqrt{2}}, \tfrac{r}{\sqrt{2}}).
+\]
+
+This is because if $x = y$, then Equation \(\ref{eq:circle}\) becomes
+
+\[
+\begin{align}
+x^2 + y^2 &= r^2
+\\
+x^2 + x^2 &= r^2
+\\
+2x^2 &= r^2
+\\
+\tfrac{2x^2}{2} &= \tfrac{r^2}{2}
+\\
+x^2 &= \tfrac{r^2}{2}
+\\
+\sqrt{x^2} &= \tfrac{\sqrt{r^2}}{\sqrt{2}}
+\\
+x &= \tfrac{r}{\sqrt{2}}.
+\end{align}
+\]
+
+This is not that interesting for purposes of the algorithms in this post, but is something that is glossed over in the book.
+
+** Symmetry
+
+Because of symmetry, we can mirror the solution $(x,y)$ pairs we get in Quadrant I into the other quadrants.
+This gives us 4-way symmetry because there are 4 quadrants.
+
+Note, however, that there is actually 8-way symmetry at hand because (1) we can swap $x$ and $y$, and (2) because of the way we can distribute the negative sign:
+
+| # | Coordinate | Quadrant |
+|---+------------+----------|
+| 1 | ~( x, y)~  | I        |
+| 2 | ~( y, x)~  | I        |
+| 3 | ~(-x, y)~  | II       |
+| 4 | ~(-y, x)~  | II       |
+| 6 | ~(-x,-y)~  | III      |
+| 5 | ~(-y,-x)~  | III      |
+| 7 | ~( x,-y)~  | IV       |
+| 8 | ~( y,-x)~  | IV       |
+
+Fun fact: the exact point at which $x$ and $y$ get "swapped" in Quadrant I is when $x = y = \tfrac{r}{\sqrt{2}}$.
+
+** "Dot matrix" printer library
+
+To restrict ourselves to only the circle-drawing algorithms, a "dot matrix"-like "printer" --- a simple text-based drawable canvas --- is already provided as part of the problem, as follows:
+
+- i 2021-01-24-bresenham-circle-drawing-algorithm/lib.py
+
+Although the text-based graphics won't come out to actually show a circle (because the unit $x$ and $y$ increments are not 1-to-1, not to mention the extra line height between each row of pixels), this is just a display issue and is something we can ignore.
+OK, now on to the solutions!
+
+* Naive solutions
+
+When in doubt, brute force is always a great answer, because at least it gets you started on something that works given enough time and/or memory.[fn:: In some sense, all great algorithms are mere optimizations of brute force approaches.]
+Because we have clear mathematical definitions already, we can just translate them (albeit mechanically) to code.
+
+- i 2021-01-24-bresenham-circle-drawing-algorithm/naive.py
+
+The ~draw_circle_naive()~ and ~draw_circle_slow()~ methods are based on Equation \(\ref{eq:circle-y}\).
+For both methods, we iterate $x$ from $0$ to $r$ [fn:: In code, we have to write ~range(r + 1)~ because the ~range()~ function does not include the last integer. Such "fence-post" or "off by one" logic is the bane of computer programmers.], and at each $x$ try to find the best value for $y$.
+The main difference lies in how much the points are mirrored, exploiting the 4 and 8-way symmetries discussed previously.
+
+Notice how ~draw_circle_naive()~ skips some $y$ values (bug!), because we're only solving for 1 $y$ value for every $x$ value we increment by.
+This becomes problematic because near the left and right sides of the circle, we need to calculate more than just 1 $y$ value for every $x$.[fn::  Mathematically, this is because the slope of the arc in Equation \(\ref{eq:circle-y}\) approach positive and negative infinity around these areas.].
+
+The ~draw_circle_slow()~ function gets around this "gap" bug by invoking 8-way symmetry instead.
+However the downside is that it results in multiple points that will be drawn 2 times, wasting CPU cycles.
+To be more precise, all points around the gappy area in Quadrant I are redundant because that part of the arc is already mirrored nicely by the contiguous points from $x = 0$ to $x = y$.
+
+The ~draw_circle_inefficient()~ avoids drawing the gappy areas by just breaking the loop when $x > y$.
+This is the best we can do with the simple mathematical translations to code.
+
+* Midpoint Circle Algorithm
+
+The "Midpoint Circle Algorithm" given in the book has 3 variations.
+The gist of the algorithm (which is again, basically the same as Bresenham's algorithm), is that instead of using Equation \(\ref{eq:circle-y}\) to calculate $y$, instead you try to /move/ along the arc of the circle, staying as close as possible to the arc.
+
+1) Start out from the top of the circle (color in pixel $(0, r)$). Note that because of symmetry, we could start out from $(0, -r)$, $(r, 0)$, or even $(-r, 0)$ as Bresenham did in his paper.[fn:: Bresenham, Jack. "A Linear Algorithm for Incremental Digital Display of Circular Arcs." Communications of the ACM, vol. 20, no. 2, 1977, pp. 100–106., doi:10.1145/359423.359432.]
+2) Move right (east) or down-right (souteast), whichever is closer to the circle.
+3) Stop when $x = y$.
+
+Bresenham's innovation is in Step 2.
+The decision to move east or southeast is based on a single variable called a /decision parameter/, but basically it is an error margin.
+The idea is that because we are forced to draw pixels in a 2-dimensional grid, we are forced to make inaccuracies.
+Then as long as we keep the inaccuracies to a minimum, then surely the circle we end up drawing must be as accurate as possible within the confines of this grid.
+
+To be a bit more precise, we look at the *midpoint* (in pixel-speak, the horizontal seam) between the east and southeast pixels from the current pixel.
+If this midpoint is inside the circle, we move east; otherwise, we move southeast.
+
+Let's pause for a moment.
+To me the last sentence of the previous paragraph sounds unintuitive --- but we can convince ourselves that it is correct because if the behavior was flipped, that we would move southeast if the midpoint is inside the circle, we would quickly end up drawing a diamond instead.
+This is because moving southeast is the same as moving 45 degrees, diagonally.
+Doing so from the top center point on the circle would put us into the circle.
+At this point the next midpoint will again be inside the circle, and we would move 45 degrees southeast again.
+Can you see the runaway reaction?
+That is why we have to move the "opposite" way.
+
+In other words, we really just want to move east as much as possible, but only correct ourselves vertically downward (move southeast) if we're /really/ far away from the circle, at which time we'll move southeast to try to "correct" our misalignment.
+As we approach $x = y$, we'll have to make such corrections (i.e., move southeast) more frequently.
+
+It's worth mentioning that moving southeast is the most aggressive single-iteration correction we can make, because we're only iterating up to $x = y$ from the top the circle, moving rightward in Quadrant I.
+This is because the tangent line at the middle of the arc where $x = y$ is at a 45 degree angle itself (or -45 degrees, depending on perspective).
+That is, the arc itself approaches a maximum angle of 45 degrees.
+
+** Deriving the error margin, aka "decision parameter"
+
+The book uses the term "decision parameter" (perhaps to stay true to language in Bresenham's patent), but we'll use *error margin*, instead because it's self-documenting.
+
+Anyway, we slightly reword Equation \(\ref{eq:circle}\) to get
+
+\[
+\begin{equation} \label{eq:error-margin}
+F(x,y) = x^2 + y^2 - r^2.
+\end{equation}
+\]
+
+Note that \(F(x,y) = 0\) on the circle, \(F(x,y) > 0\) outside of the circle, and \(F(x,y) < 0\) inside of it.
+Let's call this function the ~error_margin()~ function.
+That is, given any point $(x, y)$, this tells us how far away (outside or inside the circle) we are.
+This is the *error margin*, or just $em$.
+If we think in terms of iteration, this function tells us whether we should move southeast instead of east.
+We only move southeast if this function returns a positive number for the next midpoint.
+
+Now, we can calculate ~error_margin()~ at every iteration of $x$ as we continually increment by 1, but we can do better.
+Instead we can just calculate it once at the beginning, and then tweak it as necessary.
+And if $em < 0$ (negative), we move east; otherwise we move southeast.
+To restate, we can calculate $em$ *once* (at the beginnig of the loop over $x$), and then adjust it depending on whether we choose the east or southeast pixel.
+
+We first start out from the point $(0, r)$, which by definition lies on the circle where \(F(0, r) = 0\).
+The next eastern and southeastern points are $(1, r)$ and $(1, r - 1)$.
+The midpoint between these two points is at $(1, r - \tfrac{1}{2})$.
+We now define $em$ in terms of this very first midpoint, by invoking ~error_margin()~ on it:
+
+\[
+\begin{align}
+F(1, r - \tfrac{1}{2}) &= 1^2 + (r - \tfrac{1}{2})^2 - r^2
+\\
+&= 1^2 + (r^2 - r + \tfrac{1}{4}) - r^2
+\\
+&= 1 + r^2 - r^2 - r + \tfrac{1}{4}
+\\
+&= 1 - r + \tfrac{1}{4}
+\\
+&= \tfrac{5}{4} - r.
+\end{align}
+\]
+
+This value $\tfrac{5}{4} - r$ is our initial calculation of ~error_margin()~ against the next midpoint between the very first east and southeast candidate pixels.
+You can tell straight away that for any value of $r > \tfrac{5}{4}$, we'll move east for a while in the beginnig.
+This makes sense because the larger the radius, the larger the initial horizontal tangent at the top end of the circle.
+
+The logic so far takes care of plotting the very first point $(0, r)$ where $x = 0$, as well as setting the error margin $em$ for the very first midpoint under consideration.
+We just need to figure out how to avoid calling ~error_margin()~ for all following iterations where $x \geq 1$.
+
+It turns out that $em$ evolves in a predictable manner, something like a geometric progression.
+That is, if you were to calculate all values of $em$ for all iterations of $x$, you would see a pattern.
+Unraveling this pattern will give us the formula we need to skip the calculation of squares required in ~error_margin()~.
+
+Let the pixel $(x, y)$ represent the pixel previously chosen as closest to the circle.
+We now consider the error margin of the next midpoint to help us choose to go east or southeast.
+Then the eastern pixel is $(x + 1, y)$ and the southeastern pixel is $(x + 1, y - 1)$, so the midpoint of these two candidate pixels is $(x + 1, y - \tfrac{1}{2})$.
+The error margin for this midpoint is
+
+\[
+\begin{equation}
+em_{next} = F(x + 1, y - \tfrac{1}{2}) = (x + 1)^2 + (y - \tfrac{1}{2})^2 - r^2.
+\end{equation}
+\]
+
+If $em_{next} < 0$, then we go east.
+The error margin of the next midpoint will then change to
+
+\[
+\begin{equation}
+em_{next+1} = F(x + 2, y - \tfrac{1}{2}) = (x + 2)^2 + (y - \tfrac{1}{2})^2 - r^2.
+\end{equation}
+\]
+
+The /only/ difference between $em_{next}$ and $em_{next+1}$ is the $x+2$ instead of $x+1$ in the first binomial.
+*This is key as we can ignore the other terms.*
+We can thus express the change in the error margin when moving east ($\Delta_{em_E}$) as
+
+\[
+\begin{align}
+em_{next+1} - em_{next} &= (x + 2)^2 - (x + 1)^2
+\\
+&= (x^2 + 4x + 4) - (x^2 + 2x + 1)
+\\
+&= x^2 + 4x + 4 - x^2 - 2x - 1
+\\
+&= x^2 - x^2 + 4x - 2x + 4 - 1
+\\
+&= 2x + 3 = \Delta_{em_E}.
+\end{align}
+\]
+
+In other words, when going east, our error margin for the next midpoint changed by $2x + 3$.
+Similarly, we if we move southeast, the new midpoint's error margin instead becomes
+
+\[
+\begin{equation}
+em_{next+1} = F(x + 2, y - \tfrac{3}{2}) = (x + 2)^2 + (y - \tfrac{3}{2})^2 - r^2.
+\end{equation}
+\]
+
+Although not as clean as the "moving east" case, we can still get rid of all the square terms when we gather the change in $x$ and ($+$) change in $y$:
+
+\[
+\begin{align}
+em_{next+1} - em_{next} &= [(x + 2)^2 - (x + 1)^2] + [(y - \tfrac{3}{2})^2 - (y - \tfrac{1}{2})^2]
+\\
+&= (2x + 3) + [(y^2 - \tfrac{6y}{2} + \tfrac{9}{4}) - (y^2 - y + \tfrac{1}{4})]
+\\
+&= (2x + 3) + (y^2 - 3y + \tfrac{9}{4} - y^2 + y - \tfrac{1}{4})
+\\
+&= (2x + 3) + (y^2 - y^2 - 3y + y + \tfrac{9}{4} - \tfrac{1}{4})
+\\
+&= (2x + 3) + (- 2y + \tfrac{8}{4})
+\\
+&= (2x + 3) + (-2y + 2)
+\\
+&= 2x + 3 - 2y + 2
+\\
+&= 2x - 2y + 5
+\\
+&= 2(x - y) + 5 = \Delta_{em_{SE}}.
+\end{align}
+\]
+
+And so when moving southeast, the new midpoint must change by $2(x - y) + 5$.
+
+Notice how $\Delta_{em_E}$ and $\Delta_{em_{SE}}$ work for any $(x,y)$ pair.
+We now have all the ingredients for the first variant of the Midpoint Circle Algorithm.
+However, let's look at two small tweaks we can make to make it slightly faster.
+
+** Non-float error margin
+
+The initial value of $em$ is $\tfrac{5}{4} - r$.
+Notice how this is the only place where we have to perform division in the whole algorithm.
+We can avoid this initial division (and subsequent floating point arithmetic) by initializing $em$ instead to $1 - r$.
+This can be achieved with some math and engineering elbow grease.
+
+The math part is simple.
+We adjust $em$ in the code ($em_{old}$) by $\tfrac{1}{4}$:
+
+\[
+\begin{align}
+em_{new} &= em_{old} - \tfrac{1}{4}
+\\
+em_{new} &= \tfrac{5}{4} - r - \tfrac{1}{4}
+\\
+em_{new} &= \tfrac{5}{4} - \tfrac{1}{4} - r
+\\
+em_{new} &= 1 - r.
+\end{align}
+\]
+
+Because we tweaked the initialization by $\tfrac{1}{4}$, we have to do the same for all comparisons of $em$ moving forward.
+That is, the comparison $em < 0$ actually becomes $em < -\tfrac{1}{4}$.
+But now comes the elbow grease: this fractional comparison is unnecessary because we only deal with integer increments and decrements in the rest of the code, so we can just keep the same $em < 0$ as before.
+In other words, our algorithm only cares about whole numbers, so carrying around this extra $\tfrac{1}{4}$ is meaningless.
+
+** Second-order differences
+
+The final tweak we can do is to get rid of all multiplication operations in the loop.[fn:: It is not clear to me if this change runs faster on modern CPUs, because I recall reading that multiplication can sometimes be faster than adding. But it's still interesting.]
+Much as how we got rid of calculating squares by exploiting the "geometrical" progression of $em$ (by effectively replacing the 2nd-degree polynomial in Equation \(\ref{eq:error-margin}\) with a 1st-degree polynomial in $\Delta_{em_E}$ and $\Delta_{em_{SE}}$), we can use the exact same technique to reduce the 1st-degree polynomials in $\Delta_{em_E}$ and $\Delta_{em_{SE}}$ to 0-degree (constant function) polynomials.[fn:: The book points out that /any/ polynomial can be computed incrementally!]
+This technique is called calculating first and second-order partial differences.
+
+The idea is simple: instead of calculating the original polynomial expression at a given point, we take 2 points along the function defined by the polynomial, and instead adjust by the /difference/ between these two points.[fn:: This has ties to calculus, because we're basically trying to calculate the change in $x$ and $y$ between these 2 points. Whereas in introductory calculus where one is told to minimize the distance between 2 points (the limit as this delta approaches 0) to differentiate a function at some arbitrary point, here we just care about the difference of length 1 (when we move east from $(x,y)$ to $(x + 1, y)$), or length $\sqrt{2}$ (when we move southeast to $(x + 1, y - 1)$) --- ultimately to just move to the next contiguous pixel along the drawable surface.]
+It turns out that because we are dealing with a 0-degree (constant) polynomial, we can just adjust by this constant in each iteration.
+The constants turn out to be either $2$ or $4$, but we'll see why below.
+
+Let's figure out how $\Delta_{em_E}$ changes, depending on whether we go east or southeast.
+First, we initialize $\Delta_{em_E}$ by plugging in $(0, r)$.
+Because there is no $y$ variable in here, we get an initial value of $2(0) + 3 = 3$.
+If we go east, the two points of interest are $(x,y)$ and $(x+1,y)$.
+If we plug these values into $\Delta_{em_E} = 2x + 3$, we get a second-order difference \Delta_{\Delta_{em_E}} where
+\[
+\begin{align}
+\Delta_{\Delta_{em_E}} = \Delta_{em_{E_{next+1}}} - \Delta_{em_{E_{next}}} &= [2(x+1) + 3] - (2x + 3)
+\\
+&= 2x + 2 + 3 - 2x - 3
+\\
+&= 2x - 2x + 3 - 3 + 2
+\\
+&= 2.
+\end{align}
+\]
+
+If we go southeast, $\Delta_{\Delta_{em_E}}$ changes in the exact same way, because even though our new point is at $(x+1, y-1)$, there is no $y$ in $\Delta_{em_E} = 2x + 3$, so it doesn't matter and $\Delta_{\Delta_{em_E}} = 2$ again.
+
+Lastly, let's compute how $\Delta_{em_SE}$ changes.
+For the initial value, we again plug in $(0, r)$ into $2(x-y) + 5$, to get $2(0-r) + 5 = -2r + 5$.
+If we go east, the two points of interest are again $(x,y)$ and $(x+1,y)$.
+If we plug these values into $\Delta_{em_SE} = 2(x-y) + 5$, we get
+
+\[
+\begin{align}
+\Delta_{\Delta_{em_SE}} = \Delta_{em_{SE_{next+1}}} - \Delta_{em_{SE_{next}}} &= [2((x + 1)-y) + 5] - [2(x - y) + 5]
+\\
+&= (2x + 2 - 2y + 5) - (2x - 2y + 5)
+\\
+&= 2x - 2y + 7 - 2x + 2y - 5
+\\
+&= 2x - 2x + 2y - 2y + 7 - 5
+\\
+&= 2.
+\end{align}
+\]
+
+If we go southeast, $\Delta_{em_{SE}}$ changes like this:
+
+\[
+\begin{align}
+\Delta_{\Delta_{em_{SE}}} = \Delta_{em_{SE_{next+1}}} - \Delta_{em_{SE_{next}}} &= [2((x + 1)-(y - 1)) + 5] - [2(x - y) + 5]
+\\
+&= [2(x + 1 - y + 1) + 5] - (2x - 2y + 5)
+\\
+&= (2x + 2 - 2y + 2 + 5) - 2x + 2y - 5
+\\
+&= 2x- 2x + 2y - 2y + 5 - 5 + 2 + 2
+\\
+&= 2 + 2
+\\
+&= 4.
+\end{align}
+\]
+
+That was a lot of math!
+You can see everything in action in the code sample below:
+
+- i 2021-01-24-bresenham-circle-drawing-algorithm/midpoint.py
+
+There is some bit-shift trickery at play because of the multiplications with the number 2, but other than that you should be able to reason about every single line of code.
+
+* Conclusion
+
+If you think about it, the algorithm is rather simple.
+The key insight is to take first and second-order differences to avoid square roots and multiplications during each iteration.
+
+When I looked at the equations in the book, I got a little scared but after close examination, it all makes sense intuitively.
+I also learned the technique of removing squares and factors by getting the first and second-order differences -- cool stuff!
+
+Happy hacking!

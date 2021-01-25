@@ -1,6 +1,7 @@
 *.hi
 *.o
 .stack-work
+**/__pycache__/
 _cache/
 _site/
 blog
