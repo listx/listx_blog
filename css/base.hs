@@ -11,8 +11,20 @@ import Clay.Font
 import qualified Clay.Text as CT
 import qualified Clay.Stylesheet as CS
 
+import Skylighting
+  ( styleToCss
+  , haddock
+  )
+
 main :: IO ()
-main = T.putStrLn $ renderWith pretty [] myStylesheet
+main = T.putStrLn $ T.unlines
+  [ "/* base.hs: Inject Skylighting-generated CSS */"
+  , T.pack $ styleToCss haddock
+  -- NOTE: It is important to put the Clay-generated stuff last, so that we can
+  -- tweak the default code block styles created by Skylighting.
+  , "/* base.hs: Inject Clay-generated CSS */"
+  , renderWith pretty [] myStylesheet
+  ]
 
 rgbHex :: Int -> Color
 rgbHex rgb'
@@ -74,7 +86,7 @@ myStylesheet = do
 
           -- This places this element above MathJax formulas and our custom
           -- bullets for h1 (and h2, h3, etc) headings.
-          zIndex 1
+          zIndex 2
 
           hSymmetricGradient (rgbHex bgHex) (rgbHex 0xe0f8f2) 80
           hSymmetricGradientBorder (rgbHex bgHex) (rgbHex 0x37a68a) 80 (px 1)
@@ -101,7 +113,30 @@ myStylesheet = do
         "#content" & do
           backgroundColor $ rgbHex bgHex
           paddingBottom (px 0)
-          h1 <> h2 <> h3 <> h4 <> h5 ? do
+          div' ? do
+            ".canvas-centered" & do
+              display grid
+              "justify-items" -: "center"
+              vh margin (em 1) auto
+              paddingBottom (em 1)
+              canvas ? do
+                "image-rendering" -: "pixelated"
+                "image-rendering" -: "crisp-edges"
+                "image-rendering" -: "-moz-crisp-edges"
+                "image-rendering" -: "-webkit-crisp-edges"
+                ".active-pixel-canvas" & do
+                  zIndex 1
+                ".layer" & do
+                  "grid-area" -: "1/1"
+            ".canvas-tooltip" & do
+              position absolute
+              backgroundColor $ rgbHex bgHex
+              vh padding (px 4) (px 4)
+              border solid (px 2) $ rgbHex 0x000000
+              -- Start out invisible from the user. JS activates it to be
+              -- visible with opacity "1" when the desired mouse event fires up.
+              opacity 0
+          h1 <> h2 <> h3 <> h4 <> h5 <> h6 ? do
             noMargin
             headerIndent
             paragraphIndentRight
@@ -109,6 +144,12 @@ myStylesheet = do
             fontWeight normal
             code ? do
               vh margin (px 0) (px 4)
+            -- All headers are linked with a "#" anchor tag by JS. We want the
+            -- #sticky-title div to not be in the way (on top of these anchors)
+            -- when we click on them. The scroll-margin-top leaves room for the
+            -- #sticky-title div. See
+            -- https://stackoverflow.com/questions/4086107/fixed-page-header-overlaps-in-page-anchors.
+            paddingForStickyTitle
           h1 ? do
             addHeadingSymbol uDoubleSquare
             -- For the title of the page, center-align it.
@@ -165,10 +206,16 @@ myStylesheet = do
               div' ? do
                 ".sourceCode" & do
                   hSymmetricGradient (rgbHex bgHex) codeBg 80
+                  noMargin
                   pre ? do
+                    ".numberSource" & do
+                      "border-style" -: "none"
                     code ? do
                       backgroundImage none
                       marginBottom (px 0)
+                      Clay.span ? do
+                        -- Line numbers links.
+                        paddingForStickyTitle
                 -- One line for the raw link to the injected source code.
                 ".raw-link" & do
                   hSymmetricGradient (rgbHex bgHex) codeLinkBg 80
@@ -206,11 +253,22 @@ myStylesheet = do
               noMargin
               paragraphIndent0
               paddingBottom $ px 0
+          -- Make MathJax equation link targets (anchors) reserve room for the
+          -- #sticky-title div at the top. For some reason in Firefox we get a
+          -- little extra padding than in Chrome. But we can live with that.
+          Clay.span ? do
+            ".mtd" & do
+              paddingForStickyTitle
           p ? do
             noMargin
             paddingBottom (em 1)
             paragraphIndent
             textAlign justify
+            a ? do
+              -- This is for anchor links from footnotes at the bottom that point
+              -- back to where the footnote came from.
+              paddingForStickyTitle
+
           -- single-line `code`
           code ? do
             vh padding 0 (em 0.10)
@@ -307,6 +365,7 @@ myStylesheet = do
               width (px 39)
   where
   div' = Clay.div
+  paddingForStickyTitle = "scroll-margin-top" -: "110px"
   cPageWidth :: Double
   cPageWidth = 900
   codeBgHex :: Int
@@ -376,7 +435,9 @@ myStylesheet = do
     , (colorMiddle, pct $ 50 + middleWidth / 2)
     , (colorSides, pct 100)]
   codeBlock = do
+    noMargin
     pre ? do
+      "border-style" -: "none"
       noMargin
       vh padding 0 $ px 0
       code ? do
@@ -392,6 +453,9 @@ myStylesheet = do
         paddingTop (em 1)
         paddingBottom (em 1)
         fontWeight normal
+        Clay.span ? do
+          -- Line numbers links.
+          paddingForStickyTitle
 
 -- | A horizontal/vertical size helper. It accepts a function and two sizes for
 -- the horizontal and vertical parts. E.g., instead of calling
