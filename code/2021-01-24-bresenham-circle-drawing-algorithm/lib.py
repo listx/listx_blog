@@ -1,43 +1,178 @@
 #!/usr/bin/env python3
 
-def draw_points(points, canvas_size):
-    """ Draw the given list of (x,y) points on a text (UTF) "canvas". Here
-    'canvas_size' must be a positive odd integer.
+import hashlib
+
+
+def draw(points, buffer):
+    """ Draw the given list of (x,y) points on a text (UTF) "buffer".
     """
-    # Handle edge case where canvas_size is 1 (a canvas of 1 pixel by 1 pixel).
-    if canvas_size <= 1:
-        if (0, 0) in points:
-            # The "█" is the "Full # block" character, or Unicode codepoint
-            # U+2588.
-            print("█")
-        else:
-            # Draw the origin with a special character.
-            print("+")
-        return
+
+    buffer_size = len(buffer[0])
 
     # The >> 1 is to divide by 2.
-    offset = (canvas_size - 1) >> 1
-    for y in range(canvas_size):
-        for x in range(canvas_size):
-            if (x - offset) == 0 and (y - offset) == 0:
-                print("+", end="")
-                continue
-            # Use an offset because we're iterating through only positive
-            # points (0 to canvas_size for both x and y).
-            if (x - offset, y - offset) in points:
-                print("█", end="")
-            else:
-                # This is an "interpunct" character, or U+00B7.
-                print("·", end="")
-            if x == canvas_size - 1:
-                print("")
+    offset = (buffer_size + 1) >> 1
+    for x, y in points:
+        # Skip undrawable points.
+        if x > offset or y > offset:
+            continue
+        buffer[y - offset][x - offset] = "●"
+
+    return buffer
+
+
+def draw_grid(buffer):
+    """ Draws the X and Y axes into the buffer. """
+    buffer_size = len(buffer[0])
+    center = buffer_size >> 1
+    for y in range(buffer_size):
+        for x in range(buffer_size):
+            grid_symbol = ""
+            if x == center and y == center:
+                grid_symbol = "x"
+            elif x == center:
+                if (y - center) % 5 == 0:
+                    grid_symbol = "┼"
+                else:
+                    grid_symbol = "│"
+            elif y == center:
+                if (x - center) % 5 == 0:
+                    grid_symbol = "┼"
+                else:
+                    grid_symbol = "─"
+            if grid_symbol:
+                buffer[y][x] = grid_symbol
+
+    return buffer
+
+
+def create_buffer(buffer_size):
+    """ Create a drawable surface. It has a grid.
+    """
+    # Create minimal buffer of 1 pixel by 1 pixel, if necessary.
+    if buffer_size < 0:
+        buffer_size = 1
+
+    # Force buffer_size to be an odd number.
+    buffer_size |= 1
+
+    buffer = []
+
+    for _ in range(buffer_size):
+        # This is an "interpunct" character, or U+00B7.
+        buffer.append(["·"] * buffer_size)
+
+    return buffer
+
+
+def display_buffer(buffer):
+    """ Draw the given list of (x,y) points on a text (UTF) "buffer". Here
+    'buffer_size' must be a positive odd integer.
+    """
+
+    buflen = len(buffer)
+    center = len(buffer) >> 1
+
+    # Create space for rulers.
+    # +1 for blank space from left edge, +1 for border
+    buffer = extend(buffer, " ", len(str(center)) + 2)
+
+    # Vertical rulers
+    for y_no_offset in range(buflen):
+        # Skip first and last numbers on the borders.
+        if y_no_offset in (0, buflen - 1):
+            continue
+        y = y_no_offset - center
+        msg = str(abs(y))
+        # Right side vertical ruler.
+        draw_text(buffer, msg, center + 2, y + 1)
+        # Left side vertical ruler.
+        draw_text(buffer, msg, -center - len(msg) - 1, y + 1)
+
+    # Horizontal rulers
+    for x_no_offset in range(buflen):
+        # Skip first and last numbers.
+        if x_no_offset in (0, buflen - 1):
+            continue
+        x = x_no_offset - center
+        if x % 5 != 0:
+            continue
+        msg = str(abs(x))
+        # Top ruler.
+        draw_text(buffer, msg, x, center + len(msg) + 1, "topdown")
+        # Bottom ruler.
+        draw_text(buffer, msg, x, -center, "topdown")
+
+    # Draw a signature for the buffer. This way it's easy to check if a drawing
+    # matches another exactly.
+    signature = get_buffer_signature(buffer)
+    draw_text(buffer, str(signature), -center, -center - 3)
+
+    for line in buffer:
+        print("".join(line))
+
+
+def get_buffer_signature(buffer):
+    m = hashlib.sha1()
+    for line_chars in buffer:
+        line_str = "".join(line_chars)
+        m.update(line_str.encode("utf-8"))
+    return m.hexdigest()
+
+
+def draw_text(buffer, msg, x, y, direction="horizontal"):
+    """ Write a text message onto the buffer. """
+    buflen = len(buffer)
+    center = buflen >> 1
+
+    for c in msg:
+        y_b = y + center
+        x_b = x + center
+        if x_b < buflen and y_b < buflen:
+            buffer[-y_b][x_b] = c
+        if direction == "topdown":
+            y -= 1
+        elif direction == "bottomup":
+            y += 1
+        else:
+            x += 1
+
+
+def add_border(buffer):
+    width = len(buffer[0])
+    bordered = []
+    bordered.append(["╭"] + (["─"] * width) + ["╮"])
+    for line in buffer:
+        bordered.append(["│"] + line + ["│"])
+    bordered.append(["╰"] + (["─"] * width) + ["╯"])
+    return bordered
+
+
+def extend(buffer, symbol, magnitude):
+    width = len(buffer[0])
+    extended = []
+    for _ in range(magnitude):
+        extended.insert(0, [symbol] * ((2 * magnitude) + width))
+    for line in buffer:
+        extended.append([symbol] * magnitude + line + [symbol] * magnitude)
+    for _ in range(magnitude):
+        extended.append([symbol] * ((2 * magnitude) + width))
+
+    return extended
 
 
 def draw_circle_points(points, r):
     """ Wrapper around the more generic draw_points(), such that we don't have
-    to bother calculating 2*r + 1 ourselves for the canvas_size every time.
+    to bother writing 2*r + 1 ourselves for the buffer_size every time.
+
+    We also extend the buffer's margins by 3 on each side to make drawings a
+    bit easier to see.
     """
-    draw_points(points, (r << 1) + 1)
+    buffer = create_buffer((r << 1) + 1)
+    buffer = extend(buffer, "·", 3)
+    buffer = draw_grid(buffer)
+    buffer = draw(points, buffer)
+    buffer = add_border(buffer)
+    display_buffer(buffer)
 
 
 def mirror_points_4(x, y):

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from lib import draw_points, draw_circle_points, mirror_points_8
+from lib import draw_circle_points, mirror_points_8
 
 
 def draw_circle_midpoint(r):
@@ -70,11 +70,60 @@ def draw_circle_midpoint_additive(r):
     draw_circle_points(points, r)
 
 
+def draw_circle_midpoint_2(r):
+    """ Like draw_circle_midpoint_additive, but we start drawing from (0, -r)
+    and work our way up and to the right. """
+    points = []
+    x = 0
+    y = -r
+    em = 1 - r
+    points.extend(mirror_points_8(x, y))
+    while x < -y:
+        if em < 0:
+            em += (x << 1) + 3
+        else:
+            em += ((x + y) << 1) + 5
+            # Increment em_se by 2 (total 4) if we go southeast.
+            y += 1
+        # Always increment em_e and em_se by 2!
+        x += 1
+        points.extend(mirror_points_8(x, y))
+    draw_circle_points(points, r)
+
+
+def draw_circle_midpoint_2p(r):
+    """ Like draw_circle_midpoint_additive, but we start drawing from (0, -r)
+    and work our way up and to the right. """
+    points = []
+    x = 0
+    y = -r
+    em = 1 - r
+    # Initial value for (0,-r) for 2x + 3 = 0x + 3 = 3.
+    em_e = 3
+    # Initial value for (0,-r) for 2(x + y) + 5 = 0 - 2y + 5 = -2y + 5.
+    em_ne = -(r << 1) + 5
+    points.extend(mirror_points_8(x, y))
+    while x < -y:
+        if em < 0:
+            em += em_e
+        else:
+            em += em_ne
+            em_ne += 2
+            y += 1
+        em_e += 2
+        em_ne += 2
+        x += 1
+        points.extend(mirror_points_8(x, y))
+    draw_circle_points(points, r)
+
+
 if __name__ == "__main__":
     # These three all draw the same circle.
     draw_circle_midpoint(17)
     draw_circle_midpoint_integer(17)
     draw_circle_midpoint_additive(17)
+    draw_circle_midpoint_2(17)
+    draw_circle_midpoint_2p(17)
     # ·············█████████·············
     # ···········██·········██···········
     # ·········██·············██·········

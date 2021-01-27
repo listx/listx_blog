@@ -301,7 +301,7 @@ We now define $em$ in terms of this very first midpoint, by invoking ~error_marg
 \begin{align}
 F(1, r - \tfrac{1}{2}) &= 1^2 + (r - \tfrac{1}{2})^2 - r^2
 \\
-&= 1^2 + (r^2 - r + \tfrac{1}{4}) - r^2
+&= 1 + (r^2 - r + \tfrac{1}{4}) - r^2
 \\
 &= 1 + r^2 - r^2 - r + \tfrac{1}{4}
 \\
@@ -343,12 +343,12 @@ em_{next+1} = F(x + 2, y - \tfrac{1}{2}) = (x + 2)^2 + (y - \tfrac{1}{2})^2 - r^
 \]
 
 The /only/ difference between $em_{next}$ and $em_{next+1}$ is the $x+2$ instead of $x+1$ in the first binomial.
-*This is key as we can ignore the other terms.*
+And so, we can ignore the $(y - \tfrac{1}{2})^2 - r^2$.[fn:: Technically, we /can/ keep the terms, but ultimately they get canceled out anyway if you were to carry out the math, as we did in Equations \(\ref{eq:de1}\) through \(\ref{eq:de2}\).]
 We can thus express the change in the error margin when moving east ($\Delta_{em_E}$) as
 
 \[
 \begin{align}
-em_{next+1} - em_{next} &= (x + 2)^2 - (x + 1)^2
+em_{next+1} - em_{next} &= (x + 2)^2 - (x + 1)^2 \label{eq:de1}
 \\
 &= (x^2 + 4x + 4) - (x^2 + 2x + 1)
 \\
@@ -356,7 +356,7 @@ em_{next+1} - em_{next} &= (x + 2)^2 - (x + 1)^2
 \\
 &= x^2 - x^2 + 4x - 2x + 4 - 1
 \\
-&= 2x + 3 = \Delta_{em_E}.
+&= 2x + 3 = \Delta_{em_E}. \label{eq:de2}
 \end{align}
 \]
 
