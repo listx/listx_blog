@@ -8,6 +8,9 @@ def draw(points, buffer):
     """
 
     buffer_size = len(buffer[0])
+    center = buffer_size >> 1
+    # Draw origin "+" sign.
+    buffer[center][center] = "+"
 
     # The >> 1 is to divide by 2.
     offset = (buffer_size + 1) >> 1
@@ -15,32 +18,7 @@ def draw(points, buffer):
         # Skip undrawable points.
         if x > offset or y > offset:
             continue
-        buffer[y - offset][x - offset] = "●"
-
-    return buffer
-
-
-def draw_grid(buffer):
-    """ Draws the X and Y axes into the buffer. """
-    buffer_size = len(buffer[0])
-    center = buffer_size >> 1
-    for y in range(buffer_size):
-        for x in range(buffer_size):
-            grid_symbol = ""
-            if x == center and y == center:
-                grid_symbol = "x"
-            elif x == center:
-                if (y - center) % 5 == 0:
-                    grid_symbol = "┼"
-                else:
-                    grid_symbol = "│"
-            elif y == center:
-                if (x - center) % 5 == 0:
-                    grid_symbol = "┼"
-                else:
-                    grid_symbol = "─"
-            if grid_symbol:
-                buffer[y][x] = grid_symbol
+        buffer[y - offset][x - offset] = "█"
 
     return buffer
 
@@ -58,7 +36,6 @@ def create_buffer(buffer_size):
     buffer = []
 
     for _ in range(buffer_size):
-        # This is an "interpunct" character, or U+00B7.
         buffer.append(["·"] * buffer_size)
 
     return buffer
@@ -74,7 +51,7 @@ def display_buffer(buffer):
 
     # Create space for rulers.
     # +1 for blank space from left edge, +1 for border
-    buffer = extend(buffer, " ", len(str(center)) + 2)
+    buffer = extend(buffer, " ", len(str(center)) + 1)
 
     # Vertical rulers
     for y_no_offset in range(buflen):
@@ -84,9 +61,9 @@ def display_buffer(buffer):
         y = y_no_offset - center
         msg = str(abs(y))
         # Right side vertical ruler.
-        draw_text(buffer, msg, center + 2, y + 1)
+        draw_text(buffer, msg, center + 1, y + 1)
         # Left side vertical ruler.
-        draw_text(buffer, msg, -center - len(msg) - 1, y + 1)
+        draw_text(buffer, msg, -center - len(msg), y + 1)
 
     # Horizontal rulers
     for x_no_offset in range(buflen):
@@ -94,28 +71,29 @@ def display_buffer(buffer):
         if x_no_offset in (0, buflen - 1):
             continue
         x = x_no_offset - center
-        if x % 5 != 0:
-            continue
         msg = str(abs(x))
         # Top ruler.
         draw_text(buffer, msg, x, center + len(msg) + 1, "topdown")
         # Bottom ruler.
         draw_text(buffer, msg, x, -center, "topdown")
 
-    # Draw a signature for the buffer. This way it's easy to check if a drawing
-    # matches another exactly.
-    signature = get_buffer_signature(buffer)
-    draw_text(buffer, str(signature), -center, -center - 3)
-
     for line in buffer:
         print("".join(line))
 
+    # Print a signature for the buffer. This way it's easy to check if a
+    # drawing matches another exactly.
+    signature = get_buffer_signature(buffer)
+    indent = " " * len(str(center))
+    print(indent, "Signature:", signature)
+
 
 def get_buffer_signature(buffer):
-    m = hashlib.sha1()
+    """ Get the 'signature' of a buffer (drawing). This was we can get
+    signatures of 2 different buffers and check if they are the same. """
+    m = hashlib.md5()
     for line_chars in buffer:
-        line_str = "".join(line_chars)
-        m.update(line_str.encode("utf-8"))
+        for char in line_chars:
+            m.update(char.encode("utf-8"))
     return m.hexdigest()
 
 
@@ -138,6 +116,7 @@ def draw_text(buffer, msg, x, y, direction="horizontal"):
 
 
 def add_border(buffer):
+    """ Wrap around an ASCII-art border around a buffer. """
     width = len(buffer[0])
     bordered = []
     bordered.append(["╭"] + (["─"] * width) + ["╮"])
@@ -148,6 +127,7 @@ def add_border(buffer):
 
 
 def extend(buffer, symbol, magnitude):
+    """ Increase buffer on all sides. """
     width = len(buffer[0])
     extended = []
     for _ in range(magnitude):
@@ -168,8 +148,6 @@ def draw_circle_points(points, r):
     bit easier to see.
     """
     buffer = create_buffer((r << 1) + 1)
-    buffer = extend(buffer, "·", 3)
-    buffer = draw_grid(buffer)
     buffer = draw(points, buffer)
     buffer = add_border(buffer)
     display_buffer(buffer)
