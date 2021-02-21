@@ -65,19 +65,13 @@ pub struct Point {
     y: i32,
 }
 
-#[derive(Clone, Copy)]
-pub struct Canvas<'a> {
-    ctx: &'a web_sys::CanvasRenderingContext2d,
-    pixel_size: u8,
-}
-
 #[derive(Clone)]
-pub struct CanvasB {
+pub struct Canvas {
     ctx: Box<web_sys::CanvasRenderingContext2d>,
     pixel_size: u8,
 }
 
-pub fn create_canvas(canvas_id: &str, width: u32, height: u32, pixel_size: u8) -> CanvasB {
+pub fn create_canvas(canvas_id: &str, width: u32, height: u32, pixel_size: u8) -> Canvas {
     let document = web_sys::window().unwrap().document().unwrap();
     let canvas = document.get_element_by_id(canvas_id).unwrap();
     let canvas: web_sys::HtmlCanvasElement = canvas
@@ -92,17 +86,20 @@ pub fn create_canvas(canvas_id: &str, width: u32, height: u32, pixel_size: u8) -
     canvas.set_width(canvas_width + 1);
     canvas.set_height(canvas_height + 1);
 
-    let ctx = Box::new(
-        canvas
-            .get_context("2d")
-            .unwrap()
-            .unwrap()
-            .dyn_into::<web_sys::CanvasRenderingContext2d>()
-            .unwrap(),
-    );
+    let ctx = canvas
+        .get_context("2d")
+        .unwrap()
+        .unwrap()
+        .dyn_into::<web_sys::CanvasRenderingContext2d>()
+        .unwrap();
 
-    CanvasB {
-        ctx: ctx,
+    Canvas {
+        // Allocate the "ctx" part on the heap. This way, when this function
+        // goes out of scope, the assignment to "ctx" here is still valid
+        // because even though the local variable "ctx" is dropped, the
+        // assignment occurred on the heap and holds a valid memory address on
+        // the heap.
+        ctx: Box::new(ctx),
         pixel_size: pixel_size,
     }
 }
@@ -112,32 +109,7 @@ pub fn create_canvas(canvas_id: &str, width: u32, height: u32, pixel_size: u8) -
 // this function.
 #[wasm_bindgen]
 pub fn draw_circle(canvas_id: &str, width: u32, height: u32, pixel_size: u8) {
-    //    let document = web_sys::window().unwrap().document().unwrap();
-    //    let canvas = document.get_element_by_id(canvas_id).unwrap();
-    //    let canvas: web_sys::HtmlCanvasElement = canvas
-    //        .dyn_into::<web_sys::HtmlCanvasElement>()
-    //        .map_err(|_| ())
-    //        .unwrap();
-
-    //    // Set canvas width and height. The extra 1 pixel is to account for the 0.5
-    //    // pixel coordinates in the drawing of grid lines.
-    //    let canvas_width = pixel_size as u32 * width;
-    //    let canvas_height = pixel_size as u32 * height;
-    //    canvas.set_width(canvas_width + 1);
-    //    canvas.set_height(canvas_height + 1);
-
-    //    let ctx = canvas
-    //        .get_context("2d")
-    //        .unwrap()
-    //        .unwrap()
-    //        .dyn_into::<web_sys::CanvasRenderingContext2d>()
-    //        .unwrap();
-
-    //    let c = Canvas {
-    //        ctx: &ctx,
-    //        pixel_size: pixel_size,
-    //    };
-    let canvasb = create_canvas(canvas_id, width, height, pixel_size);
+    let canvas = create_canvas(canvas_id, width, height, pixel_size);
 
     // Internal screen buffer. We draw into the screen buffer, then read it back
     // out to draw into the given HTML canvas element.
@@ -149,12 +121,10 @@ pub fn draw_circle(canvas_id: &str, width: u32, height: u32, pixel_size: u8) {
     points.push(Point { x: 15, y: -15 });
     screen.set_points(points);
 
-    let x = screen
-        .draw_canvas(canvasb, &"rgba(0,0,0,1.0)".into())
-        .to_owned();
+    screen.draw_canvas(&canvas, &"rgba(0,0,0,1.0)".into());
 
     // Overlay a grid on top.
-    screen.draw_canvas_grid(x);
+    screen.draw_canvas_grid(&canvas);
 }
 
 // This is our internal representation of a "screen", and is not exposed to JS.
@@ -203,15 +173,12 @@ impl ScreenBuffer {
         let offset = self.width >> 1;
 
         for p in points {
-            js_log!("HELLO");
             // Skip undrawable points (points that lie out of bounds of the
             // drawable ScreenBuffer).
             if p.x.abs() > offset as i32 || p.y.abs() > offset as i32 {
-                js_log!("p.x {}, p.y {} (skipping)", p.x, p.y);
                 continue;
             }
             let idx = self.get_index((p.x + offset as i32) as u32, (-p.y + offset as i32) as u32);
-            js_log!("idx {} (drawing)", idx);
             self.pixels.set(idx, true);
         }
     }
@@ -219,7 +186,7 @@ impl ScreenBuffer {
     // Draw onto the HTML canvas by using the information in the ScreenBuffer.
     // Note that the ScreenBuffer is essentially a bitmap as it only stores 1
     // bit per pixel.
-    fn draw_canvas(&self, c: CanvasB, color: &JsValue) -> CanvasB {
+    fn draw_canvas(&self, c: &Canvas, color: &JsValue) {
         // Color in black pixels.
         c.ctx.set_fill_style(color);
         // Now draw each bit that is turned "on" in the ScreenBuffer
@@ -239,15 +206,13 @@ impl ScreenBuffer {
                     .fill_rect(x_p, y_p, c.pixel_size as f64, c.pixel_size as f64);
             }
         }
-
-        return c;
     }
 
     // Draw a grid of vertical and horizontal lines "between" each "pixel" to
     // the canvas. This is actually not that accurate as the "pen" we're drawing
     // with is > 1 pixel thick, and the canvas size does not account for these
     // grid lines. But, it's good enough for our purposes.
-    fn draw_canvas_grid(&self, c: CanvasB) {
+    fn draw_canvas_grid(&self, c: &Canvas) {
         // "Crosshair" pixel at the origin.
         //        ctx.set_fill_style(&"rgba(255,0,0,0.5)".into());
         //        let x_o = (self.width - 1) as f64 * pixel_size as f64 / 2.0;
