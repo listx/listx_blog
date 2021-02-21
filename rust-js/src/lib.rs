@@ -104,9 +104,6 @@ pub fn create_canvas(canvas_id: &str, width: u32, height: u32, pixel_size: u8) -
     }
 }
 
-// TODO: Make this an internal "backend" function. Expose dedicated "client"
-// APIs, such as draw_circle_naive(), draw_circle_bresenham(), etc. that reuse
-// this function.
 #[wasm_bindgen]
 pub fn draw_circle(canvas_id: &str, width: u32, height: u32, pixel_size: u8) {
     let canvas = create_canvas(canvas_id, width, height, pixel_size);
@@ -115,16 +112,19 @@ pub fn draw_circle(canvas_id: &str, width: u32, height: u32, pixel_size: u8) {
     // out to draw into the given HTML canvas element.
     let mut screen = ScreenBuffer::new(width, height);
 
+    // Draw a set of "crosshair" pixels to act as a reference.
+    screen.draw_crosshair(&canvas);
+
     // TODO: Manipulate internal screen buffer to draw a circle.
     let mut points = Vec::new();
-    //    points.push(Point { x: 0, y: 0 });
     points.push(Point { x: 15, y: -15 });
     screen.set_points(points);
 
-    screen.draw_canvas(&canvas, &"rgba(0,0,0,1.0)".into());
+    // Draw black pixels.
+    screen.draw_points(&canvas, &"rgba(0,0,0,1.0)".into());
 
-    // Overlay a grid on top.
-    screen.draw_canvas_grid(&canvas);
+    // Overlay a gray grid to delineate between each pixel.
+    screen.draw_grid(&canvas);
 }
 
 // This is our internal representation of a "screen", and is not exposed to JS.
@@ -186,7 +186,7 @@ impl ScreenBuffer {
     // Draw onto the HTML canvas by using the information in the ScreenBuffer.
     // Note that the ScreenBuffer is essentially a bitmap as it only stores 1
     // bit per pixel.
-    fn draw_canvas(&self, c: &Canvas, color: &JsValue) {
+    fn draw_points(&self, c: &Canvas, color: &JsValue) {
         // Color in black pixels.
         c.ctx.set_fill_style(color);
         // Now draw each bit that is turned "on" in the ScreenBuffer
@@ -208,51 +208,61 @@ impl ScreenBuffer {
         }
     }
 
-    // Draw a grid of vertical and horizontal lines "between" each "pixel" to
-    // the canvas. This is actually not that accurate as the "pen" we're drawing
-    // with is > 1 pixel thick, and the canvas size does not account for these
-    // grid lines. But, it's good enough for our purposes.
-    fn draw_canvas_grid(&self, c: &Canvas) {
-        // "Crosshair" pixel at the origin.
-        //        ctx.set_fill_style(&"rgba(255,0,0,0.5)".into());
-        //        let x_o = (self.width - 1) as f64 * pixel_size as f64 / 2.0;
-        //        let y_o = (self.height - 1) as f64 * pixel_size as f64 / 2.0;
-        //        ctx.fill_rect(x_o, y_o, pixel_size as f64, pixel_size as f64);
-
+    fn draw_crosshair(&self, c: &Canvas) {
         // X and Y axes. Also, y = x and y = -x diagonals.
         c.ctx.set_fill_style(&"rgba(0,255,0,0.1)".into());
         let x_o = (self.width - 1) as f64 * c.pixel_size as f64 / 2.0;
         let y_o = (self.height - 1) as f64 * c.pixel_size as f64 / 2.0;
-        // X axis.
+        // X axis. Draw 2 rectangles to skip over the origin pixel.
         c.ctx.fill_rect(
             0.0,
             y_o,
-            self.width as f64 * c.pixel_size as f64,
+            ((self.width >> 1) as f64) * c.pixel_size as f64,
             c.pixel_size as f64,
         );
-        // Y axis.
+        c.ctx.fill_rect(
+            ((self.width >> 1) + 1) as f64 * c.pixel_size as f64,
+            y_o,
+            ((self.width >> 1) as f64) * c.pixel_size as f64,
+            c.pixel_size as f64,
+        );
+        // Y axis. Again, draw 2 rectangles.
         c.ctx.fill_rect(
             x_o,
             0.0,
             c.pixel_size as f64,
-            self.height as f64 * c.pixel_size as f64,
+            (self.height >> 1) as f64 * c.pixel_size as f64,
+        );
+        c.ctx.fill_rect(
+            x_o,
+            ((self.height >> 1) + 1) as f64 * c.pixel_size as f64,
+            c.pixel_size as f64,
+            (self.height >> 1) as f64 * c.pixel_size as f64,
         );
 
         // y = x and y = -x diagonals.
         let offset: i32 = (self.width >> 1) as i32;
         for y in -offset..=offset {
             for x in -offset..=offset {
-                if y == x || y == -x {
-                    let x_p = (x + offset) as f64 * c.pixel_size as f64;
-                    let y_p = (-y + offset) as f64 * c.pixel_size as f64;
-                    // TODO: Create a "fill_pixel" and call that using the
-                    // cartesian coordinates instead of canvas coordinates.
-                    c.ctx
-                        .fill_rect(x_p, y_p, c.pixel_size as f64, c.pixel_size as f64);
+                // Skip the origin, as well as any instance where y != x.
+                if y == 0 || y.abs() != x.abs() {
+                    continue;
                 }
+                let x_p = (x + offset) as f64 * c.pixel_size as f64;
+                let y_p = (-y + offset) as f64 * c.pixel_size as f64;
+                // TODO: Create a "fill_pixel" and call that using the
+                // cartesian coordinates instead of canvas coordinates.
+                c.ctx
+                    .fill_rect(x_p, y_p, c.pixel_size as f64, c.pixel_size as f64);
             }
         }
+    }
 
+    // Draw a grid of vertical and horizontal lines "between" each "pixel" to
+    // the canvas. This is actually not that accurate as the "pen" we're drawing
+    // with is > 1 pixel thick, and the canvas size does not account for these
+    // grid lines. But, it's good enough for our purposes.
+    fn draw_grid(&self, c: &Canvas) {
         // We use 1-pixel-thick rectangles to avoid funny business with
         // 0.5-pixel adjustments, as documented here:
         // https://stackoverflow.com/a/7531540/437583. As a result the code is
