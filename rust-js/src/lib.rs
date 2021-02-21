@@ -71,16 +71,13 @@ pub struct Canvas<'a> {
     pixel_size: u8,
 }
 
-// TODO: Make this an internal "backend" function. Expose dedicated "client"
-// APIs, such as draw_circle_naive(), draw_circle_bresenham(), etc. that reuse
-// this function.
-#[wasm_bindgen]
-pub fn draw_circle(
-    canvas_id: &str,
-    width: u32,
-    height: u32,
+#[derive(Clone)]
+pub struct CanvasB {
+    ctx: Box<web_sys::CanvasRenderingContext2d>,
     pixel_size: u8,
-) -> Result<(), JsValue> {
+}
+
+pub fn create_canvas(canvas_id: &str, width: u32, height: u32, pixel_size: u8) -> CanvasB {
     let document = web_sys::window().unwrap().document().unwrap();
     let canvas = document.get_element_by_id(canvas_id).unwrap();
     let canvas: web_sys::HtmlCanvasElement = canvas
@@ -95,17 +92,52 @@ pub fn draw_circle(
     canvas.set_width(canvas_width + 1);
     canvas.set_height(canvas_height + 1);
 
-    let ctx = canvas
-        .get_context("2d")
-        .unwrap()
-        .unwrap()
-        .dyn_into::<web_sys::CanvasRenderingContext2d>()
-        .unwrap();
+    let ctx = Box::new(
+        canvas
+            .get_context("2d")
+            .unwrap()
+            .unwrap()
+            .dyn_into::<web_sys::CanvasRenderingContext2d>()
+            .unwrap(),
+    );
 
-    let c = Canvas {
-        ctx: &ctx,
+    CanvasB {
+        ctx: ctx,
         pixel_size: pixel_size,
-    };
+    }
+}
+
+// TODO: Make this an internal "backend" function. Expose dedicated "client"
+// APIs, such as draw_circle_naive(), draw_circle_bresenham(), etc. that reuse
+// this function.
+#[wasm_bindgen]
+pub fn draw_circle(canvas_id: &str, width: u32, height: u32, pixel_size: u8) {
+    //    let document = web_sys::window().unwrap().document().unwrap();
+    //    let canvas = document.get_element_by_id(canvas_id).unwrap();
+    //    let canvas: web_sys::HtmlCanvasElement = canvas
+    //        .dyn_into::<web_sys::HtmlCanvasElement>()
+    //        .map_err(|_| ())
+    //        .unwrap();
+
+    //    // Set canvas width and height. The extra 1 pixel is to account for the 0.5
+    //    // pixel coordinates in the drawing of grid lines.
+    //    let canvas_width = pixel_size as u32 * width;
+    //    let canvas_height = pixel_size as u32 * height;
+    //    canvas.set_width(canvas_width + 1);
+    //    canvas.set_height(canvas_height + 1);
+
+    //    let ctx = canvas
+    //        .get_context("2d")
+    //        .unwrap()
+    //        .unwrap()
+    //        .dyn_into::<web_sys::CanvasRenderingContext2d>()
+    //        .unwrap();
+
+    //    let c = Canvas {
+    //        ctx: &ctx,
+    //        pixel_size: pixel_size,
+    //    };
+    let canvasb = create_canvas(canvas_id, width, height, pixel_size);
 
     // Internal screen buffer. We draw into the screen buffer, then read it back
     // out to draw into the given HTML canvas element.
@@ -117,10 +149,12 @@ pub fn draw_circle(
     points.push(Point { x: 15, y: -15 });
     screen.set_points(points);
 
-    screen.draw_canvas(c, &"rgba(0,0,0,1.0)".into());
+    let x = screen
+        .draw_canvas(canvasb, &"rgba(0,0,0,1.0)".into())
+        .to_owned();
 
     // Overlay a grid on top.
-    screen.draw_canvas_grid(&c)
+    screen.draw_canvas_grid(x);
 }
 
 // This is our internal representation of a "screen", and is not exposed to JS.
@@ -185,7 +219,7 @@ impl ScreenBuffer {
     // Draw onto the HTML canvas by using the information in the ScreenBuffer.
     // Note that the ScreenBuffer is essentially a bitmap as it only stores 1
     // bit per pixel.
-    fn draw_canvas(&self, c: Canvas, color: &JsValue) {
+    fn draw_canvas(&self, c: CanvasB, color: &JsValue) -> CanvasB {
         // Color in black pixels.
         c.ctx.set_fill_style(color);
         // Now draw each bit that is turned "on" in the ScreenBuffer
@@ -205,13 +239,15 @@ impl ScreenBuffer {
                     .fill_rect(x_p, y_p, c.pixel_size as f64, c.pixel_size as f64);
             }
         }
+
+        return c;
     }
 
     // Draw a grid of vertical and horizontal lines "between" each "pixel" to
     // the canvas. This is actually not that accurate as the "pen" we're drawing
     // with is > 1 pixel thick, and the canvas size does not account for these
     // grid lines. But, it's good enough for our purposes.
-    fn draw_canvas_grid(&self, c: &Canvas) -> Result<(), JsValue> {
+    fn draw_canvas_grid(&self, c: CanvasB) {
         // "Crosshair" pixel at the origin.
         //        ctx.set_fill_style(&"rgba(255,0,0,0.5)".into());
         //        let x_o = (self.width - 1) as f64 * pixel_size as f64 / 2.0;
@@ -295,7 +331,5 @@ impl ScreenBuffer {
             1.0,
             1.0,
         );
-
-        Ok(())
     }
 }
