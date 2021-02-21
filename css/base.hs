@@ -101,6 +101,15 @@ myStylesheet = do
         "#content" & do
           backgroundColor $ rgbHex bgHex
           paddingBottom (px 0)
+          div' ? do
+            ".canvas-centered" & do
+              textAlign $ alignSide sideCenter
+              vh margin (em 1) auto
+              canvas ? do
+                "image-rendering" -: "pixelated"
+                "image-rendering" -: "crisp-edges"
+                "image-rendering" -: "-moz-crisp-edges"
+                "image-rendering" -: "-webkit-crisp-edges"
           h1 <> h2 <> h3 <> h4 <> h5 ? do
             noMargin
             headerIndent

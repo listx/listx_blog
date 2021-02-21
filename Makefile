@@ -11,6 +11,10 @@ gen-css:
 	nix-shell --command "cabal build -- base" >/dev/null
 	nix-shell --command "cabal exec -- base"
 
+# JavaScript generated from Rust.
+gen-js:
+	make -C rust-js build
+
 sync: build-site
 	./sync.sh
 
@@ -23,4 +27,4 @@ build-site: build-binaries
 watch: build-binaries
 	nix-shell --command "cabal run -- blog watch --host $(BLOG_IP) --port $(BLOG_PORT)"
 
-.PHONY: check sync gen-css
+.PHONY: check sync gen-css gen-js
