@@ -115,6 +115,9 @@ myStylesheet = do
               backgroundColor $ rgbHex bgHex
               vh padding (px 4) (px 4)
               border solid (px 2) $ rgbHex 0x000000
+              -- Start out invisible from the user. JS activates it to be
+              -- visible with opacity "1" when the desired mouse event fires up.
+              opacity 0
           h1 <> h2 <> h3 <> h4 <> h5 ? do
             noMargin
             headerIndent

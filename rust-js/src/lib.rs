@@ -112,41 +112,67 @@ fn setup_tooltip(canvas_id: &str, pixel_size: u8) -> Result<(), JsValue> {
     //        .unwrap();
 
     //    context.set_fill_style(&"rgba(255,0,0,0.1)".into());
-    let window = web_sys::window().unwrap();
-    let closure = Closure::wrap(Box::new(move |event: web_sys::MouseEvent| {
-        //        context.fill_rect(0.0, 0.0, 10.0, 10.0);
-        let window_offset_x = window.scroll_x().unwrap();
-        let window_offset_y = window.scroll_y().unwrap();
-        let grid_x = canvas_body.get_bounding_client_rect().x();
-        let grid_y = canvas_body.get_bounding_client_rect().y();
-        let offset_x = window_offset_x + grid_x;
-        let offset_y = window_offset_y + grid_y;
-        let p = get_cartesian(
-            event.offset_x() as u32,
-            event.offset_y() as u32,
-            canvas.width(),
-            canvas.height(),
-            pixel_size,
-        );
-        tooltip_div.set_inner_html(&format!("({}, {})", p.x, p.y));
-        tooltip_div
-            .style()
-            .set_property(
-                "left",
-                &format!("{}px", (event.offset_x() + 20) as f64 + grid_x),
-            )
-            .unwrap();
-        tooltip_div
-            .style()
-            .set_property("top", &format!("{}px", event.offset_y() as f64 + grid_y))
-            .unwrap();
-    }) as Box<dyn FnMut(_)>);
-    document
-        //        .get_element_by_id(&format!("{}-tooltip", canvas_id))
-        .get_element_by_id(canvas_id)
-        .unwrap()
-        .add_event_listener_with_callback("mousemove", closure.as_ref().unchecked_ref())?;
-    closure.forget();
+    //    let window = web_sys::window().unwrap();
+
+    let tooltip_div = Rc::new(tooltip_div);
+    {
+        let tooltip_div = tooltip_div.clone();
+        let closure = Closure::wrap(Box::new(move |event: web_sys::MouseEvent| {
+            //        context.fill_rect(0.0, 0.0, 10.0, 10.0);
+            //            let window_offset_x = window.scroll_x().unwrap();
+            //            let window_offset_y = window.scroll_y().unwrap();
+            let grid_x = canvas_body.get_bounding_client_rect().x();
+            let grid_y = canvas_body.get_bounding_client_rect().y();
+            //            let offset_x = window_offset_x + grid_x;
+            //            let offset_y = window_offset_y + grid_y;
+            let p = get_cartesian(
+                event.offset_x() as u32,
+                event.offset_y() as u32,
+                canvas.width(),
+                canvas.height(),
+                pixel_size,
+            );
+            tooltip_div.set_inner_html(&format!("({}, {})", p.x, p.y));
+            tooltip_div
+                .style()
+                .set_property(
+                    "left",
+                    &format!("{}px", (event.offset_x() + 20) as f64 + grid_x),
+                )
+                .unwrap();
+            tooltip_div
+                .style()
+                .set_property("top", &format!("{}px", event.offset_y() as f64 + grid_y))
+                .unwrap();
+        }) as Box<dyn FnMut(_)>);
+        document
+            .get_element_by_id(canvas_id)
+            .unwrap()
+            .add_event_listener_with_callback("mousemove", closure.as_ref().unchecked_ref())?;
+        closure.forget();
+    }
+    {
+        let tooltip_div = tooltip_div.clone();
+        let closure = Closure::wrap(Box::new(move |_: web_sys::MouseEvent| {
+            tooltip_div.style().set_property("opacity", "0").unwrap();
+        }) as Box<dyn FnMut(_)>);
+        document
+            .get_element_by_id(canvas_id)
+            .unwrap()
+            .add_event_listener_with_callback("mouseout", closure.as_ref().unchecked_ref())?;
+        closure.forget();
+    }
+    {
+        let tooltip_div = tooltip_div.clone();
+        let closure = Closure::wrap(Box::new(move |_: web_sys::MouseEvent| {
+            tooltip_div.style().set_property("opacity", "1").unwrap();
+        }) as Box<dyn FnMut(_)>);
+        document
+            .get_element_by_id(canvas_id)
+            .unwrap()
+            .add_event_listener_with_callback("mouseover", closure.as_ref().unchecked_ref())?;
+        closure.forget();
+    }
     Ok(())
 }
 
@@ -216,8 +242,8 @@ pub fn draw_circle(canvas_id: &str, width: u32, height: u32, pixel_size: u8) {
 }
 
 fn get_cartesian(x: u32, y: u32, width: u32, height: u32, pixel_size: u8) -> Point {
-    let mid_width = (width / 2 / pixel_size as u32) as i32;
-    let mid_height = (height / 2 / pixel_size as u32) as i32;
+    let mid_width = (width / pixel_size as u32 / 2) as i32;
+    let mid_height = (height / pixel_size as u32 / 2) as i32;
     Point {
         x: (x / (pixel_size as u32)) as i32 - mid_width,
         y: -((y / (pixel_size as u32)) as i32 - mid_height),
