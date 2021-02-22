@@ -65,16 +65,33 @@ pub struct Point {
     y: i32,
 }
 
-#[derive(Clone)]
-pub struct Canvas {
-    ctx: Box<web_sys::CanvasRenderingContext2d>,
-    pixel_size: u8,
+pub struct Mouse {
+    x: u32,
+    y: u32,
+    down: bool,
 }
 
-pub fn create_canvas(canvas_id: &str, width: u32, height: u32, pixel_size: u8) -> Canvas {
+pub struct Graph {
+    canvas_ctx: Box<web_sys::CanvasRenderingContext2d>,
+    pixel_size: u8,
+    tooltip_ctx: Box<web_sys::CanvasRenderingContext2d>,
+}
+
+// A collection of 2 canvas drawing contexts.
+//pub struct Graph {
+//    canvas: Canvas,
+//    tooltip: Canvas,
+//}
+
+pub fn init_graph(
+    canvas_id: &str,
+    width: u32,
+    height: u32,
+    pixel_size: u8,
+) -> Result<Graph, JsValue> {
     let document = web_sys::window().unwrap().document().unwrap();
-    let canvas = document.get_element_by_id(canvas_id).unwrap();
-    let canvas: web_sys::HtmlCanvasElement = canvas
+    let canvas_body = document.get_element_by_id(canvas_id).unwrap();
+    let canvas: web_sys::HtmlCanvasElement = canvas_body
         .dyn_into::<web_sys::HtmlCanvasElement>()
         .map_err(|_| ())
         .unwrap();
@@ -86,34 +103,57 @@ pub fn create_canvas(canvas_id: &str, width: u32, height: u32, pixel_size: u8) -
     canvas.set_width(canvas_width + 1);
     canvas.set_height(canvas_height + 1);
 
-    let ctx = canvas
+    let canvas_ctx = canvas
         .get_context("2d")
         .unwrap()
         .unwrap()
         .dyn_into::<web_sys::CanvasRenderingContext2d>()
         .unwrap();
 
-    Canvas {
+    let tooltip_element = document.create_element("canvas").unwrap();
+    tooltip_element.set_id(&format!("{}-tooltip", canvas_id));
+    let tooltip_canvas: web_sys::HtmlCanvasElement = tooltip_element
+        .dyn_into::<web_sys::HtmlCanvasElement>()
+        .map_err(|_| ())
+        .unwrap();
+    tooltip_canvas.set_width(100);
+    tooltip_canvas.set_height(50);
+    // TODO: Make this DRY.
+    let canvas_body = document.get_element_by_id(canvas_id).unwrap();
+    canvas_body.append_child(&tooltip_canvas)?;
+
+    // The tooltip size should be big enough to show the Cartesian coordinates.
+    let tooltip_ctx = tooltip_canvas
+        .get_context("2d")
+        .unwrap()
+        .unwrap()
+        .dyn_into::<web_sys::CanvasRenderingContext2d>()
+        .unwrap();
+
+    let g = Graph {
         // Allocate the "ctx" part on the heap. This way, when this function
         // goes out of scope, the assignment to "ctx" here is still valid
         // because even though the local variable "ctx" is dropped, the
         // assignment occurred on the heap and holds a valid memory address on
         // the heap.
-        ctx: Box::new(ctx),
+        canvas_ctx: Box::new(canvas_ctx),
         pixel_size: pixel_size,
-    }
+        tooltip_ctx: Box::new(tooltip_ctx),
+    };
+
+    Ok(g)
 }
 
 #[wasm_bindgen]
 pub fn draw_circle(canvas_id: &str, width: u32, height: u32, pixel_size: u8) {
-    let canvas = create_canvas(canvas_id, width, height, pixel_size);
+    let graph = init_graph(canvas_id, width, height, pixel_size).unwrap();
 
     // Internal screen buffer. We draw into the screen buffer, then read it back
     // out to draw into the given HTML canvas element.
     let mut screen = ScreenBuffer::new(width, height);
 
     // Draw a set of "crosshair" pixels to act as a reference.
-    screen.draw_crosshair(&canvas);
+    screen.draw_crosshair(&graph);
 
     // TODO: Manipulate internal screen buffer to draw a circle.
     let mut points = Vec::new();
@@ -121,10 +161,10 @@ pub fn draw_circle(canvas_id: &str, width: u32, height: u32, pixel_size: u8) {
     screen.set_points(points);
 
     // Draw black pixels.
-    screen.draw_points(&canvas, &"rgba(0,0,0,1.0)".into());
+    screen.draw_points(&graph, &"rgba(0,0,0,1.0)".into());
 
     // Overlay a gray grid to delineate between each pixel.
-    screen.draw_grid(&canvas);
+    screen.draw_grid(&graph);
 }
 
 // This is our internal representation of a "screen", and is not exposed to JS.
@@ -186,9 +226,10 @@ impl ScreenBuffer {
     // Draw onto the HTML canvas by using the information in the ScreenBuffer.
     // Note that the ScreenBuffer is essentially a bitmap as it only stores 1
     // bit per pixel.
-    fn draw_points(&self, c: &Canvas, color: &JsValue) {
+    fn draw_points(&self, g: &Graph, color: &JsValue) {
         // Color in black pixels.
-        c.ctx.set_fill_style(color);
+        g.canvas_ctx.set_fill_style(color);
+        let gp = g.pixel_size as f64;
         // Now draw each bit that is turned "on" in the ScreenBuffer
         // (self.pixels) to the HTML canvas.
         for y in 0..self.height {
@@ -200,44 +241,36 @@ impl ScreenBuffer {
                 if !pixel {
                     continue;
                 }
-                let x_p = x as f64 * c.pixel_size as f64;
-                let y_p = y as f64 * c.pixel_size as f64;
-                c.ctx
-                    .fill_rect(x_p, y_p, c.pixel_size as f64, c.pixel_size as f64);
+                let x_p = x as f64 * gp;
+                let y_p = y as f64 * gp;
+                g.canvas_ctx.fill_rect(x_p, y_p, g.pixel_size as f64, gp);
             }
         }
     }
 
-    fn draw_crosshair(&self, c: &Canvas) {
+    fn draw_crosshair(&self, g: &Graph) {
         // X and Y axes. Also, y = x and y = -x diagonals.
-        c.ctx.set_fill_style(&"rgba(0,255,0,0.1)".into());
-        let x_o = (self.width - 1) as f64 * c.pixel_size as f64 / 2.0;
-        let y_o = (self.height - 1) as f64 * c.pixel_size as f64 / 2.0;
+        g.canvas_ctx.set_fill_style(&"rgba(0,255,0,0.1)".into());
+        let gp = g.pixel_size as f64;
+        let x_o = (self.width - 1) as f64 * gp / 2.0;
+        let y_o = (self.height - 1) as f64 * gp / 2.0;
         // X axis. Draw 2 rectangles to skip over the origin pixel.
-        c.ctx.fill_rect(
-            0.0,
+        g.canvas_ctx
+            .fill_rect(0.0, y_o, ((self.width >> 1) as f64) * gp, gp);
+        g.canvas_ctx.fill_rect(
+            ((self.width >> 1) + 1) as f64 * gp,
             y_o,
-            ((self.width >> 1) as f64) * c.pixel_size as f64,
-            c.pixel_size as f64,
-        );
-        c.ctx.fill_rect(
-            ((self.width >> 1) + 1) as f64 * c.pixel_size as f64,
-            y_o,
-            ((self.width >> 1) as f64) * c.pixel_size as f64,
-            c.pixel_size as f64,
+            ((self.width >> 1) as f64) * gp,
+            gp,
         );
         // Y axis. Again, draw 2 rectangles.
-        c.ctx.fill_rect(
+        g.canvas_ctx
+            .fill_rect(x_o, 0.0, gp, (self.height >> 1) as f64 * gp);
+        g.canvas_ctx.fill_rect(
             x_o,
-            0.0,
-            c.pixel_size as f64,
-            (self.height >> 1) as f64 * c.pixel_size as f64,
-        );
-        c.ctx.fill_rect(
-            x_o,
-            ((self.height >> 1) + 1) as f64 * c.pixel_size as f64,
-            c.pixel_size as f64,
-            (self.height >> 1) as f64 * c.pixel_size as f64,
+            ((self.height >> 1) + 1) as f64 * gp,
+            gp,
+            (self.height >> 1) as f64 * gp,
         );
 
         // y = x and y = -x diagonals.
@@ -248,12 +281,11 @@ impl ScreenBuffer {
                 if y == 0 || y.abs() != x.abs() {
                     continue;
                 }
-                let x_p = (x + offset) as f64 * c.pixel_size as f64;
-                let y_p = (-y + offset) as f64 * c.pixel_size as f64;
+                let x_p = (x + offset) as f64 * gp;
+                let y_p = (-y + offset) as f64 * gp;
                 // TODO: Create a "fill_pixel" and call that using the
                 // cartesian coordinates instead of canvas coordinates.
-                c.ctx
-                    .fill_rect(x_p, y_p, c.pixel_size as f64, c.pixel_size as f64);
+                g.canvas_ctx.fill_rect(x_p, y_p, gp, gp);
             }
         }
     }
@@ -262,7 +294,7 @@ impl ScreenBuffer {
     // the canvas. This is actually not that accurate as the "pen" we're drawing
     // with is > 1 pixel thick, and the canvas size does not account for these
     // grid lines. But, it's good enough for our purposes.
-    fn draw_grid(&self, c: &Canvas) {
+    fn draw_grid(&self, g: &Graph) {
         // We use 1-pixel-thick rectangles to avoid funny business with
         // 0.5-pixel adjustments, as documented here:
         // https://stackoverflow.com/a/7531540/437583. As a result the code is
@@ -276,35 +308,24 @@ impl ScreenBuffer {
         //       ctx.line_to(x as f64, ((pixel_size as u32) * self.height) as f64);
         //   }
 
-        c.ctx.set_fill_style(&"rgba(192,192,192,1.0)".into());
+        let gp = g.pixel_size as f64;
+        g.canvas_ctx.set_fill_style(&"rgba(192,192,192,1.0)".into());
         // Vertical lines.
         for i in 0..=self.width {
-            c.ctx.fill_rect(
-                (i * (c.pixel_size as u32)) as f64,
-                0.0,
-                1.0,
-                (self.height * c.pixel_size as u32) as f64,
-            );
+            g.canvas_ctx
+                .fill_rect(i as f64 * gp, 0.0, 1.0, self.height as f64 * gp);
         }
 
         // Horizontal lines.
         for j in 0..=self.height {
-            c.ctx.fill_rect(
-                0.0,
-                (j * (c.pixel_size as u32)) as f64,
-                (self.width * c.pixel_size as u32) as f64,
-                1.0,
-            );
+            g.canvas_ctx
+                .fill_rect(0.0, j as f64 * gp, self.width as f64 * gp, 1.0);
         }
 
         // Draw bottom-right corner pixel. This is a residue of the grid system
         // above, which has a small amount of error (more precisely, the error
         // of not drawing the 1-pixel bottom-right corner of the grid).
-        c.ctx.fill_rect(
-            (self.width * c.pixel_size as u32) as f64,
-            (self.height * c.pixel_size as u32) as f64,
-            1.0,
-            1.0,
-        );
+        g.canvas_ctx
+            .fill_rect(self.width as f64 * gp, self.height as f64 * gp, 1.0, 1.0);
     }
 }
