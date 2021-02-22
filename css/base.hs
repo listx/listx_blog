@@ -110,8 +110,11 @@ myStylesheet = do
                 "image-rendering" -: "crisp-edges"
                 "image-rendering" -: "-moz-crisp-edges"
                 "image-rendering" -: "-webkit-crisp-edges"
-                ".canvas-tooltip" & do
-                  position absolute
+            ".canvas-tooltip" & do
+              position absolute
+              backgroundColor $ rgbHex bgHex
+              vh padding (px 4) (px 4)
+              border solid (px 2) $ rgbHex 0x000000
           h1 <> h2 <> h3 <> h4 <> h5 ? do
             noMargin
             headerIndent

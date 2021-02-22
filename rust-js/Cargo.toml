@@ -46,9 +46,12 @@ version = "0.3.4"
 # (what JavaScript typically controls, to manipulate the DOM).
 features = [
   'CanvasRenderingContext2d', # See https://rustwasm.github.io/wasm-bindgen/api/web_sys/struct.CanvasRenderingContext2d.html and https://rustwasm.github.io/wasm-bindgen/examples/2d-canvas.html.
+  'CssStyleDeclaration',
   'Document',
+  'DomRect',
   'Element',
   'HtmlCanvasElement',
+  'HtmlDivElement',
   'HtmlElement',
   'MouseEvent',
   'Node',

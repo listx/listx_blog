@@ -78,42 +78,68 @@ pub struct Graph {
     pixel_size: u8,
 }
 
-fn setup_tooltip(canvas_id: &str) -> Result<(), JsValue> {
+fn setup_tooltip(canvas_id: &str, pixel_size: u8) -> Result<(), JsValue> {
     let document = web_sys::window().unwrap().document().unwrap();
-    let tooltip_element = document.create_element("canvas").unwrap();
+    let tooltip_element = document.create_element("div").unwrap();
     tooltip_element.set_id(&format!("{}-tooltip", canvas_id));
-    let tooltip_canvas: web_sys::HtmlCanvasElement = tooltip_element
+    let tooltip_div: web_sys::HtmlDivElement = tooltip_element
+        .dyn_into::<web_sys::HtmlDivElement>()
+        .map_err(|_| ())
+        .unwrap();
+    //    tooltip_div.set_width(100);
+    //    tooltip_div.set_height(50);
+    tooltip_div.set_class_name("canvas-tooltip");
+    // TODO: Make this DRY.
+    let canvas_body = document.get_element_by_id(canvas_id).unwrap();
+    let canvas: web_sys::HtmlCanvasElement = canvas_body
         .dyn_into::<web_sys::HtmlCanvasElement>()
         .map_err(|_| ())
         .unwrap();
-    tooltip_canvas.set_width(100);
-    tooltip_canvas.set_height(50);
-    tooltip_canvas.set_class_name("canvas-tooltip");
+
     // TODO: Make this DRY.
     let canvas_body = document.get_element_by_id(canvas_id).unwrap();
     canvas_body
         .parent_node()
         .unwrap()
-        .append_child(&tooltip_canvas)?;
+        .append_child(&tooltip_div)?;
 
     // The tooltip size should be big enough to show the Cartesian coordinates.
-    let context = tooltip_canvas
-        .get_context("2d")
-        .unwrap()
-        .unwrap()
-        .dyn_into::<web_sys::CanvasRenderingContext2d>()
-        .unwrap();
+    //    let context = tooltip_canvas
+    //        .get_context("2d")
+    //        .unwrap()
+    //        .unwrap()
+    //        .dyn_into::<web_sys::CanvasRenderingContext2d>()
+    //        .unwrap();
 
-    context.set_fill_style(&"rgba(255,0,0,1.0)".into());
+    //    context.set_fill_style(&"rgba(255,0,0,0.1)".into());
+    let window = web_sys::window().unwrap();
     let closure = Closure::wrap(Box::new(move |event: web_sys::MouseEvent| {
-        //            context.line_to(event.offset_x() as f64, event.offset_y() as f64);
-        //            context.stroke();
-        //            context.begin_path();
-        //            context.move_to(event.offset_x() as f64, event.offset_y() as f64);
-        //        context.fill_rect(event.offset_x() as f64, event.offset_y() as f64, 10.0, 10.0);
-        context.begin_path();
-        context.fill_rect(0.0, 0.0, 10.0, 10.0);
-        js_log!("mouse: {}, {}", event.offset_x(), event.offset_y());
+        //        context.fill_rect(0.0, 0.0, 10.0, 10.0);
+        let window_offset_x = window.scroll_x().unwrap();
+        let window_offset_y = window.scroll_y().unwrap();
+        let grid_x = canvas_body.get_bounding_client_rect().x();
+        let grid_y = canvas_body.get_bounding_client_rect().y();
+        let offset_x = window_offset_x + grid_x;
+        let offset_y = window_offset_y + grid_y;
+        let p = get_cartesian(
+            event.offset_x() as u32,
+            event.offset_y() as u32,
+            canvas.width(),
+            canvas.height(),
+            pixel_size,
+        );
+        tooltip_div.set_inner_html(&format!("({}, {})", p.x, p.y));
+        tooltip_div
+            .style()
+            .set_property(
+                "left",
+                &format!("{}px", (event.offset_x() + 20) as f64 + grid_x),
+            )
+            .unwrap();
+        tooltip_div
+            .style()
+            .set_property("top", &format!("{}px", event.offset_y() as f64 + grid_y))
+            .unwrap();
     }) as Box<dyn FnMut(_)>);
     document
         //        .get_element_by_id(&format!("{}-tooltip", canvas_id))
@@ -151,7 +177,7 @@ pub fn init_graph(
         .dyn_into::<web_sys::CanvasRenderingContext2d>()
         .unwrap();
 
-    setup_tooltip(canvas_id).unwrap();
+    setup_tooltip(canvas_id, pixel_size).unwrap();
 
     let g = Graph {
         // Allocate the "ctx" part on the heap. This way, when this function
@@ -187,6 +213,15 @@ pub fn draw_circle(canvas_id: &str, width: u32, height: u32, pixel_size: u8) {
 
     // Overlay a gray grid to delineate between each pixel.
     screen.draw_grid(&graph);
+}
+
+fn get_cartesian(x: u32, y: u32, width: u32, height: u32, pixel_size: u8) -> Point {
+    let mid_width = (width / 2 / pixel_size as u32) as i32;
+    let mid_height = (height / 2 / pixel_size as u32) as i32;
+    Point {
+        x: (x / (pixel_size as u32)) as i32 - mid_width,
+        y: -((y / (pixel_size as u32)) as i32 - mid_height),
+    }
 }
 
 // This is our internal representation of a "screen", and is not exposed to JS.
