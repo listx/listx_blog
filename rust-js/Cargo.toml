@@ -50,6 +50,7 @@ features = [
   'Element',
   'HtmlCanvasElement',
   'HtmlElement',
+  'MouseEvent',
   'Node',
   'Window',
 ]

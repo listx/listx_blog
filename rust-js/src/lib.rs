@@ -1,5 +1,7 @@
 mod utils;
 
+use std::cell::Cell;
+use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 
@@ -74,14 +76,53 @@ pub struct Mouse {
 pub struct Graph {
     canvas_ctx: Box<web_sys::CanvasRenderingContext2d>,
     pixel_size: u8,
-    tooltip_ctx: Box<web_sys::CanvasRenderingContext2d>,
 }
 
-// A collection of 2 canvas drawing contexts.
-//pub struct Graph {
-//    canvas: Canvas,
-//    tooltip: Canvas,
-//}
+fn setup_tooltip(canvas_id: &str) -> Result<(), JsValue> {
+    let document = web_sys::window().unwrap().document().unwrap();
+    let tooltip_element = document.create_element("canvas").unwrap();
+    tooltip_element.set_id(&format!("{}-tooltip", canvas_id));
+    let tooltip_canvas: web_sys::HtmlCanvasElement = tooltip_element
+        .dyn_into::<web_sys::HtmlCanvasElement>()
+        .map_err(|_| ())
+        .unwrap();
+    tooltip_canvas.set_width(100);
+    tooltip_canvas.set_height(50);
+    tooltip_canvas.set_class_name("canvas-tooltip");
+    // TODO: Make this DRY.
+    let canvas_body = document.get_element_by_id(canvas_id).unwrap();
+    canvas_body
+        .parent_node()
+        .unwrap()
+        .append_child(&tooltip_canvas)?;
+
+    // The tooltip size should be big enough to show the Cartesian coordinates.
+    let context = tooltip_canvas
+        .get_context("2d")
+        .unwrap()
+        .unwrap()
+        .dyn_into::<web_sys::CanvasRenderingContext2d>()
+        .unwrap();
+
+    context.set_fill_style(&"rgba(255,0,0,1.0)".into());
+    let closure = Closure::wrap(Box::new(move |event: web_sys::MouseEvent| {
+        //            context.line_to(event.offset_x() as f64, event.offset_y() as f64);
+        //            context.stroke();
+        //            context.begin_path();
+        //            context.move_to(event.offset_x() as f64, event.offset_y() as f64);
+        //        context.fill_rect(event.offset_x() as f64, event.offset_y() as f64, 10.0, 10.0);
+        context.begin_path();
+        context.fill_rect(0.0, 0.0, 10.0, 10.0);
+        js_log!("mouse: {}, {}", event.offset_x(), event.offset_y());
+    }) as Box<dyn FnMut(_)>);
+    document
+        //        .get_element_by_id(&format!("{}-tooltip", canvas_id))
+        .get_element_by_id(canvas_id)
+        .unwrap()
+        .add_event_listener_with_callback("mousemove", closure.as_ref().unchecked_ref())?;
+    closure.forget();
+    Ok(())
+}
 
 pub fn init_graph(
     canvas_id: &str,
@@ -110,25 +151,7 @@ pub fn init_graph(
         .dyn_into::<web_sys::CanvasRenderingContext2d>()
         .unwrap();
 
-    let tooltip_element = document.create_element("canvas").unwrap();
-    tooltip_element.set_id(&format!("{}-tooltip", canvas_id));
-    let tooltip_canvas: web_sys::HtmlCanvasElement = tooltip_element
-        .dyn_into::<web_sys::HtmlCanvasElement>()
-        .map_err(|_| ())
-        .unwrap();
-    tooltip_canvas.set_width(100);
-    tooltip_canvas.set_height(50);
-    // TODO: Make this DRY.
-    let canvas_body = document.get_element_by_id(canvas_id).unwrap();
-    canvas_body.append_child(&tooltip_canvas)?;
-
-    // The tooltip size should be big enough to show the Cartesian coordinates.
-    let tooltip_ctx = tooltip_canvas
-        .get_context("2d")
-        .unwrap()
-        .unwrap()
-        .dyn_into::<web_sys::CanvasRenderingContext2d>()
-        .unwrap();
+    setup_tooltip(canvas_id).unwrap();
 
     let g = Graph {
         // Allocate the "ctx" part on the heap. This way, when this function
@@ -138,7 +161,6 @@ pub fn init_graph(
         // the heap.
         canvas_ctx: Box::new(canvas_ctx),
         pixel_size: pixel_size,
-        tooltip_ctx: Box::new(tooltip_ctx),
     };
 
     Ok(g)
@@ -243,7 +265,7 @@ impl ScreenBuffer {
                 }
                 let x_p = x as f64 * gp;
                 let y_p = y as f64 * gp;
-                g.canvas_ctx.fill_rect(x_p, y_p, g.pixel_size as f64, gp);
+                g.canvas_ctx.fill_rect(x_p, y_p, gp, gp);
             }
         }
     }

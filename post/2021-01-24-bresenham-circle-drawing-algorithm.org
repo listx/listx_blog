@@ -8,35 +8,7 @@ mathjax: on
 #+OPTIONS: ^:nil
 
 #+begin_export html
-<!-- TODO: Use CSS to center this canvas. -->
 <div class="canvas-centered"><canvas id="canvas1"></canvas></div>
-
-<!-- TODO: move this logic to Rust.
-<script type="text/javascript">
-  function drawCanvas(points) {
-  }
-  var string = "101011111111111111";
-  var ctx = document.getElementById("canvas").getContext('2d');
-  // 5x5.
-  var size = 5;
-
-  // TODO: Use a zoom factor.
-  var scale = 2;
-
-  // White background.
-  ctx.fillStyle = "#FFF";
-  ctx.fillRect(0, 0, 2, 2);
-
-  // Use a "black" colored pen.
-  ctx.fillStyle = "#000";
-  for (var x = 0; x < 2; x++) {  // Loop through each character
-      for (var y = 0; y < 2; y++) {
-          if (string[x*2+y] == '1')     // If the character is one,
-              ctx.fillRect(x, y, 1*scale, 1*scale );  // fill the pixel with black
-      }
-  }
-</script>
--->
 
 <!-- This is from https://rustwasm.github.io/docs/wasm-bindgen/examples/without-a-bundler.html. -->
 <!-- The `type=module` is required if we want to use the "import" statement. -->

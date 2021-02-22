@@ -110,6 +110,8 @@ myStylesheet = do
                 "image-rendering" -: "crisp-edges"
                 "image-rendering" -: "-moz-crisp-edges"
                 "image-rendering" -: "-webkit-crisp-edges"
+                ".canvas-tooltip" & do
+                  position absolute
           h1 <> h2 <> h3 <> h4 <> h5 ? do
             noMargin
             headerIndent
