@@ -106,6 +106,7 @@ myStylesheet = do
               display grid
               "justify-items" -: "center"
               vh margin (em 1) auto
+              paddingBottom (em 1)
               canvas ? do
                 "image-rendering" -: "pixelated"
                 "image-rendering" -: "crisp-edges"

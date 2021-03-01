@@ -51,6 +51,7 @@ features = [
   'DomRect',
   'Element',
   'HtmlCanvasElement',
+  'HtmlCollection',
   'HtmlDivElement',
   'HtmlElement',
   'MouseEvent',

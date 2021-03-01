@@ -1,6 +1,5 @@
 mod utils;
 
-use std::cell::Cell;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
@@ -51,7 +50,57 @@ pub fn entrypoint() -> Result<(), JsValue> {
     //    // Append element dynamically to the document, at runtime!
     //    body.append_child(&val)?;
 
-    js_log("rust-js wasm module initialized");
+    js_log!("rust-js wasm module initialized");
+
+    draw_all_circles()
+}
+
+// Find all <canvas> tags in the document, and for each one, draw a circle based
+// on the parameters passed in via the HTML "name" attribute.
+pub fn draw_all_circles() -> Result<(), JsValue> {
+    let document = web_sys::window().unwrap().document().unwrap();
+    let canvases = document.get_elements_by_tag_name("canvas");
+    js_log!("{} canvases found", canvases.length());
+    let mut canvases_to_work_on = Vec::new();
+    for i in 0..canvases.length() {
+        let canvas = canvases.item(i).unwrap();
+        let canvas_id = canvas.id();
+        let split = canvas_id.split("__");
+        let args: Vec<&str> = split.collect();
+        if args.len() != 3 {
+            js_log!(
+                "unrecognized canvas calling convention {:?}; skipping",
+                args
+            );
+            continue;
+        }
+        canvases_to_work_on.push(canvas_id);
+    }
+
+    let mut i = 0;
+    for canvas_id in canvases_to_work_on {
+        let split = canvas_id.split("__");
+        let args: Vec<&str> = split.collect();
+        let canvas = document.get_element_by_id(canvas_id.as_str()).unwrap();
+
+        // Uniquify the canvas's id.
+        let canvas_id_new = format!("{}-id{}", canvas_id, i);
+        canvas.set_id(&canvas_id_new);
+        js_log!(
+            "canvas id \"{}\": drawing circle with algorithm \"{}\", radius {}, pixel size {}",
+            canvas_id_new,
+            args[0],
+            args[1],
+            args[2]
+        );
+        draw_circle(
+            &canvas_id_new,
+            args[0],
+            args[1].parse().unwrap(),
+            args[2].parse().unwrap(),
+        );
+        i += 1;
+    }
 
     Ok(())
 }
@@ -62,6 +111,7 @@ pub struct ScreenBuffer {
     pixels: FixedBitSet,
 }
 
+#[derive(Debug)]
 pub struct Point {
     x: i32,
     y: i32,
@@ -214,6 +264,7 @@ fn init_tooltip_highlight(canvas_id: &str, pixel_size: u8) -> Result<(), JsValue
                     &format!("{}px", pair.1 as f64 + offset_y + (pixel_size as f64 * 0.5)),
                 )
                 .unwrap();
+            tooltip_div.style().set_property("opacity", "1").unwrap();
         }) as Box<dyn FnMut(_)>);
         // The FnMut... stuff here is explained in
         // https://doc.rust-lang.org/rust-by-example/fn/closures/output_parameters.html.
@@ -239,18 +290,6 @@ fn init_tooltip_highlight(canvas_id: &str, pixel_size: u8) -> Result<(), JsValue
             .get_element_by_id(&format!("{}-active", canvas_id))
             .unwrap()
             .add_event_listener_with_callback("mouseout", closure.as_ref().unchecked_ref())?;
-        closure.forget();
-    }
-    {
-        // When the mouse enters the canvas region, make the tooltip visible.
-        let tooltip_div = tooltip_div.clone();
-        let closure = Closure::wrap(Box::new(move |_: web_sys::MouseEvent| {
-            tooltip_div.style().set_property("opacity", "1").unwrap();
-        }) as Box<dyn FnMut(_)>);
-        document
-            .get_element_by_id(&format!("{}-active", canvas_id))
-            .unwrap()
-            .add_event_listener_with_callback("mouseover", closure.as_ref().unchecked_ref())?;
         closure.forget();
     }
     Ok(())
@@ -299,9 +338,10 @@ pub fn init_graph(
 }
 
 #[wasm_bindgen]
-pub fn draw_circle(canvas_id: &str, size: u32, pixel_size: u8) {
-    let width = size;
-    let height = size;
+pub fn draw_circle(canvas_id: &str, algo: &str, size: i32, pixel_size: u8) {
+    // Make the pixel grid a little bigger than the desired circle size.
+    let width = size as u32 * 2 + 1 + 2;
+    let height = size as u32 * 2 + 1 + 2;
     let graph = init_graph(canvas_id, width, height, pixel_size).unwrap();
 
     // Internal screen buffer. We draw into the screen buffer, then read it back
@@ -311,12 +351,15 @@ pub fn draw_circle(canvas_id: &str, size: u32, pixel_size: u8) {
     // Draw a set of "crosshair" pixels to act as a reference.
     screen.draw_crosshair(&graph);
 
-    // TODO: Manipulate internal screen buffer to draw a circle.
-    let mut points = Vec::new();
-    //    points.push(Point { x: 15, y: -15 });
-    //    points.push(Point { x: 10, y: -10 });
-    //    points.push(Point { x: -15, y: 15 });
-    points.push(Point { x: 5, y: 3 });
+    let f = match algo {
+        "naive_4" => get_circle_points_naive_4,
+        "naive_8" => get_circle_points_naive_8,
+        "naive_8_faster" => get_circle_points_naive_8_faster,
+        "midpoint" => get_circle_points_midpoint,
+        _ => get_circle_points_naive_8,
+    };
+
+    let points = f(size);
     screen.set_points(points);
 
     // Draw black pixels.
@@ -324,6 +367,77 @@ pub fn draw_circle(canvas_id: &str, size: u32, pixel_size: u8) {
 
     // Overlay a gray grid to delineate between each pixel.
     screen.draw_grid(&graph);
+}
+
+pub fn mirror_points_4(p: Point) -> Vec<Point> {
+    let mut points = Vec::new();
+    points.push(Point { x: p.x, y: p.y });
+    points.push(Point { x: -p.x, y: p.y });
+    points.push(Point { x: p.x, y: -p.y });
+    points.push(Point { x: -p.x, y: -p.y });
+    points
+}
+
+pub fn mirror_points_8(p: Point) -> Vec<Point> {
+    let mut points = Vec::new();
+    points.push(Point { x: p.x, y: p.y });
+    points.push(Point { x: p.y, y: p.x });
+    points.push(Point { x: -p.x, y: p.y });
+    points.push(Point { x: -p.y, y: p.x });
+    points.push(Point { x: p.x, y: -p.y });
+    points.push(Point { x: p.y, y: -p.x });
+    points.push(Point { x: -p.x, y: -p.y });
+    points.push(Point { x: -p.y, y: -p.x });
+    points
+}
+
+fn get_circle_points_naive_4(r: i32) -> Vec<Point> {
+    let mut points = Vec::new();
+    for x in 0..(r + 1) {
+        let y = (((r * r) - (x * x)) as f64).sqrt() as i32;
+        points.extend(mirror_points_4(Point { x: x, y: y }));
+    }
+    points
+}
+
+fn get_circle_points_naive_8(r: i32) -> Vec<Point> {
+    let mut points = Vec::new();
+    for x in 0..(r + 1) {
+        let y = (((r * r) - (x * x)) as f64).sqrt() as i32;
+        points.extend(mirror_points_8(Point { x: x, y: y }));
+    }
+    points
+}
+
+fn get_circle_points_naive_8_faster(r: i32) -> Vec<Point> {
+    let mut points = Vec::new();
+    for x in 0..(r + 1) {
+        let y = (((r * r) - (x * x)) as f64).sqrt() as i32;
+        if x > y {
+            break;
+        }
+        points.extend(mirror_points_8(Point { x: x, y: y }));
+    }
+    points
+}
+
+fn get_circle_points_midpoint(r: i32) -> Vec<Point> {
+    let mut points = Vec::new();
+    let mut x = 0;
+    let mut y = r;
+    let mut em: f64 = 5.0 / 4.0 - (r as f64);
+    points.extend(mirror_points_8(Point { x: x, y: y }));
+    while x < y {
+        if em < 0.0 {
+            em += 2.0 * (x as f64) + 3.0;
+        } else {
+            em += 2.0 * ((x - y) as f64) + 5.0;
+            y -= 1;
+        }
+        x += 1;
+        points.extend(mirror_points_8(Point { x: x, y: y }));
+    }
+    points
 }
 
 // Convert canvas coordinates to cartesian coordinates.

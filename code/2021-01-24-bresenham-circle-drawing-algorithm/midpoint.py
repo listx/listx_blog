@@ -71,8 +71,8 @@ def draw_circle_midpoint_additive(r):
 
 
 def draw_circle_midpoint_2(r):
-    """ Like draw_circle_midpoint_additive, but we start drawing from (0, -r)
-    and work our way up and to the right. """
+    """ Like draw_circle_midpoint, but we start drawing from (0, -r) and work
+    our way up and to the right. """
     points = []
     x = 0
     y = -r
@@ -91,9 +91,9 @@ def draw_circle_midpoint_2(r):
     draw_circle_points(points, r)
 
 
-def draw_circle_midpoint_2p(r):
-    """ Like draw_circle_midpoint_additive, but we start drawing from (0, -r)
-    and work our way up and to the right. """
+def draw_circle_midpoint_2_additive(r):
+    """ Like draw_circle_midpoint_2, but we use 2nd-order differences to
+    eliminate multiplication in the loop. """
     points = []
     x = 0
     y = -r
@@ -123,7 +123,7 @@ if __name__ == "__main__":
     draw_circle_midpoint_integer(17)
     draw_circle_midpoint_additive(17)
     draw_circle_midpoint_2(17)
-    draw_circle_midpoint_2p(17)
+    draw_circle_midpoint_2_additive(17)
     #    11111111                   11111111
     #    76543210987654321012345678901234567
     #   ╭───────────────────────────────────╮
