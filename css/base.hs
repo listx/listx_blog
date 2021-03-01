@@ -74,7 +74,7 @@ myStylesheet = do
 
           -- This places this element above MathJax formulas and our custom
           -- bullets for h1 (and h2, h3, etc) headings.
-          zIndex 1
+          zIndex 2
 
           hSymmetricGradient (rgbHex bgHex) (rgbHex 0xe0f8f2) 80
           hSymmetricGradientBorder (rgbHex bgHex) (rgbHex 0x37a68a) 80 (px 1)
@@ -103,13 +103,18 @@ myStylesheet = do
           paddingBottom (px 0)
           div' ? do
             ".canvas-centered" & do
-              textAlign $ alignSide sideCenter
+              display grid
+              "justify-items" -: "center"
               vh margin (em 1) auto
               canvas ? do
                 "image-rendering" -: "pixelated"
                 "image-rendering" -: "crisp-edges"
                 "image-rendering" -: "-moz-crisp-edges"
                 "image-rendering" -: "-webkit-crisp-edges"
+                ".active-pixel-canvas" & do
+                  zIndex 1
+                ".layer" & do
+                  "grid-area" -: "1/1"
             ".canvas-tooltip" & do
               position absolute
               backgroundColor $ rgbHex bgHex

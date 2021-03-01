@@ -67,34 +67,48 @@ pub struct Point {
     y: i32,
 }
 
-pub struct Mouse {
-    x: u32,
-    y: u32,
-    down: bool,
-}
-
 pub struct Graph {
     canvas_ctx: Box<web_sys::CanvasRenderingContext2d>,
     pixel_size: u8,
 }
 
-fn setup_tooltip(canvas_id: &str, pixel_size: u8) -> Result<(), JsValue> {
+fn init_tooltip_highlight(canvas_id: &str, pixel_size: u8) -> Result<(), JsValue> {
     let document = web_sys::window().unwrap().document().unwrap();
+
+    let active_pixel_canvas_element = document.create_element("canvas").unwrap();
+    active_pixel_canvas_element.set_id(&format!("{}-active", canvas_id));
+    active_pixel_canvas_element.set_class_name(&"active-pixel-canvas layer");
+    let active_pixel_canvas: web_sys::HtmlCanvasElement = active_pixel_canvas_element
+        .dyn_into::<web_sys::HtmlCanvasElement>()
+        .map_err(|_| ())
+        .unwrap();
+
+    let center_div_element = document.create_element("div").unwrap();
+    center_div_element.set_class_name(&"canvas-centered");
+    let center_div: web_sys::HtmlDivElement = center_div_element
+        .dyn_into::<web_sys::HtmlDivElement>()
+        .map_err(|_| ())
+        .unwrap();
+
     let tooltip_element = document.create_element("div").unwrap();
     tooltip_element.set_id(&format!("{}-tooltip", canvas_id));
     let tooltip_div: web_sys::HtmlDivElement = tooltip_element
         .dyn_into::<web_sys::HtmlDivElement>()
         .map_err(|_| ())
         .unwrap();
-    //    tooltip_div.set_width(100);
-    //    tooltip_div.set_height(50);
     tooltip_div.set_class_name("canvas-tooltip");
     // TODO: Make this DRY.
     let canvas_body = document.get_element_by_id(canvas_id).unwrap();
+    canvas_body.set_class_name(&"layer");
     let canvas: web_sys::HtmlCanvasElement = canvas_body
         .dyn_into::<web_sys::HtmlCanvasElement>()
         .map_err(|_| ())
         .unwrap();
+
+    // Make the active pixel canvas the same size as the underlying canvas
+    // element.
+    active_pixel_canvas.set_width(canvas.width());
+    active_pixel_canvas.set_height(canvas.height());
 
     // TODO: Make this DRY.
     let canvas_body = document.get_element_by_id(canvas_id).unwrap();
@@ -102,73 +116,139 @@ fn setup_tooltip(canvas_id: &str, pixel_size: u8) -> Result<(), JsValue> {
         .parent_node()
         .unwrap()
         .append_child(&tooltip_div)?;
+    // "Wrap" trick to enclose a wrapper (here "center_div") around some element
+    // (here "canvas_body"). See
+    // https://plainjs.com/javascript/manipulation/wrap-an-html-structure-around-an-element-28/.
+    canvas_body
+        .parent_node()
+        .unwrap()
+        .insert_before(&center_div, Some(&canvas_body))?;
+    center_div.append_child(&canvas_body)?;
 
-    // The tooltip size should be big enough to show the Cartesian coordinates.
-    //    let context = tooltip_canvas
-    //        .get_context("2d")
-    //        .unwrap()
-    //        .unwrap()
-    //        .dyn_into::<web_sys::CanvasRenderingContext2d>()
-    //        .unwrap();
+    center_div.append_child(&active_pixel_canvas)?;
 
-    //    context.set_fill_style(&"rgba(255,0,0,0.1)".into());
-    //    let window = web_sys::window().unwrap();
+    let active_pixel_canvas_ctx = active_pixel_canvas
+        .get_context("2d")
+        .unwrap()
+        .unwrap()
+        .dyn_into::<web_sys::CanvasRenderingContext2d>()
+        .unwrap();
+    let active_pixel_canvas_element2 = document
+        .get_element_by_id(&format!("{}-active", canvas_id))
+        .unwrap();
+    let active_pixel_canvas2: web_sys::HtmlCanvasElement = active_pixel_canvas_element2
+        .dyn_into::<web_sys::HtmlCanvasElement>()
+        .map_err(|_| ())
+        .unwrap();
+    let active_pixel_canvas_ctx2 = active_pixel_canvas2
+        .get_context("2d")
+        .unwrap()
+        .unwrap()
+        .dyn_into::<web_sys::CanvasRenderingContext2d>()
+        .unwrap();
 
+    let window = web_sys::window().unwrap();
     let tooltip_div = Rc::new(tooltip_div);
+    // This portion of attaching listeners is based off of
+    // https://rustwasm.github.io/wasm-bindgen/examples/paint.html.
     {
+        // When the mouse is moving inside the canvas, make the tooltip follow
+        // it around, but with a 20px X offset. We need to take into
+        // consideration the event.offset_*() values to get the value inside of
+        // the canvas, but also the location of the canvas itself (grid_*) and
+        // the browser window's scrollbars (window_offset_*).
         let tooltip_div = tooltip_div.clone();
         let closure = Closure::wrap(Box::new(move |event: web_sys::MouseEvent| {
-            //        context.fill_rect(0.0, 0.0, 10.0, 10.0);
-            //            let window_offset_x = window.scroll_x().unwrap();
-            //            let window_offset_y = window.scroll_y().unwrap();
+            let window_offset_x = window.scroll_x().unwrap();
+            let window_offset_y = window.scroll_y().unwrap();
             let grid_x = canvas_body.get_bounding_client_rect().x();
             let grid_y = canvas_body.get_bounding_client_rect().y();
-            //            let offset_x = window_offset_x + grid_x;
-            //            let offset_y = window_offset_y + grid_y;
-            let p = get_cartesian(
+            let offset_x = window_offset_x + grid_x;
+            let offset_y = window_offset_y + grid_y;
+            let p = get_cartesian_coord(
                 event.offset_x() as u32,
                 event.offset_y() as u32,
                 canvas.width(),
                 canvas.height(),
                 pixel_size,
             );
+
+            if event.offset_x() % ((pixel_size + 1) as i32) <= 1 {
+                return;
+            }
+            if event.offset_y() % ((pixel_size + 1) as i32) <= 1 {
+                return;
+            }
+            // Clear the pixel (well, the entire canvas actually). This way we
+            // don't leave behind a "trail" of old pixels.
+            active_pixel_canvas_ctx.clear_rect(
+                0.0,
+                0.0,
+                active_pixel_canvas.width() as f64,
+                active_pixel_canvas.height() as f64,
+            );
+            active_pixel_canvas_ctx.set_fill_style(&"rgba(255,0,0,0.5)".into());
+            let pair = get_canvas_coord(&p, canvas.width(), canvas.height(), pixel_size);
+            // Highlight the pixel.
+            active_pixel_canvas_ctx.fill_rect(
+                pair.0 as f64 - 1.0,
+                pair.1 as f64 - 1.0,
+                pixel_size as f64 + 2.0,
+                pixel_size as f64 + 2.0,
+            );
             tooltip_div.set_inner_html(&format!("({}, {})", p.x, p.y));
             tooltip_div
                 .style()
                 .set_property(
                     "left",
-                    &format!("{}px", (event.offset_x() + 20) as f64 + grid_x),
+                    &format!(
+                        "{}px",
+                        (pair.0 as f64 + offset_x + (pixel_size as f64 * 1.5))
+                    ),
                 )
                 .unwrap();
             tooltip_div
                 .style()
-                .set_property("top", &format!("{}px", event.offset_y() as f64 + grid_y))
+                .set_property(
+                    "top",
+                    &format!("{}px", pair.1 as f64 + offset_y + (pixel_size as f64 * 0.5)),
+                )
                 .unwrap();
         }) as Box<dyn FnMut(_)>);
+        // The FnMut... stuff here is explained in
+        // https://doc.rust-lang.org/rust-by-example/fn/closures/output_parameters.html.
         document
-            .get_element_by_id(canvas_id)
+            .get_element_by_id(&format!("{}-active", canvas_id))
             .unwrap()
             .add_event_listener_with_callback("mousemove", closure.as_ref().unchecked_ref())?;
         closure.forget();
     }
     {
+        // When the mouse leaves the canvas region, make the tooltip invisible.
         let tooltip_div = tooltip_div.clone();
         let closure = Closure::wrap(Box::new(move |_: web_sys::MouseEvent| {
             tooltip_div.style().set_property("opacity", "0").unwrap();
+            active_pixel_canvas_ctx2.clear_rect(
+                0.0,
+                0.0,
+                active_pixel_canvas2.width() as f64,
+                active_pixel_canvas2.height() as f64,
+            );
         }) as Box<dyn FnMut(_)>);
         document
-            .get_element_by_id(canvas_id)
+            .get_element_by_id(&format!("{}-active", canvas_id))
             .unwrap()
             .add_event_listener_with_callback("mouseout", closure.as_ref().unchecked_ref())?;
         closure.forget();
     }
     {
+        // When the mouse enters the canvas region, make the tooltip visible.
         let tooltip_div = tooltip_div.clone();
         let closure = Closure::wrap(Box::new(move |_: web_sys::MouseEvent| {
             tooltip_div.style().set_property("opacity", "1").unwrap();
         }) as Box<dyn FnMut(_)>);
         document
-            .get_element_by_id(canvas_id)
+            .get_element_by_id(&format!("{}-active", canvas_id))
             .unwrap()
             .add_event_listener_with_callback("mouseover", closure.as_ref().unchecked_ref())?;
         closure.forget();
@@ -191,8 +271,8 @@ pub fn init_graph(
 
     // Set canvas width and height. The extra 1 pixel is to account for the 0.5
     // pixel coordinates in the drawing of grid lines.
-    let canvas_width = pixel_size as u32 * width;
-    let canvas_height = pixel_size as u32 * height;
+    let canvas_width = (pixel_size as u32 + 1) * width;
+    let canvas_height = (pixel_size as u32 + 1) * height;
     canvas.set_width(canvas_width + 1);
     canvas.set_height(canvas_height + 1);
 
@@ -203,7 +283,7 @@ pub fn init_graph(
         .dyn_into::<web_sys::CanvasRenderingContext2d>()
         .unwrap();
 
-    setup_tooltip(canvas_id, pixel_size).unwrap();
+    init_tooltip_highlight(canvas_id, pixel_size).unwrap();
 
     let g = Graph {
         // Allocate the "ctx" part on the heap. This way, when this function
@@ -219,7 +299,9 @@ pub fn init_graph(
 }
 
 #[wasm_bindgen]
-pub fn draw_circle(canvas_id: &str, width: u32, height: u32, pixel_size: u8) {
+pub fn draw_circle(canvas_id: &str, size: u32, pixel_size: u8) {
+    let width = size;
+    let height = size;
     let graph = init_graph(canvas_id, width, height, pixel_size).unwrap();
 
     // Internal screen buffer. We draw into the screen buffer, then read it back
@@ -231,7 +313,10 @@ pub fn draw_circle(canvas_id: &str, width: u32, height: u32, pixel_size: u8) {
 
     // TODO: Manipulate internal screen buffer to draw a circle.
     let mut points = Vec::new();
-    points.push(Point { x: 15, y: -15 });
+    //    points.push(Point { x: 15, y: -15 });
+    //    points.push(Point { x: 10, y: -10 });
+    //    points.push(Point { x: -15, y: 15 });
+    points.push(Point { x: 5, y: 3 });
     screen.set_points(points);
 
     // Draw black pixels.
@@ -241,13 +326,33 @@ pub fn draw_circle(canvas_id: &str, width: u32, height: u32, pixel_size: u8) {
     screen.draw_grid(&graph);
 }
 
-fn get_cartesian(x: u32, y: u32, width: u32, height: u32, pixel_size: u8) -> Point {
-    let mid_width = (width / pixel_size as u32 / 2) as i32;
-    let mid_height = (height / pixel_size as u32 / 2) as i32;
+// Convert canvas coordinates to cartesian coordinates.
+fn get_cartesian_coord(x: u32, y: u32, width: u32, height: u32, pixel_size: u8) -> Point {
+    let ps = pixel_size as u32;
+    // 1 extra pixel to account for the grid lines.
+    let pg = ps + 1;
+    let mid_width = (width / pg / 2) as i32;
+    let mid_height = (height / pg / 2) as i32;
     Point {
-        x: (x / (pixel_size as u32)) as i32 - mid_width,
-        y: -((y / (pixel_size as u32)) as i32 - mid_height),
+        x: (x / pg) as i32 - mid_width,
+        y: -((y / pg) as i32 - mid_height),
     }
+}
+
+// Convert cartesian coordinates to the top-left corner of a pixel on the canvas
+// (canvas coordinates). This is the opposite of get_cartesian_coord().
+fn get_canvas_coord(p: &Point, width: u32, height: u32, pixel_size: u8) -> (u32, u32) {
+    let ps = pixel_size as u32;
+    // 1 extra pixel to account for the grid lines.
+    let pg = ps + 1;
+    let mid_width = (width / pg / 2) as i32;
+    let mid_height = (height / pg / 2) as i32;
+    (
+        // Translate by 1 extra pixel to account for the initial 1-pixel thick
+        // grid lines at the top and left of the canvas.
+        (p.x + mid_width) as u32 * pg + 1,
+        (-p.y + mid_height) as u32 * pg + 1,
+    )
 }
 
 // This is our internal representation of a "screen", and is not exposed to JS.
@@ -324,51 +429,30 @@ impl ScreenBuffer {
                 if !pixel {
                     continue;
                 }
-                let x_p = x as f64 * gp;
-                let y_p = y as f64 * gp;
+                let x_p = 1.0 + (x as f64 * (gp + 1.0));
+                let y_p = 1.0 + (y as f64 * (gp + 1.0));
                 g.canvas_ctx.fill_rect(x_p, y_p, gp, gp);
             }
         }
     }
 
     fn draw_crosshair(&self, g: &Graph) {
-        // X and Y axes. Also, y = x and y = -x diagonals.
         g.canvas_ctx.set_fill_style(&"rgba(0,255,0,0.1)".into());
-        let gp = g.pixel_size as f64;
-        let x_o = (self.width - 1) as f64 * gp / 2.0;
-        let y_o = (self.height - 1) as f64 * gp / 2.0;
-        // X axis. Draw 2 rectangles to skip over the origin pixel.
-        g.canvas_ctx
-            .fill_rect(0.0, y_o, ((self.width >> 1) as f64) * gp, gp);
-        g.canvas_ctx.fill_rect(
-            ((self.width >> 1) + 1) as f64 * gp,
-            y_o,
-            ((self.width >> 1) as f64) * gp,
-            gp,
-        );
-        // Y axis. Again, draw 2 rectangles.
-        g.canvas_ctx
-            .fill_rect(x_o, 0.0, gp, (self.height >> 1) as f64 * gp);
-        g.canvas_ctx.fill_rect(
-            x_o,
-            ((self.height >> 1) + 1) as f64 * gp,
-            gp,
-            (self.height >> 1) as f64 * gp,
-        );
-
-        // y = x and y = -x diagonals.
         let offset: i32 = (self.width >> 1) as i32;
+        let gp = g.pixel_size as f64;
         for y in -offset..=offset {
             for x in -offset..=offset {
-                // Skip the origin, as well as any instance where y != x.
-                if y == 0 || y.abs() != x.abs() {
+                let x_p = (x + offset) as f64 * (gp + 1.0) + 1.0;
+                let y_p = (-y + offset) as f64 * (gp + 1.0) + 1.0;
+
+                // Skip the origin.
+                if x == 0 && y == 0 {
                     continue;
                 }
-                let x_p = (x + offset) as f64 * gp;
-                let y_p = (-y + offset) as f64 * gp;
-                // TODO: Create a "fill_pixel" and call that using the
-                // cartesian coordinates instead of canvas coordinates.
-                g.canvas_ctx.fill_rect(x_p, y_p, gp, gp);
+
+                if x.abs() == y.abs() || x == 0 || y == 0 {
+                    g.canvas_ctx.fill_rect(x_p, y_p, gp, gp);
+                }
             }
         }
     }
@@ -395,20 +479,22 @@ impl ScreenBuffer {
         g.canvas_ctx.set_fill_style(&"rgba(192,192,192,1.0)".into());
         // Vertical lines.
         for i in 0..=self.width {
-            g.canvas_ctx
-                .fill_rect(i as f64 * gp, 0.0, 1.0, self.height as f64 * gp);
+            g.canvas_ctx.fill_rect(
+                i as f64 * (gp + 1.0),
+                0.0,
+                1.0,
+                (self.height as f64 * (gp + 1.0)) + 1.0,
+            );
         }
 
         // Horizontal lines.
         for j in 0..=self.height {
-            g.canvas_ctx
-                .fill_rect(0.0, j as f64 * gp, self.width as f64 * gp, 1.0);
+            g.canvas_ctx.fill_rect(
+                0.0,
+                j as f64 * (gp + 1.0),
+                (self.width as f64 * (gp + 1.0)) + 1.0,
+                1.0,
+            );
         }
-
-        // Draw bottom-right corner pixel. This is a residue of the grid system
-        // above, which has a small amount of error (more precisely, the error
-        // of not drawing the 1-pixel bottom-right corner of the grid).
-        g.canvas_ctx
-            .fill_rect(self.width as f64 * gp, self.height as f64 * gp, 1.0, 1.0);
     }
 }

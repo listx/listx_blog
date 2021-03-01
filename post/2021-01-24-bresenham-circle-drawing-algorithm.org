@@ -8,14 +8,9 @@ mathjax: on
 #+OPTIONS: ^:nil
 
 #+begin_export html
-<div class="canvas-centered"><canvas id="canvas1"></canvas></div>
-
 <!-- This is from https://rustwasm.github.io/docs/wasm-bindgen/examples/without-a-bundler.html. -->
 <!-- The `type=module` is required if we want to use the "import" statement. -->
 <script type="module">
-  // import init, { add_from_rust, greet_from_rust } from '../rust-js/js/rust_js.js';
-  // TODO: Import the rustified canvas drawing logic and call it here against
-  // particular canvas IDs.
   import init, { draw_circle } from '../rust-js/js/rust_js.js';
 
   async function run() {
@@ -31,7 +26,8 @@ mathjax: on
     //      throw new Error("wasm addition doesn't work!");
 
     // TODO: Enforce odd-numbered sizes for canvas (to ensure centered axes).
-    draw_circle("canvas1", 31, 31, 20);
+    draw_circle("canvas1", 31, 20);
+    draw_circle("canvas2", 31, 20);
   }
 
   run();
@@ -53,9 +49,16 @@ The content of this post is merely a distillation of Section 3.3 from the book "
 The authors of the book state that the solutions given in the book results in code "essentially the same as that specified in patent 4,371,933 [a.k.a. Bresenham's algorithm]."[fn::
 Bresenham, J.E., D.G. Grice, and S.C. Pi, "Bi-Directional Display of Circular Arcs,"  US Patent 4,371,933. February 1, 1983. /Note: unfortunately, trying to understand the original text of the patent is perhaps equally as difficult as inventing the algorithm on your own from scratch. Hence this blog post./ ]
 
+#+begin_export html
+<canvas id="canvas1"></canvas>
+#+end_export
+
 I apologize in advance for the lack of pictures to illustrate my points.
 Please refer to the referenced book for some helpful drawings.
 
+#+begin_export html
+<canvas id="canvas2"></canvas>
+#+end_export
 * Constraints
 
 ** Drawable canvas
