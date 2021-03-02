@@ -356,6 +356,10 @@ pub fn draw_circle(canvas_id: &str, algo: &str, size: i32, pixel_size: u8) {
         "naive_8" => get_circle_points_naive_8,
         "naive_8_faster" => get_circle_points_naive_8_faster,
         "midpoint" => get_circle_points_midpoint,
+        "midpoint_integer" => get_circle_points_midpoint_integer,
+        "midpoint_additive" => get_circle_points_midpoint_additive,
+        "midpoint_integer_2" => get_circle_points_midpoint_integer_2,
+        "midpoint_additive_2" => get_circle_points_midpoint_additive_2,
         _ => get_circle_points_naive_8,
     };
 
@@ -434,6 +438,92 @@ fn get_circle_points_midpoint(r: i32) -> Vec<Point> {
             em += 2.0 * ((x - y) as f64) + 5.0;
             y -= 1;
         }
+        x += 1;
+        points.extend(mirror_points_8(Point { x: x, y: y }));
+    }
+    points
+}
+
+fn get_circle_points_midpoint_integer(r: i32) -> Vec<Point> {
+    let mut points = Vec::new();
+    let mut x = 0;
+    let mut y = r;
+    let mut em = 1 - r;
+    points.extend(mirror_points_8(Point { x: x, y: y }));
+    while x < y {
+        if em < 0 {
+            em += (x << 1) + 3;
+        } else {
+            em += ((x - y) << 1) + 5;
+            y -= 1;
+        }
+        x += 1;
+        points.extend(mirror_points_8(Point { x: x, y: y }));
+    }
+    points
+}
+
+fn get_circle_points_midpoint_additive(r: i32) -> Vec<Point> {
+    let mut points = Vec::new();
+    let mut x = 0;
+    let mut y = r;
+    let mut em = 1 - r;
+    let mut em_e = 3;
+    let mut em_se = -(r << 1) + 5;
+    points.extend(mirror_points_8(Point { x: x, y: y }));
+    while x < y {
+        if em < 0 {
+            em += em_e;
+        } else {
+            em += em_se;
+            em_se += 2;
+            y -= 1;
+        }
+        em_e += 2;
+        em_se += 2;
+        x += 1;
+        points.extend(mirror_points_8(Point { x: x, y: y }));
+    }
+    points
+}
+
+fn get_circle_points_midpoint_integer_2(r: i32) -> Vec<Point> {
+    let mut points = Vec::new();
+    let mut x = 0;
+    let mut y = -r;
+    let mut em = 1 - r;
+    points.extend(mirror_points_8(Point { x: x, y: y }));
+    while x < -y {
+        if em < 0 {
+            em += (x << 1) + 3;
+        } else {
+            em += ((x + y) << 1) + 5;
+            y += 1;
+        }
+        x += 1;
+        points.extend(mirror_points_8(Point { x: x, y: y }));
+    }
+    points
+}
+
+fn get_circle_points_midpoint_additive_2(r: i32) -> Vec<Point> {
+    let mut points = Vec::new();
+    let mut x = 0;
+    let mut y = -r;
+    let mut em = 1 - r;
+    let mut em_e = 3;
+    let mut em_ne = -(r << 1) + 5;
+    points.extend(mirror_points_8(Point { x: x, y: y }));
+    while x < -y {
+        if em < 0 {
+            em += em_e;
+        } else {
+            em += em_ne;
+            em_ne += 2;
+            y += 1;
+        }
+        em_e += 2;
+        em_ne += 2;
         x += 1;
         points.extend(mirror_points_8(Point { x: x, y: y }));
     }

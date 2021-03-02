@@ -60,6 +60,10 @@ Please refer to the referenced book for some helpful drawings.
 <canvas id="naive_8__15__20"></canvas>
 <canvas id="naive_8_faster__5__20"></canvas>
 <canvas id="midpoint__60__5"></canvas>
+<canvas id="midpoint_integer__60__5"></canvas>
+<canvas id="midpoint_additive__60__5"></canvas>
+<canvas id="midpoint_integer_2__60__5"></canvas>
+<canvas id="midpoint_additive_2__60__5"></canvas>
 #+end_export
 * Constraints
 
