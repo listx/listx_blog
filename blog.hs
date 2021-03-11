@@ -1,15 +1,34 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE MultiWayIf #-}
 
 import Data.Char hiding (Space)
 import Data.Text qualified as T
+import Data.Text.IO qualified as T
 import Data.Time.Calendar
 import Data.Time.LocalTime
+import Data.Void
 import Hakyll
 import System.FilePath.Posix
 import Text.Pandoc (WriterOptions (..), HTMLMathMethod (MathJax))
 import Text.Pandoc.Definition
 import Text.Printf qualified as TF
+
+import Numeric.Natural
+import Text.Megaparsec
+  ( choice
+  , errorBundlePretty
+  , parse
+  , Parsec
+  , ParseErrorBundle
+  , some
+  , try
+  )
+import Text.Megaparsec.Char
+  ( char
+  , digitChar
+  )
 
 main :: IO ()
 main = hakyll $ do
@@ -205,10 +224,38 @@ cbExpandRawInput block = case block of
   _ -> return [block]
   where
   bList :: Block -> Compiler (Bool, Block)
-  bList (Plain [Str "i", Space, Str fp]) = do
-    raw <- unsafeCompiler . readFile . T.unpack $ "code/" <> fp
+  -- "0" range means the entire file.
+  bList (Plain [Str "i", Space, Str fp]) = injectRaw (T.unpack fp) "0"
+  bList (Plain [Str "i", Space, Str fp, Space, Str range]) = injectRaw (T.unpack fp) range
+  bList x = return (False, x)
+  maybeBullets [] = [BulletList []]
+  maybeBullets xss = case head xss of
+    ((True, _):_) -> concatMap (map snd) xss
+    _ -> [BulletList $ map (map snd) xss]
+  injectRaw fp range = do
+    (raw :: T.Text) <- unsafeCompiler . T.readFile $ "code/" <> fp
     let
-      codeLang = case takeExtensions $ T.unpack fp of
+      (a, b) = case parseRange range of
+        Right res -> res
+        Left err -> error $ errorBundlePretty err
+      -- Capture a portion (or all of) the lines found in "raw".
+      rawSnippet
+        -- Retrieve all lines.
+        | a == 0 && b == 0
+          = raw
+        -- Only retrieve 1 line.
+        | a == b
+          = T.unlines
+          . take 1
+          . drop (fromIntegral a - 1)
+          $ T.lines raw
+        -- Retrieve a range of lines, a to b.
+        | otherwise
+          = T.unlines
+          . (take ((fromIntegral b - fromIntegral a) + 1))
+          . drop (fromIntegral a - 1)
+          $ T.lines raw
+      codeLang = case takeExtensions fp of
         ".c" -> ["c"]
         ".el" -> ["commonlisp"]
         ".hs" -> ["haskell"]
@@ -218,19 +265,19 @@ cbExpandRawInput block = case block of
         ".xorg.conf" -> ["xorg"]
         _ -> []
       httpTarget = "/code/" <> fp
-      filename = takeFileName $ T.unpack fp
+      filename = takeFileName fp
       lineCntClass
-        | length (lines raw) < 10 = "10"
-        | length (lines raw) < 100 = "100"
-        | length (lines raw) < 1000 = "1000"
+        | length (T.lines rawSnippet) < 10 = "10"
+        | length (T.lines rawSnippet) < 100 = "100"
+        | length (T.lines rawSnippet) < 1000 = "1000"
         | otherwise = "10000"
-      attr = ("", ["numberLines"] <> codeLang, [("input", "code/" <> fp)])
+      attr = ("", ["numberLines"] <> codeLang, [("input", T.pack $ "code/" <> fp)])
       filename_link_raw =
         RawInline "html" . T.pack $
           unwords
             [ "<p>"
             , "<a class=\"raw\" href="
-              <> dquote (T.unpack httpTarget)
+              <> dquote httpTarget
               <> "mimetype=text/plain>"
               <> "<code>"
                 <> filename
@@ -241,7 +288,7 @@ cbExpandRawInput block = case block of
     return
       ( True
       , Div ("", ["code-and-raw", "lineCntMax" <> lineCntClass], [])
-        [ CodeBlock attr $ T.pack raw
+        [ CodeBlock attr rawSnippet
         , Div ("", ["raw-link", "sourceCode"], [])
           [ Plain
             [ filename_link_raw
@@ -249,11 +296,46 @@ cbExpandRawInput block = case block of
           ]
         ]
       )
-  bList x = return (False, x)
-  maybeBullets [] = [BulletList []]
-  maybeBullets xss = case head xss of
-    ((True, _):_) -> concatMap (map snd) xss
-    _ -> [BulletList $ map (map snd) xss]
+
+type Parser = Parsec Void T.Text
+
+parseRange :: T.Text -> Either (ParseErrorBundle T.Text Void) (Natural, Natural)
+parseRange = parse pRange ""
+
+-- Parse a range tuple, that looks like "<a>" or "<a>-<b>", where "a" and "b"
+-- are both natural numbers and a <= b. If b is not given, then the range
+-- "<a>-<a>" is implied.
+pRange :: Parser (Natural, Natural)
+pRange = choice [try parseAB, parseA]
+  where
+  parseAB :: Parser (Natural, Natural)
+  parseAB = do
+    a <- some digitChar
+    _ <- char '-'
+    b <- some digitChar
+    let
+      an = read a
+      bn = read b
+    if
+      | an > bn
+        -> fail $
+          unwords
+          [ show a
+          , "is greater than"
+          , show b
+          ]
+      -- If a valid range starts with 0, use 1-based indexing for the first
+      -- line.
+      | an == 0
+        -> pure (1, bn)
+      | otherwise
+        -> pure (an, bn)
+  parseA :: Parser (Natural, Natural)
+  parseA = do
+    a <- some digitChar
+    let
+      an = read a
+    pure (an, an)
 
 atomFeedConf :: FeedConfiguration
 atomFeedConf = FeedConfiguration
