@@ -1,0 +1,20 @@
+#+STARTUP: indent showall
+#+OPTIONS: ^:nil
+#+TITLE: Front-end via Web-Assembly
+
+This area contains Web-Assembly code for all custom JavaScript served on the blog at [[https://funloop.org][funloop.org]].
+
+It uses Rust and WebAssembly with [[https://github.com/rustwasm/wasm-pack][wasm-pack]], and is based on the tutorial at [[https://rustwasm.github.io/docs/book/][Rust Wasm Book]] (specifically, the template repo [[ https://github.com/rustwasm/wasm-pack-template][here]].
+
+
+* Building
+
+#+begin_src
+make build
+#+end_src
+
+* Testing
+
+#+begin_src
+make test
+#+end_src

@@ -1,0 +1,13 @@
+[MASTER]
+extension-pkg-whitelist=pygame
+
+[MESSAGES_CONTROL]
+disable =
+	invalid-name,
+	bad-continuation,
+	bad-whitespace,
+	missing-module-docstring,
+	redefined-outer-name,
+	too-many-arguments,
+	too-many-branches,
+	too-many-instance-attributes
