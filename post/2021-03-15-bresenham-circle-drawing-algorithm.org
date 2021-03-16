@@ -186,7 +186,7 @@ The ~get_circle_points_naive_8()~ function gets around this $y$-skip bug by invo
 <canvas id="naive_8__15__20"></canvas>
 #+end_export
 
-However the downside is that it results in multiple points that will be drawn 2 times, wasting CPU cycles.[fn:: In the Rust WASM implementation (INSERT LINK) that is used for the graphics in this blog post, we actually use a bitmap such that we only draw a particular pixel just once. However, we still end up /setting/ the a pixel as "on" more than once.]
+However the downside is that it results in multiple points that will be drawn 2 times, wasting CPU cycles.[fn:: In the [[https://github.com/listx/listx_blog/blob/master/rust-js/src/lib.rs][Rust WASM implementation]] that is used for the graphics in this blog post, we actually use a bitmap such that we only draw a particular pixel just once. However, we still end up /setting/ the a pixel as "on" more than once.]
 To be more precise, all points around the gappy area in Quadrant I are redundant because that part of the arc is already mirrored nicely by the contiguous points from $x = 0$ to $x = y$.
 
 The ~get_circle_points_naive_8_faster()~ function avoids drawing the gappy areas by just breaking the loop when $x > y$, but is otherwise the same:
@@ -311,8 +311,8 @@ def get_circle_points_bresenham_WIP1(r):
 #+end_src
 
 We can refactor the above slightly.
-We can simplify the initial calculation of /d/ to avoid calling ~F()~, and also move out some of the redundant bits.
-The math for the initial value of /d/ is
+We can simplify the initial calculation of /F_M/ to avoid calling ~F()~, and also move out some of the redundant bits.
+The math for the initial value of /F_M/ is
 
 \[
 \begin{align}
@@ -340,7 +340,7 @@ def get_circle_points_bresenham_WIP2(r):
     while x < y:
         # If going straight would go "into" the circle (too much to the
         # right), try to move out of it by turning left by moving E.
-        if d < 0:
+        if F_M < 0:
             pass
         # Otherwise move SE.
         else:
