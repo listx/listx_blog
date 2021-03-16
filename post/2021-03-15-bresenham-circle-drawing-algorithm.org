@@ -581,7 +581,7 @@ And for $r = 60$:
 
 ** Comparisons vs naive algorithm
 
-Here are some side-by-side comparisons for $0 \leq r \leq 10$:
+Here are some side-by-side comparisons for $0 \leq r \leq 10$.
 
 #+begin_export html
 <table>
@@ -643,6 +643,92 @@ Here are some side-by-side comparisons for $0 \leq r \leq 10$:
   <tr>
     <td>10</td>
     <td><canvas id="naive_8__10__10"></canvas></td>
+    <td><canvas id="bresenham_integer_ene_2order__10__10"></canvas></td>
+  </tr>
+</table>
+#+end_export
+
+** Naive algorithim with a tweaked radius
+
+It has been kindly [[https://www.reddit.com/r/programming/comments/m5g8ck/bresenhams_circle_drawing_algorithm/gr23aie?utm_source=share&utm_medium=web2x&context=3][pointed out]] that the naive algorithm is aesthetically more pleasing if the calculations involving $r$ is done with $r + \tfrac{1}{2}$ instead of just $r$ itself, like this:
+
+- i 2021-03-15-bresenham-circle-drawing-algorithm/naive.py 47-60
+
+Indeed, the small tweak seems to do wonders to the output for low values of $r$.
+See for yourself:
+
+#+begin_export html
+<table>
+  <tr>
+    <th>Radius</th>
+    <th>Naive</th>
+    <th>Naive<br>(tweaked radius)</th>
+    <th>Bresenham</th>
+  </tr>
+  <tr>
+    <td>0</td>
+    <td><canvas id="naive_8__0__10"></canvas></td>
+    <td><canvas id="naive_8_faster_tweaked_radius__0__10"></canvas></td>
+    <td><canvas id="bresenham_integer_ene_2order__0__10"></canvas></td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td><canvas id="naive_8__1__10"></canvas></td>
+    <td><canvas id="naive_8_faster_tweaked_radius__1__10"></canvas></td>
+    <td><canvas id="bresenham_integer_ene_2order__1__10"></canvas></td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td><canvas id="naive_8__2__10"></canvas></td>
+    <td><canvas id="naive_8_faster_tweaked_radius__2__10"></canvas></td>
+    <td><canvas id="bresenham_integer_ene_2order__2__10"></canvas></td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td><canvas id="naive_8__3__10"></canvas></td>
+    <td><canvas id="naive_8_faster_tweaked_radius__3__10"></canvas></td>
+    <td><canvas id="bresenham_integer_ene_2order__3__10"></canvas></td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td><canvas id="naive_8__4__10"></canvas></td>
+    <td><canvas id="naive_8_faster_tweaked_radius__4__10"></canvas></td>
+    <td><canvas id="bresenham_integer_ene_2order__4__10"></canvas></td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td><canvas id="naive_8__5__10"></canvas></td>
+    <td><canvas id="naive_8_faster_tweaked_radius__5__10"></canvas></td>
+    <td><canvas id="bresenham_integer_ene_2order__5__10"></canvas></td>
+  </tr>
+  <tr>
+    <td>6</td>
+    <td><canvas id="naive_8__6__10"></canvas></td>
+    <td><canvas id="naive_8_faster_tweaked_radius__6__10"></canvas></td>
+    <td><canvas id="bresenham_integer_ene_2order__6__10"></canvas></td>
+  </tr>
+  <tr>
+    <td>7</td>
+    <td><canvas id="naive_8__7__10"></canvas></td>
+    <td><canvas id="naive_8_faster_tweaked_radius__7__10"></canvas></td>
+    <td><canvas id="bresenham_integer_ene_2order__7__10"></canvas></td>
+  </tr>
+  <tr>
+    <td>8</td>
+    <td><canvas id="naive_8__8__10"></canvas></td>
+    <td><canvas id="naive_8_faster_tweaked_radius__8__10"></canvas></td>
+    <td><canvas id="bresenham_integer_ene_2order__8__10"></canvas></td>
+  </tr>
+  <tr>
+    <td>9</td>
+    <td><canvas id="naive_8__9__10"></canvas></td>
+    <td><canvas id="naive_8_faster_tweaked_radius__9__10"></canvas></td>
+    <td><canvas id="bresenham_integer_ene_2order__9__10"></canvas></td>
+  </tr>
+  <tr>
+    <td>10</td>
+    <td><canvas id="naive_8__10__10"></canvas></td>
+    <td><canvas id="naive_8_faster_tweaked_radius__10__10"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order__10__10"></canvas></td>
   </tr>
 </table>

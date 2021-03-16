@@ -151,6 +151,7 @@ pub fn draw_circle(canvas_id: &str, algo: &str, size: i32, pixel_size: u8) {
         "naive_4" => get_circle_points_naive_4,
         "naive_8" => get_circle_points_naive_8,
         "naive_8_faster" => get_circle_points_naive_8_faster,
+        "naive_8_faster_tweaked_radius" => get_circle_points_naive_8_faster_tweaked_radius,
         "bresenham_float_ese" => get_circle_points_bresenham_float_ese,
         "bresenham_integer_ese" => get_circle_points_bresenham_integer_ese,
         "bresenham_integer_ese_2order" => get_circle_points_bresenham_integer_ese_2order,
@@ -223,6 +224,22 @@ fn get_circle_points_naive_8_faster(r: i32) -> Vec<Point> {
     let mut points = Vec::new();
     for x in 0..(r + 1) {
         let y = (((r * r) - (x * x)) as f64).sqrt() as i32;
+        if x > y {
+            break;
+        }
+        points.extend(mirror_points_8(Point { x: x, y: y }));
+    }
+    points
+}
+
+// This is much closer to Bresenham's algorithm aesthetically, by simply using
+// 'r + 0.5' for the square root calculation instead of 'r' directly.
+fn get_circle_points_naive_8_faster_tweaked_radius(r: i32) -> Vec<Point> {
+    let mut points = Vec::new();
+    let r_tweaked = r as f64 + 0.5;
+    for x in 0..(r + 1) {
+        let y_tweaked = (((r_tweaked * r_tweaked) - ((x * x) as f64)) as f64).sqrt();
+        let y = y_tweaked.floor() as i32;
         if x > y {
             break;
         }
