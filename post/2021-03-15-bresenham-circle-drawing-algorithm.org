@@ -591,57 +591,57 @@ Here are some side-by-side comparisons for $0 \leq r \leq 10$.
     <th>Bresenham</th>
   </tr>
   <tr>
-    <td>0</td>
+    <td class="centered">0</td>
     <td><canvas id="naive_8__0__10"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order__0__10"></canvas></td>
   </tr>
   <tr>
-    <td>1</td>
+    <td class="centered">1</td>
     <td><canvas id="naive_8__1__10"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order__1__10"></canvas></td>
   </tr>
   <tr>
-    <td>2</td>
+    <td class="centered">2</td>
     <td><canvas id="naive_8__2__10"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order__2__10"></canvas></td>
   </tr>
   <tr>
-    <td>3</td>
+    <td class="centered">3</td>
     <td><canvas id="naive_8__3__10"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order__3__10"></canvas></td>
   </tr>
   <tr>
-    <td>4</td>
+    <td class="centered">4</td>
     <td><canvas id="naive_8__4__10"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order__4__10"></canvas></td>
   </tr>
   <tr>
-    <td>5</td>
+    <td class="centered">5</td>
     <td><canvas id="naive_8__5__10"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order__5__10"></canvas></td>
   </tr>
   <tr>
-    <td>6</td>
+    <td class="centered">6</td>
     <td><canvas id="naive_8__6__10"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order__6__10"></canvas></td>
   </tr>
   <tr>
-    <td>7</td>
+    <td class="centered">7</td>
     <td><canvas id="naive_8__7__10"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order__7__10"></canvas></td>
   </tr>
   <tr>
-    <td>8</td>
+    <td class="centered">8</td>
     <td><canvas id="naive_8__8__10"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order__8__10"></canvas></td>
   </tr>
   <tr>
-    <td>9</td>
+    <td class="centered">9</td>
     <td><canvas id="naive_8__9__10"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order__9__10"></canvas></td>
   </tr>
   <tr>
-    <td>10</td>
+    <td class="centered">10</td>
     <td><canvas id="naive_8__10__10"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order__10__10"></canvas></td>
   </tr>
@@ -675,77 +675,77 @@ Anyway, see for yourself how the tweaks play out for $0 \leq r \leq 10$:
     <th>Bresenham<br>(tweaked conditional)</th>
   </tr>
   <tr>
-    <td>0</td>
+    <td class="centered">0</td>
     <td><canvas id="naive_8__0__6"></canvas></td>
     <td><canvas id="naive_8_faster_tweaked_radius__0__7"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order__0__7"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order_leq__0__7"></canvas></td>
   </tr>
   <tr>
-    <td>1</td>
+    <td class="centered">1</td>
     <td><canvas id="naive_8__1__7"></canvas></td>
     <td><canvas id="naive_8_faster_tweaked_radius__1__7"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order__1__7"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order_leq__1__7"></canvas></td>
   </tr>
   <tr>
-    <td>2</td>
+    <td class="centered">2</td>
     <td><canvas id="naive_8__2__7"></canvas></td>
     <td><canvas id="naive_8_faster_tweaked_radius__2__7"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order__2__7"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order_leq__2__7"></canvas></td>
   </tr>
   <tr>
-    <td>3</td>
+    <td class="centered">3</td>
     <td><canvas id="naive_8__3__7"></canvas></td>
     <td><canvas id="naive_8_faster_tweaked_radius__3__7"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order__3__7"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order_leq__3__7"></canvas></td>
   </tr>
   <tr>
-    <td>4</td>
+    <td class="centered">4</td>
     <td><canvas id="naive_8__4__7"></canvas></td>
     <td><canvas id="naive_8_faster_tweaked_radius__4__7"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order__4__7"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order_leq__4__7"></canvas></td>
   </tr>
   <tr>
-    <td>5</td>
+    <td class="centered">5</td>
     <td><canvas id="naive_8__5__7"></canvas></td>
     <td><canvas id="naive_8_faster_tweaked_radius__5__7"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order__5__7"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order_leq__5__7"></canvas></td>
   </tr>
   <tr>
-    <td>6</td>
+    <td class="centered">6</td>
     <td><canvas id="naive_8__6__7"></canvas></td>
     <td><canvas id="naive_8_faster_tweaked_radius__6__7"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order__6__7"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order_leq__6__7"></canvas></td>
   </tr>
   <tr>
-    <td>7</td>
+    <td class="centered">7</td>
     <td><canvas id="naive_8__7__7"></canvas></td>
     <td><canvas id="naive_8_faster_tweaked_radius__7__7"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order__7__7"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order_leq__7__7"></canvas></td>
   </tr>
   <tr>
-    <td>8</td>
+    <td class="centered">8</td>
     <td><canvas id="naive_8__8__7"></canvas></td>
     <td><canvas id="naive_8_faster_tweaked_radius__8__7"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order__8__7"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order_leq__8__7"></canvas></td>
   </tr>
   <tr>
-    <td>9</td>
+    <td class="centered">9</td>
     <td><canvas id="naive_8__9__7"></canvas></td>
     <td><canvas id="naive_8_faster_tweaked_radius__9__7"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order__9__7"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order_leq__9__7"></canvas></td>
   </tr>
   <tr>
-    <td>10</td>
+    <td class="centered">10</td>
     <td><canvas id="naive_8__10__7"></canvas></td>
     <td><canvas id="naive_8_faster_tweaked_radius__10__7"></canvas></td>
     <td><canvas id="bresenham_integer_ene_2order__10__7"></canvas></td>

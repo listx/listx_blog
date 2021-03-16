@@ -118,7 +118,6 @@ myStylesheet = do
               display grid
               "justify-items" -: "center"
               vh margin (em 1) auto
-              paddingBottom (em 1)
               canvas ? do
                 "image-rendering" -: "pixelated"
                 "image-rendering" -: "crisp-edges"
@@ -302,6 +301,11 @@ myStylesheet = do
             marginBottom (em 1)
             paddingTop (em 1)
           table ? do
+            tbody ? do
+              tr ? do
+                td ? do
+                  ".centered" & do
+                    textAlign $ alignSide sideCenter
             -- table for list of all blog posts
             ".posts-index" & do
               "margin-left" -: "12%"
