@@ -754,7 +754,7 @@ Anyway, see for yourself how the slight tweaks play out for $0 \leq r \leq 10$:
 </table>
 #+end_export
 
-It appears to me that the most aesthetically pleasing algorithm is the tweaked version of the Bresenham algorithim.
+It appears to me that the most aesthetically pleasing algorithm is the tweaked version of the Bresenham algorithm.[fn:: This version looks slightly better than the tweaked naive one for $r = 8$.]
 When given equally bad choices (the case where $F(M) = 0$), this version draws a pixel /away/ from the origin by choosing to go E, thereby drawing a slightly bigger circle.
 You can see this play out in the above table for when $r = 6$ and especially $r = 1$.
 It's a bit unfortunate that the authors of the book did not choose this version, as it seems to do a better job for small values of $r$.
