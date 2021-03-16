@@ -503,7 +503,7 @@ impl ScreenBuffer {
     }
 
     fn draw_crosshair(&self, g: &Graph) {
-        g.canvas_ctx.set_fill_style(&"rgba(0,255,0,0.1)".into());
+        g.canvas_ctx.set_fill_style(&"rgba(0,255,0,0.3)".into());
         let offset: i32 = (self.width >> 1) as i32;
         let gp = g.pixel_size as f64;
         for y in -offset..=offset {
