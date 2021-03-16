@@ -657,7 +657,7 @@ It has been kindly [[https://www.reddit.com/r/programming/comments/m5g8ck/bresen
 Indeed, the small tweak seems to do wonders to the output for low values of $r$.
 
 At the same time, there is a tweak we can do as well for the Bresenham algorithm.
-Instead of turning E ("left", or away from the circle) when $F(M) < 0>$, we can do so when $F(M) \leq 0$.
+Instead of turning E ("left", or away from the circle) when $F(M) < 0$, we can do so when $F(M) \leq 0$.
 
 - i 2021-03-15-bresenham-circle-drawing-algorithm/bresenham.py 126-148
 
