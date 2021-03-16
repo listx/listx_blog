@@ -50,7 +50,7 @@ def get_circle_points_naive_8_faster_tweaked_radius(r):
     """
     points = []
     # In the square root calculation, we just use (r + 0.5) instead of just r.
-    # This is more pleasing to the eye and makes the lines a bit smoother..
+    # This is more pleasing to the eye and makes the lines a bit smoother.
     r_tweaked = r + 0.5
     for x in range(r + 1):
         y = sqrt((r_tweaked * r_tweaked) - (x * x))
