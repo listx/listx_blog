@@ -663,7 +663,7 @@ Instead of turning E ("left", or away from the circle) when $F(M) < 0>$, we can 
 
 This makes us turn "left" slightly more often, and intuitively, should give us a slightly larger circle.
 
-Anyway, see for yourself how the slight tweaks play out for $0 \leq r \leq 10$:
+Anyway, see for yourself how the tweaks play out for $0 \leq r \leq 10$:
 
 #+begin_export html
 <table>
@@ -759,7 +759,7 @@ When given equally bad choices (the case where $F(M) = 0$), this version draws a
 You can see this play out in the above table for when $r = 6$ and especially $r = 1$.
 It's a bit unfortunate that the authors of the book did not choose this version, as it seems to do a better job for small values of $r$.
 
-We can carry over the same intuition over to the tweak to increase $r$ by $\tfrac{1}{2}$ for the naive algorithm --- increasing $r$ slightly should result in a slightly larger value of $y$, thereby resulting in drawing a slightly larger circle (and in the process increasing the aesthetics).
+We can carry over the same intuition over to the tweak to increase $r$ by $\tfrac{1}{2}$ for the naive algorithm --- increasing $r$ should result in a larger value of $y$, thereby resulting in drawing a larger circle (and in the process increasing the aesthetics).
 Neat!
 
 * Conclusion
