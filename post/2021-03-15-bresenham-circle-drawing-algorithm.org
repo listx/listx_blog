@@ -260,7 +260,7 @@ And so here's the basic idea behind choosing E or SE:
 
 1. If going "straight" would mean going into the circle (i.e., we're currently veering too much to the right!), we course-correct by turning left (E).
 2. Conversely, if going "straight" would mean going outside the circle (i.e., we're currently veering too much to the left), we course-correct by turning right (SE).
-3. Lastly, if going "straight" would mean staying exactly on the circle (we hit a Pythagorean Triple), we turn SE (it doesn't really matter which way we turn in this case, as both E and SE result in some amount of error).
+3. Lastly, if going "straight" would mean staying exactly on the circle (we hit a Pythagorean Triple), we turn SE (from an engineering perspective it doesn't really matter which way we turn in this case, as both E and SE result in some amount of error --- although see [[#final-tweaks]["Final tweaks"]] below for a note on aesthetics).
 
 Let's convert this idea into pseudocode:
 
