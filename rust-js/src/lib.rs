@@ -157,6 +157,7 @@ pub fn draw_circle(canvas_id: &str, algo: &str, size: i32, pixel_size: u8) {
         "bresenham_integer_ese_2order" => get_circle_points_bresenham_integer_ese_2order,
         "bresenham_integer_ene" => get_circle_points_bresenham_integer_ene,
         "bresenham_integer_ene_2order" => get_circle_points_bresenham_integer_ene_2order,
+        "bresenham_integer_ene_2order_leq" => get_circle_points_bresenham_integer_ene_2order_leq,
         _ => get_circle_points_naive_8,
     };
 
@@ -337,8 +338,8 @@ fn get_circle_points_bresenham_integer_ene(r: i32) -> Vec<Point> {
     points
 }
 
-// Like draw_circle_bresenham_integer_ese_2order, start from (0, -r) and move E
-// or NE.
+// Like draw_circle_bresenham_integer_ese_2order, but start from (0, -r) and
+// move E or NE.
 fn get_circle_points_bresenham_integer_ene_2order(r: i32) -> Vec<Point> {
     let mut points = Vec::new();
     let mut x = 0;
@@ -349,6 +350,32 @@ fn get_circle_points_bresenham_integer_ene_2order(r: i32) -> Vec<Point> {
     points.extend(mirror_points_8(Point { x: x, y: y }));
     while x < -y {
         if f_m < 0 {
+            f_m += d_e;
+        } else {
+            f_m += d_ne;
+            d_ne += 2;
+            y += 1;
+        }
+        d_e += 2;
+        d_ne += 2;
+        x += 1;
+        points.extend(mirror_points_8(Point { x: x, y: y }));
+    }
+    points
+}
+
+// Like draw_circle_bresenham_integer_ene_2order, but use 'f_m <= 0' instead of
+// 'f_m < 0'.
+fn get_circle_points_bresenham_integer_ene_2order_leq(r: i32) -> Vec<Point> {
+    let mut points = Vec::new();
+    let mut x = 0;
+    let mut y = -r;
+    let mut f_m = 1 - r;
+    let mut d_e = 3;
+    let mut d_ne = -(r << 1) + 5;
+    points.extend(mirror_points_8(Point { x: x, y: y }));
+    while x < -y {
+        if f_m <= 0 {
             f_m += d_e;
         } else {
             f_m += d_ne;

@@ -97,8 +97,8 @@ def get_circle_points_bresenham_integer_ene(r):
 
 
 def get_circle_points_bresenham_integer_ene_2order(r):
-    """ Like draw_circle_bresenham_integer_ene, start from (0, -r) and move E
-    or NE. Notice how we only need the addition instruction in the while loop
+    """ Like draw_circle_bresenham_integer_ene, but start from (0, -r) and move
+    E or NE. Notice how we only need the addition instruction in the while loop
     (y is incremented, not decremented). """
     points = []
     x = 0
@@ -111,6 +111,31 @@ def get_circle_points_bresenham_integer_ene_2order(r):
     points.extend(mirror_points_8(x, y))
     while x < -y:
         if F_M < 0:
+            F_M += d_e
+        else:
+            F_M += d_ne
+            d_ne += 2
+            y += 1
+        d_e += 2
+        d_ne += 2
+        x += 1
+        points.extend(mirror_points_8(x, y))
+    return points
+
+
+def get_circle_points_bresenham_integer_ene_2order_leq(r):
+    """ Like draw_circle_bresenham_integer_ene_2order, but use 'f_m <= 0'
+    instead of 'f_m < 0'.
+    """
+    points = []
+    x = 0
+    y = -r
+    F_M = 1 - r
+    d_e = 3
+    d_ne = -(r << 1) + 5
+    points.extend(mirror_points_8(x, y))
+    while x < -y:
+        if F_M <= 0:
             F_M += d_e
         else:
             F_M += d_ne
@@ -221,4 +246,52 @@ if __name__ == "__main__":
     #  ╰───────╯
     #   3210123
 
+    #  Signature: 463d7ac7210badfbb18c47a313cd16aa
+
+    draw_circle(get_circle_points_bresenham_integer_ene_2order_leq, 0)
+    #   0
+    #  ╭─╮
+    # 0│█│0
+    #  ╰─╯
+    #   0
+    #
+    #  Signature: 4ba6b15b13cd6adb310eeab8ee1adfd0
+
+    draw_circle(get_circle_points_bresenham_integer_ene_2order_leq, 1)
+    #   101
+    #  ╭───╮
+    # 1│███│1
+    # 0│█+█│0
+    # 1│███│1
+    #  ╰───╯
+    #   101
+    #
+    #  Signature: 879ffc6eb52acdea4996c531bb3e2663
+
+    draw_circle(get_circle_points_bresenham_integer_ene_2order_leq, 2)
+    #   21012
+    #  ╭─────╮
+    # 2│·███·│2
+    # 1│█···█│1
+    # 0│█·+·█│0
+    # 1│█···█│1
+    # 2│·███·│2
+    #  ╰─────╯
+    #   21012
+    #
+    #  Signature: e6539d664b9120b376d1d4cda8574b6d
+
+    draw_circle(get_circle_points_bresenham_integer_ene_2order_leq, 3)
+    #   3210123
+    #  ╭───────╮
+    # 3│··███··│3
+    # 2│·█···█·│2
+    # 1│█·····█│1
+    # 0│█··+··█│0
+    # 1│█·····█│1
+    # 2│·█···█·│2
+    # 3│··███··│3
+    #  ╰───────╯
+    #   3210123
+    #
     #  Signature: 463d7ac7210badfbb18c47a313cd16aa
