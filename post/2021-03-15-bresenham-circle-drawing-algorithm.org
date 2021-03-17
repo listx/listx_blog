@@ -444,13 +444,13 @@ Now we have all the pieces to derive the complete algorithm!
 
 ** Integer-only optimization
 
-The initial value of $d$ ($F(M)$) is $\tfrac{5}{4} - r$.
+The initial value of ~F_M~ ($F(M)$) is $\tfrac{5}{4} - r$.
 Notice how this is the only place where we have to perform division in the whole algorithm.
 We can avoid this initial division (and subsequent floating point arithmetic) by initializing it to $1 - r$ instead, which is a difference of $\tfrac{1}{4}$ vs the original.
 
-Because we tweaked the initialization by $\tfrac{1}{4}$, we have to do the same for all comparisons of $d$ moving forward.
-That is, the comparison $d < 0$ actually becomes $d < -\tfrac{1}{4}$.
-/However, this fractional comparison is unnecessary/ because we only deal with integer increments and decrements in the rest of the code, so we can just keep the same $dm < 0$ as before.
+Because we tweaked the initialization by $\tfrac{1}{4}$, we have to do the same for all comparisons of $F(M)$ moving forward.
+That is, the comparison $F(M) < 0$ actually becomes $F(M) < -\tfrac{1}{4}$.
+/However, this fractional comparison is unnecessary/ because we only deal with integer increments and decrements in the rest of the code, so we can just keep the same $F(M) < 0$ as before.
 In other words, our algorithm only cares about whole numbers, so worrying about this extra $\tfrac{1}{4}$ difference is meaningless.
 
 - i 2021-03-15-bresenham-circle-drawing-algorithm/bresenham.py 26-45
