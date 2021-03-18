@@ -311,8 +311,8 @@ def get_circle_points_bresenham_WIP1(r):
 #+end_src
 
 We can refactor the above slightly.
-We can simplify the initial calculation of /F_M/ to avoid calling ~F()~, and also move out some of the redundant bits.
-The math for the initial value of /F_M/ is
+We can simplify the initial calculation of ~F_M~ to avoid calling ~F()~, and also move out some of the redundant bits.
+The very first midpoint we have to consider is $(1, r - \tfrac{1}{2})$; plugging this into $F()$ gets us
 
 \[
 \begin{align}
@@ -439,7 +439,7 @@ We can do the same difference analysis here, but with the addition that we have 
 \\
 &= 2x - 2y + 5
 \\
-&= 2(x - y) + 5.
+&= 2(x - y) + 5. \label{eq:se1}
 \end{align}
 \]
 
@@ -489,7 +489,7 @@ If we go E, $\Delta_{E}$ changes like this:
 \\
 &= 2x - 2x + 3 - 3 + 2
 \\
-&= 2.
+&= 2. \label{eq:e2ord}
 \end{align}
 \]
 
@@ -516,7 +516,7 @@ If we go E, $\Delta_{SE}$ changes like this:
 \\
 &= 2x - 2x + 2y - 2y + 7 - 5
 \\
-&= 2.
+&= 2. \label{eq:se2ord1}
 \end{align}
 \]
 
@@ -534,7 +534,7 @@ If we go SE, $\Delta_{SE}$ changes like this:
 \\
 &= 2 + 2
 \\
-&= 4.
+&= 4. \label{eq:se2ord2}
 \end{align}
 \]
 
@@ -766,7 +766,7 @@ When given equally bad choices (the case where $F(M) = 0$), this version draws a
 You can see this play out in the above table for when $r = 6$ and especially $r = 1$.
 It's a bit unfortunate that the authors of the book did not choose this version, as it seems to do a better job for small values of $r$.
 
-We can carry over the same intuition over to the tweak to increase $r$ by $\tfrac{1}{2}$ for the naive algorithm --- increasing $r$ should result in a larger value of $y$, thereby resulting in drawing a larger circle (and in the process increasing the aesthetics).
+We can carry over the same intuition over to the tweak to increase $r$ by $\tfrac{1}{2}$ for the naive algorithm --- increasing $r$ should result in a larger value of $y$, thereby resulting in drawing a larger circle (and in the process improving the aesthetics).
 Neat!
 
 * Conclusion
@@ -776,6 +776,7 @@ Instead it merely does its best to reduce the amount of error, and in doing so, 
 
 The technique of avoiding the full polynomial calculation behind $F(M)$ (referred by the book as finding the first and second-order differences) took some time to get used to, but is intuitive enough in the end.
 You just need to consider differences in terms of variables.
+There's also a connection to calculus because we're dealing in terms of /differences/ to "cut down" on the polynomial degrees --- we go from the squares in Equation \(\ref{eq:circle}\) to just linear functions in Equations \(\ref{eq:de2}\) and \(\ref{eq:se1}\), and again go one more step to just constant functions in Equations \(\ref{eq:e2ord}\), \(\ref{eq:se2ord1}\), and \(\ref{eq:se2ord2}\).
 
 I hope you learned something!
 
