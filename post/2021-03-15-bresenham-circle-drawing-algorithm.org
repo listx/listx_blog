@@ -109,7 +109,7 @@ x = y = \tfrac{r}{\sqrt{2}},
 or simply the point
 
 \[
-\begin{equation} \label{eq:arc-intersection}
+\begin{equation}
 (\tfrac{r}{\sqrt{2}}, \tfrac{r}{\sqrt{2}}).
 \end{equation}
 \]
@@ -130,7 +130,7 @@ x^2 &= \tfrac{r^2}{2}
 \\
 \sqrt{x^2} &= \tfrac{\sqrt{r^2}}{\sqrt{2}}
 \\
-x &= \tfrac{r}{\sqrt{2}}.
+x &= \tfrac{r}{\sqrt{2}}. \label{eq:arc-intersection}
 \end{align}
 \]
 
@@ -370,7 +370,7 @@ F(M) = F(x + 1, y - \tfrac{1}{2}) = (x + 1)^2 + (y - \tfrac{1}{2})^2 - r^2.
 
 The values for $x$ and $y$ are unknown, however they change in only 2 possible ways --- by moving E or SE!
 
-If we move E, then the new value of $F(M)$ will be:
+If we move E, then $M$ will change from $(x + 1, y - \tfrac{1}{2})$ to $(x + 2, y - \tfrac{1}{2})$ because we add 1 to $x$ to move 1 pixel east; the new value of $F(M)$ at this pixel, which we can call $F(M_E)$, will then be:
 
 \[
 \begin{equation}
@@ -384,7 +384,10 @@ Simple, we just look at the change in $x$ ($\Delta_{x}$) (we don't care about th
 
 \[
 \begin{align}
-\Delta_{E} = F(M_{E}) - F(M) &= \Delta_{x}
+\Delta_{E} &= F(M_{E}) - F(M)
+\\ &= [(x + 2)^2 + (y - \tfrac{1}{2})^2 - r^2] - [(x + 1)^2 + (y - \tfrac{1}{2})^2 - r^2]
+\\
+&= \Delta_{x}
 \\
 &= (x + 2)^2 - (x + 1)^2 \label{eq:de1}
 \\
@@ -399,9 +402,10 @@ Simple, we just look at the change in $x$ ($\Delta_{x}$) (we don't care about th
 \]
 
 So $F(M)$ will change by $2x + 3$ if we move E.
+So at any given point, if we move E, $F(M)$ will /always/ change by $2x + 3$.
 
 How about for moving SE?
-If we move SE, the new value of $F(M)$ will be:
+If we move SE, the new value of $M$ will change from $(x + 1, y - \tfrac{1}{2})$ to $(x + 2, y - \tfrac{3}{2})$ because we add 1 to $x$ and subtract 1 from $y$ to move 1 pixel southeast; the new value of $F(M)$ for this case, which we call $F(M_{SE})$, will then be:
 
 \[
 \begin{equation}
@@ -409,12 +413,15 @@ F(M_{SE}) = F(x + 2, y - \tfrac{3}{2}) = (x + 2)^2 + (y - \tfrac{3}{2})^2 - r^2.
 \end{equation}
 \]
 
-We can do the same difference analysis to figure out how $F(M)$ will change if we move SE.
-In this case we have to consider the change in $y$ ($\Delta_{y}$), because it obviously changes when moving SE:
+We can do the same difference analysis here, but with the addition that we have to consider the change in $y$ ($\Delta_{y}$) as well (because of the 1 we subtracted from $y$):
 
 \[
 \begin{align}
-\Delta_{SE} = F(M_{SE}) - F(M) &= \Delta_{x} + \Delta_{y}
+\Delta_{SE} &= F(M_{SE}) - F(M)
+\\
+&= [(x + 2)^2 + (y - \tfrac{3}{2})^2 - r^2] - [(x + 1)^2 + (y - \tfrac{1}{2})^2 - r^2]
+\\
+&= \Delta_{x} + \Delta_{y}
 \\
 &= [(x + 2)^2 - (x + 1)^2] + [(y - \tfrac{3}{2})^2 - (y - \tfrac{1}{2})^2]
 \\
@@ -461,7 +468,7 @@ There is a final optimization we can do.[fn:: It is not clear to me if this chan
 In the [[#calculate-once-adjust-thereafter]["Calculate once, adjust thereafter" section]] we avoided calculating $F(M)$ from scratch on every iteration.
 We can do the same thing for the differences themselves!
 
-That is, we can avoid calculating $\Delta_{E}$ and $\Delta_{SE}$ on every iteration, and instead just calculate them /once/ and make adjustments to them thereafter as well!
+That is, we can avoid calculating $\Delta_{E} = (2x + 3)$ and $\Delta_{SE} = 2(x - y) + 5$ on every iteration, and instead just calculate them /once/ and make adjustments to them, just like we did earlier for $F(M)$.
 
 Let's first consider how $\Delta_{E} = 2x + 3$ changes.
 First, we initialize $\Delta_{E}$ by plugging in $(0, r)$ into Equation \(\ref{eq:de2}\), our starting point.
@@ -539,18 +546,18 @@ def get_circle_points_bresenham_2order(r):
     x = 0
     y = r
     F_M = 1 - r
-    d_e = 3 # Equation 36
-    d_se = -(2 * r) + 5 # Equation 41
+    d_e = 3 # Equation 40
+    d_se = -(2 * r) + 5 # Equation 45
     points.extend(mirror_points_8(x, y))
     while x < y:
         if F_M < 0:
             F_M += d_e
-            d_e += 2  # Equation 40
-            d_se += 2 # Equation 46
+            d_e += 2  # Equation 44
+            d_se += 2 # Equation 50
         else:
             F_M += d_se
-            d_e += 2  # Equation 40
-            d_se += 4 # Equation 52
+            d_e += 2  # Equation 44
+            d_se += 4 # Equation 56
             y -= 1
         x += 1
         points.extend(mirror_points_8(x, y))
