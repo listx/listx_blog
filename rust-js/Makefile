@@ -10,6 +10,8 @@ test:
 	wasm-pack test \
 		--headless \
 		--firefox
+	# Test golden tests for drawing algorithms.
+	./tests/test_bresenham.sh
 
 .PHONY: \
 	build \

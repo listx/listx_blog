@@ -6,6 +6,7 @@ use wasm_bindgen::JsCast;
 
 extern crate fixedbitset;
 use fixedbitset::FixedBitSet;
+use serde::{Deserialize, Serialize};
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -65,7 +66,7 @@ pub struct ScreenBuffer {
 
 // This is a Cartesian coordinate. We use this when using Cartesian coordinates
 // against the ScreenBuffer.
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Ord, Eq, PartialOrd)]
 pub struct Point {
     x: i32,
     y: i32,
@@ -198,7 +199,7 @@ pub fn mirror_points_8(p: Point) -> Vec<Point> {
 // Draw a circle by pairing up each Y value with an X value that lie on a circle
 // with radius 'r'. This has a bug because some Y values get skipped. Can you
 // see why?
-fn get_circle_points_naive_4(r: i32) -> Vec<Point> {
+pub fn get_circle_points_naive_4(r: i32) -> Vec<Point> {
     let mut points = Vec::new();
     for x in 0..(r + 1) {
         let y = (((r * r) - (x * x)) as f64).sqrt() as i32;
@@ -209,7 +210,7 @@ fn get_circle_points_naive_4(r: i32) -> Vec<Point> {
 
 // Better than get_circle_points_naive_4, but wastes CPU cycles because the
 // 8-way symmetry overcorrects and we draw some pixels more than once.
-fn get_circle_points_naive_8(r: i32) -> Vec<Point> {
+pub fn get_circle_points_naive_8(r: i32) -> Vec<Point> {
     let mut points = Vec::new();
     for x in 0..(r + 1) {
         let y = (((r * r) - (x * x)) as f64).sqrt() as i32;
@@ -221,7 +222,7 @@ fn get_circle_points_naive_8(r: i32) -> Vec<Point> {
 // Slightly faster than get_circle_points_naive_8, because of the break
 // condition at the middle of the arc. However this is still inefficient due to
 // the square root calculation.
-fn get_circle_points_naive_8_faster(r: i32) -> Vec<Point> {
+pub fn get_circle_points_naive_8_faster(r: i32) -> Vec<Point> {
     let mut points = Vec::new();
     for x in 0..(r + 1) {
         let y = (((r * r) - (x * x)) as f64).sqrt() as i32;
@@ -235,7 +236,7 @@ fn get_circle_points_naive_8_faster(r: i32) -> Vec<Point> {
 
 // This is much closer to Bresenham's algorithm aesthetically, by simply using
 // 'r + 0.5' for the square root calculation instead of 'r' directly.
-fn get_circle_points_naive_8_faster_tweaked_radius(r: i32) -> Vec<Point> {
+pub fn get_circle_points_naive_8_faster_tweaked_radius(r: i32) -> Vec<Point> {
     let mut points = Vec::new();
     let r_tweaked = r as f64 + 0.5;
     for x in 0..(r + 1) {
@@ -250,7 +251,7 @@ fn get_circle_points_naive_8_faster_tweaked_radius(r: i32) -> Vec<Point> {
 }
 
 // Draw a circle using a floating point determinant, f_m. Draw by moving E or SE.
-fn get_circle_points_bresenham_float_ese(r: i32) -> Vec<Point> {
+pub fn get_circle_points_bresenham_float_ese(r: i32) -> Vec<Point> {
     let mut points = Vec::new();
     let mut x = 0;
     let mut y = r;
@@ -270,7 +271,7 @@ fn get_circle_points_bresenham_float_ese(r: i32) -> Vec<Point> {
 }
 
 // Like draw_circle_bresenham_float_ese, but f_m is an integer variable.
-fn get_circle_points_bresenham_integer_ese(r: i32) -> Vec<Point> {
+pub fn get_circle_points_bresenham_integer_ese(r: i32) -> Vec<Point> {
     let mut points = Vec::new();
     let mut x = 0;
     let mut y = r;
@@ -291,7 +292,7 @@ fn get_circle_points_bresenham_integer_ese(r: i32) -> Vec<Point> {
 
 // Like draw_circle_bresenham_integer_ese, but use 2nd-order differences to
 // remove multiplication from the inner loop.
-fn get_circle_points_bresenham_integer_ese_2order(r: i32) -> Vec<Point> {
+pub fn get_circle_points_bresenham_integer_ese_2order(r: i32) -> Vec<Point> {
     let mut points = Vec::new();
     let mut x = 0;
     let mut y = r;
@@ -319,7 +320,7 @@ fn get_circle_points_bresenham_integer_ese_2order(r: i32) -> Vec<Point> {
 // work our way up and to the right (that is, move E or NE). The difference is
 // that we increment, instead of decrementing, y; this feels more uniform
 // because we increment x as well.
-fn get_circle_points_bresenham_integer_ene(r: i32) -> Vec<Point> {
+pub fn get_circle_points_bresenham_integer_ene(r: i32) -> Vec<Point> {
     let mut points = Vec::new();
     let mut x = 0;
     let mut y = -r;
@@ -340,7 +341,7 @@ fn get_circle_points_bresenham_integer_ene(r: i32) -> Vec<Point> {
 
 // Like draw_circle_bresenham_integer_ese_2order, but start from (0, -r) and
 // move E or NE.
-fn get_circle_points_bresenham_integer_ene_2order(r: i32) -> Vec<Point> {
+pub fn get_circle_points_bresenham_integer_ene_2order(r: i32) -> Vec<Point> {
     let mut points = Vec::new();
     let mut x = 0;
     let mut y = -r;
@@ -366,7 +367,7 @@ fn get_circle_points_bresenham_integer_ene_2order(r: i32) -> Vec<Point> {
 
 // Like draw_circle_bresenham_integer_ene_2order, but use 'f_m <= 0' instead of
 // 'f_m < 0'.
-fn get_circle_points_bresenham_integer_ene_2order_leq(r: i32) -> Vec<Point> {
+pub fn get_circle_points_bresenham_integer_ene_2order_leq(r: i32) -> Vec<Point> {
     let mut points = Vec::new();
     let mut x = 0;
     let mut y = -r;
