@@ -284,6 +284,12 @@ cbExpandRawInput block = case block of
         ".xorg.conf" -> ["xorg"]
         _ -> []
       httpTarget = "/code/" <> fp
+      githubHttpTarget = "https://github.com/listx/listx_blog/blob/master/code/" <> fp
+        <> (if
+          | a == 0 -> ""
+          | a == b -> "#L" <> show a
+          | otherwise -> "#L" <> show a <> "-L" <> show b
+          )
       filename = takeFileName fp
       attr
         = (
@@ -307,12 +313,16 @@ cbExpandRawInput block = case block of
         RawInline "html" . T.pack $
           unwords
             [ "<p>"
+            , "<code>" <> filename <> "</code>"
+            , "<a class=\"raw\" href="
+              <> dquote githubHttpTarget
+              <> ">"
+              <> "<code>[GitHub]</code>"
+              <> "</a>"
             , "<a class=\"raw\" href="
               <> dquote httpTarget
               <> "mimetype=text/plain>"
-              <> "<code>"
-                <> filename
-                <> "</code>"
+              <> "<code>[Download]</code>"
               <> "</a>"
             , "</p>"
             ]
