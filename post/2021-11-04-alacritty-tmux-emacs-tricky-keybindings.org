@@ -1,0 +1,395 @@
+---
+title: "Alacritty + tmux + Emacs: Tricky Keybindings"
+tags: programming, productivity
+mathjax: on
+---
+
+#+STARTUP: indent showall
+#+OPTIONS: ^:nil
+
+Have you ever wondered why by default if you press =C-i= (=Control= modifier key and the =i= key) in the terminal, it is treated (by most terminal emulators, anyway) as if you had pressed the =TAB= key?
+The same goes for =C-[= and =ESC=.
+Hopefully this post clears this up, and shows you some workarounds to make your terminal applications distinguish between =C-i=/=TAB=, =C-[=/=ESC=, and other combinations.
+
+Note, I use Emacs style keybinding descriptions in this post, so =M-x= means pressing the =Alt= key and the =x= key). And for completeness, the =C= and =S= symbols mean the =Control= and =Shift= modifiers, respectively (e.g., =C-M-S-x= means =Control+Alt+Shift+x=).
+
+I'll first discuss the constraints we are forced to use, the famous =CSI-u= encoding standard, and finally my own configurations to make tricky bindings in Emacs work the same in the terminal.
+
+* ASCII/terminal constraints
+
+** The keystroke stack
+
+For purposes of this post, I'm going to assume that you are on a Linux or Mac, in a graphical environment (X11 or whatever Macs use). When you press a key on your keyboard, there are multiple layers involved, starting with the actual hardware and finally ending with whatever application you are running.
+
+| Layer            | Example       |
+|------------------+---------------|
+| Application      | emacs         |
+| Operating System | Linux         |
+| Hardware         | your keyboard |
+
+Actually there can be some more layers involved, depending on how closely you want to look at it. For purposes of this blog post, we are concerned about tmux (a terminal multiplexer) and also alacritty (the terminal emulator), so we have to consider them as well.
+
+| Layer               | Example                  |
+|---------------------+--------------------------|
+| Application         | emacs                    |
+| Terminal multplexer | tmux                     |
+| Terminal emulator   | alacritty                |
+| Graphical subsystem | X11                      |
+| Kernel              | Linux                    |
+| Keyboard firmware   | ROM inside your keyboard |
+
+The big takeaway of this blog post is that you must ensure that **all layers** in the stack are doing exactly what you want them to do. Otherwise, you will get surprises when trying to bind your keys in your application at the topmost layer (such as emacs or zsh or anything else).
+
+** ASCII
+
+Before we get into keybindings at the alacritty, tmux, and emacs layers, it's worth mentioning the ASCII chart. Here's an obligatory snapshot of it (from ~man ascii~):
+
+#+begin_src
+Oct   Dec   Hex   Char                        Oct   Dec   Hex   Char
+────────────────────────────────────────────────────────────────────────
+000   0     00    NUL '\0' (null character)   100   64    40    @
+001   1     01    SOH (start of heading)      101   65    41    A
+002   2     02    STX (start of text)         102   66    42    B
+003   3     03    ETX (end of text)           103   67    43    C
+004   4     04    EOT (end of transmission)   104   68    44    D
+005   5     05    ENQ (enquiry)               105   69    45    E
+006   6     06    ACK (acknowledge)           106   70    46    F
+007   7     07    BEL '\a' (bell)             107   71    47    G
+010   8     08    BS  '\b' (backspace)        110   72    48    H
+011   9     09    HT  '\t' (horizontal tab)   111   73    49    I
+012   10    0A    LF  '\n' (new line)         112   74    4A    J
+013   11    0B    VT  '\v' (vertical tab)     113   75    4B    K
+014   12    0C    FF  '\f' (form feed)        114   76    4C    L
+015   13    0D    CR  '\r' (carriage ret)     115   77    4D    M
+016   14    0E    SO  (shift out)             116   78    4E    N
+017   15    0F    SI  (shift in)              117   79    4F    O
+020   16    10    DLE (data link escape)      120   80    50    P
+021   17    11    DC1 (device control 1)      121   81    51    Q
+022   18    12    DC2 (device control 2)      122   82    52    R
+023   19    13    DC3 (device control 3)      123   83    53    S
+024   20    14    DC4 (device control 4)      124   84    54    T
+025   21    15    NAK (negative ack.)         125   85    55    U
+026   22    16    SYN (synchronous idle)      126   86    56    V
+027   23    17    ETB (end of trans. blk)     127   87    57    W
+030   24    18    CAN (cancel)                130   88    58    X
+031   25    19    EM  (end of medium)         131   89    59    Y
+032   26    1A    SUB (substitute)            132   90    5A    Z
+033   27    1B    ESC (escape)                133   91    5B    [
+034   28    1C    FS  (file separator)        134   92    5C    \  '\\'
+035   29    1D    GS  (group separator)       135   93    5D    ]
+036   30    1E    RS  (record separator)      136   94    5E    ^
+037   31    1F    US  (unit separator)        137   95    5F    _
+040   32    20    SPACE                       140   96    60    `
+041   33    21    !                           141   97    61    a
+042   34    22    "                           142   98    62    b
+043   35    23    #                           143   99    63    c
+044   36    24    $                           144   100   64    d
+045   37    25    %                           145   101   65    e
+046   38    26    &                           146   102   66    f
+047   39    27    '                           147   103   67    g
+050   40    28    (                           150   104   68    h
+051   41    29    )                           151   105   69    i
+052   42    2A    *                           152   106   6A    j
+053   43    2B    +                           153   107   6B    k
+054   44    2C    ,                           154   108   6C    l
+055   45    2D    -                           155   109   6D    m
+056   46    2E    .                           156   110   6E    n
+057   47    2F    /                           157   111   6F    o
+060   48    30    0                           160   112   70    p
+061   49    31    1                           161   113   71    q
+062   50    32    2                           162   114   72    r
+063   51    33    3                           163   115   73    s
+064   52    34    4                           164   116   74    t
+065   53    35    5                           165   117   75    u
+066   54    36    6                           166   118   76    v
+067   55    37    7                           167   119   77    w
+070   56    38    8                           170   120   78    x
+071   57    39    9                           171   121   79    y
+072   58    3A    :                           172   122   7A    z
+073   59    3B    ;                           173   123   7B    {
+074   60    3C    <                           174   124   7C    |
+075   61    3D    =                           175   125   7D    }
+076   62    3E    >                           176   126   7E    ~
+077   63    3F    ?                           177   127   7F    DEL
+#+end_src
+
+** Terminals vs GUIs
+
+See anything funny in the table above?
+
+That's right, there is no way to encode the =Control= and =Alt= keys! (They are not present in the ASCII table.) So as far as the ASCII table is concerned, the Control, Alt, Shift, or any other modifer key **simply does not exist**.
+
+This is not a problem for GUIs because they are not bound by old standards that are built on top of the ASCII mappings --- any "modern" operating system with its keyboard drivers understand the Control, Alt (Meta), Shift, Super (aka Windows or Command) modifier keys on their own.
+
+But for terminals, this is a problem because it still needs to understand if you pressed the Control key (or Alt key) when also pressing one of the letter keys. And worse, it is still forced to send only ASCII code points because many text-based (terminal-friendly) applications only understand these ASCII codes.
+
+So how does a terminal application like zsh or bash know you've pressed =C-r= and not just =r=? For any =Control + key= combination, the convention is to use **control characters**.
+
+Similarly, if you press =M-r=, to distinguish this against just plain =r=, the terminal traditionally sends the **ESC** key first, followed by =r=. Notice that =ESC= /does/ have an encoding in ASCII (code 27).
+
+From the viewpoint of the application, when they see control characters and escape keys they have to "reconstruct" the intended keypresses.
+
+*** Control characters
+
+The first 32 ASCII values (from decimal 0 (=NUL=) to 31 (=US= (unit separator))) are known as the =C0= control code set.
+When you press =C-i=, the capital =I= key (code 73) gets translated to code 9 (=TAB= character).
+For all keys =C-a= to =C-z=, the formula is to just take the capital letter and then subtract 64 from it to get one of the =C0= control code characters.
+
+Below is a table of some common combinations.
+
+| Combination       | C0 character     | Delta |
+|-------------------+------------------+-------|
+| =C-i= (I, code 73) | =TAB=  (code 9)  |   -64 |
+| =C-j= (J, code 74) | =\n= (code 10)   |   -64 |
+| =C-m= (M, code 77) | =\r= (code 13)   |   -64 |
+| =C-[= ([, code 91) | =ESC=  (code 27) |   -64 |
+
+*** Escape key
+
+If you press =M-x=, the terminal emulator will actually send two codes, first 27 for =ESC= then 120 for =x=.
+
+** Shift modifier
+
+What about the =Shift= modifier key? Well =Shift= is also missing from the ASCII code point set so it cannot normally be encoded. This is why all of the "shifted" keys, such as ="= (code 34) and ={= (code 123) have their own unique values.
+
+Below are some examples:
+
+| Unshifted    | Shifted     | Delta |
+|--------------+-------------+-------|
+| ' (code 39)  | " (code 34) |    -5 |
+| ; (code 59)  | : (code 58) |    +1 |
+| . (code 46)  | > (code 62) |   +16 |
+| , (code 44)  | < (code 60) |   +16 |
+| = (code 64)  | + (code 43) |   -21 |
+
+As you can see, there is no neat correlation between the bare key and its shifted version.
+Anyway, the thing to remember here is that the Shift key itself, like Control and Alt keys, are missing from ASCII.
+So when you press =:= (=Shift+;=), your terminal sends code 58, and your application infers that the Shift key was pressed.
+
+** Super and Hyper modifiers
+
+The Super (aka Windows key or Command key on Mac) modifier key likewise does not have an ASCII representation. This modifier key came much later in the computing revolution so they have been left out. There is no standard out there to interpret these keys for terminal emulators (unlike Control and Alt, which enjoy some level of standardization), and I personally have never seen a CLI application support it (it would be pointless, because terminal emulators do not encode it in a standardized way).
+
+The same goes for the Hyper modifier key, which is available in some keyboards. Personally I remap CapsLock to it at the X11 layer using =xmodmap=, and then use it exclusively from XMonad (since virtually no GUI applications recognize this modifier key).
+
+So the bad news is that you're on your own if you want your terminal application to support these fancier modifier keys.
+
+** Control character set limits
+
+Now let's see where things start to break down. First, the C0 control set is too small. Because it only has 32 code points (0 to 31), and 26 of them are mapped to letters A-Z, we only have 6 characters left for non-letters. These are =@=, =[=, =\=, =]=, =^= (caret), and =_= (underscore).
+
+So this is why you cannot expect to press =C-;= and have your CLI application recognize it --- there's simply no C0 control character for it!
+
+Also, another thing you may have noticed is that there's the Shift key involved (or not involved, depending on how you look at it). For example, when you press =C-a=, you physically only pressed Control and =a=, /without/ pressing the Shift key. However, your terminal emulator will encode this as code point 1 (=SOH= key) /as if/ you had pressed =C-S-a= with /uppercase/ =A=, because /uppercase/ =A= has a corresponding C0 control character (=SOH=). That's basically why =C-= and =C-S-= combinations are indistinguishable by default on pretty much all terminal emulators.
+
+* CSI-u mode
+
+Enter [[http://www.leonerd.org.uk/hacks/fixterms/][CSI-u mode]]. It's just an encoding scheme that encodes the modifier keys /so that we don't lose information when we press various combinations of Shift, Control, and Alt keys/.[fn:: There is another encoding scheme called [[https://invisible-island.net/xterm/modified-keys.html][=modifyOtherKeys=]] used by the =xterm= terminal emulator, but we use CSI-u mode simply because its documentation is easier to understand.]
+
+So when you press =C-i=, instead of sending code 9 (which equates to the =TAB= key), you make your terminal instead send =ESC [73;5u= (7 different codes). This looks complicated but the most important point is that you always encode the modifer key (or a combination of them) that was pressed. Here is a breakdown:
+
+| Example | ASCII code | Purpose                                  |
+|---------+------------+------------------------------------------|
+| ESC [   |     27, 91 | Indicate start of CSI-u mode             |
+| 73      |     55, 51 | Represent non-modifier key (here, "i")   |
+| ;       |         59 | Indicate start of modifier key           |
+| 5       |         53 | Represent modifier key (here, "Control") |
+| u       |        117 | Indicate end of CSI-u mode               |
+
+The non-modifier key is represented by the decimal value of the intended code point, itself re-encoded in ASCII. For example, the code points 55 and 51 in ASCII mean the symbols "7" and "3", respectively. As for the modifier key, the following table shows all possible values:
+
+| Modifer Combination   | Formula (base 2)        | Value (base 10) | ASCII code |
+|-----------------------+-------------------------+-----------------+------------|
+| <NONE>                | 1 (1)                   |               1 |         49 |
+| Shift                 | 1 + 1 (10)              |               2 |         50 |
+| Alt                   | 1 + 10 (11)             |               3 |         51 |
+| Alt + Shift           | 1 + 10 + 1 (100)        |               4 |         52 |
+| Control               | 1 + 100 (101)           |               5 |         53 |
+| Control + Shift       | 1 + 100 + 1 (110)       |               6 |         54 |
+| Control + Alt         | 1 + 100 + 10 (111)      |               7 |         55 |
+| Control + Alt + Shift | 1 + 100 + 10 + 1 (1000) |               8 |         56 |
+
+The encoding for some reason encodes the **absence** of modifier keys as =1= (code 49), although the scheme is not used in practice when no modifier keys are used. Anyway, that's why the formula part in the table above all initially start with a =1= term. The Shift, Alt, and Control modifiers are encoded as =1=, =10=, and =100= in binary, respectively.
+
+The important thing to keep in mind is that this scheme is somewhat standardized and any CLI application is free to parse CSI-u encoded ASCII code sequences. Because this encoding scheme separates modifier keys from non-modifier keys, **we don't lose any information** when pressing these combinations in the terminal.
+
+* Alacritty, tmux, and Emacs
+
+The ultimate goal is to try to get terminal Emacs to understand CSI-u encoding so that we can make it distinguish between things like =C-i= and =TAB=. But first, we have to start with Alacritty (our terminal emulator) because that's where the modifier key information is still available (yes, Alacritty can see all modifer keys perfectly fine). The trick is to make sure that the modifier key information is not lost at the layers up the stack (in tmux, and in Emacs).
+
+** Alacritty
+
+Alacritty has full visibility into whatever combination of modifiers were pressed along with the non-modifier key. Alacritty is also extremely flexible and allows you to configure customized keybindings for every possible combination. I will use the =i= key as an example, because it naturally conflicts with =TAB= as shown above:
+
+#+begin_src yaml
+key_bindings:
+  - { key: I, mods: Alt,               chars: "\x1bi" }
+  - { key: I, mods: Alt|Shift,         chars: "\x1bI" }
+  - { key: I, mods: Control,           chars: "\x1b[24~\x09" }
+  - { key: I, mods: Control|Shift,     chars: "\x1b[105;6u" }
+  - { key: I, mods: Control|Alt,       chars: "\x1b[24~x1b\x09" }
+  - { key: I, mods: Control|Alt|Shift, chars: "\x1b[24~\x1b[105;8u" }
+#+end_src
+
+Here's a rundown of these bindigs:
+
+- =M-i=: This is translated into =ESC i= (~\x1bi~). Pretty much all CLI programs understand this (interpreting =ESC= as =Alt= key), so there's no magic here.
+
+- =M-S-i=: This is translated into =ESC I= (~\x1bI~). Same rationale as above.
+
+- =C-M-i=: This is translated into =ESC [ 2 4 ~ ESC TAB= (=x1b[24~\x1b\x09=). The =ESC [ 24 ~= part is interpreted by tmux as the =F12= key; so you can think of it as sending =F12 ESC TAB=. See the discussion in the next bullet point about =F12=.
+
+  Technically, I don't use this binding for anything, so there's really no need to bind it at all at any level (Alacritty, tmux, or emacs). Anyway, suffice it to say that it gets =CSI-u= encoded from the tmux side (to =ESC [ 1 0 5 ; 7 u=), such that it is distinguishable from =M-TAB= (encoded to =ESC [ 9 ; 3 u=).
+
+- =C-i=: This gets translated into =F12 TAB= (=\x1b[24~\x09=). The =TAB= encodes the (=C-i=) portion. So basically we are binding =C-i= to =C-i=, but with the twist that we send the =F12= key first.
+
+  The reason for =F12= is that tmux 3.2a has a regression where it [[https://github.com/tmux/tmux/issues/2705][cannot distinguish]] between a =C-i= and =TAB= (they both get interpreted by tmux to be just =TAB=). Because of this regression in tmux, we cannot use =CSI-u= mode directly (i.e., by sending =ESC [ 1 0 5 ; 5= because tmux will interpret it as =TAB= --- defeating the whole purpose of =CSI-u= mode in the first place).
+
+  And so we have to differentiate them somehow at the tmux level. The =F12= key does just that: =F12= in our tmux configuration activates a new prefix key table ([[https://stackoverflow.com/a/53418329/437583][tmux can support arbitrarily "deep" key tables]]), which gives us an opportunity in tmux to handle this key sequence properly. More on this later.[fn:: Note that we "sacrifice" the F12 key here; i.e., in tmux we cannot use F12 to send itself (F12) to the CLI application running inside it. I personally almost never use any of the function keys (because most of the CLI applications I use don't make much use of the function keys, with the exception of htop), so it's a small price to pay.]
+
+- =C-S-i=: This gets translated into =ESC [ 1 0 5 ; 6 u= (=\x1b[105;6u=). This is the =CSI-u= encoding of =C-S-i=. Finally!
+
+- =C-M-S-i=: This gets translated into =F12 ESC [ 1 0 5 ; 8 u= (=\x1b[24~\x1b[105;8u=). The reason we have to use our =F12= workaround again is because for some reason if we send the =CSI-u= version directly (that is, just =ESC [ 1 0 5 ; 8 u=), tmux is unable to distinguish it from =ESC [ 1 0 5 ; 6 u=. I am not sure why this is the case, but I've tested it with =C-M-h= vs =C-M-S-h= and they are likewise indistinguisable from tmux if I use =CSI-u= encodings for both. So for the shifted version (=C-M-S-...=) I use the =F12= workaround again. It is what it is.
+
+** tmux
+
+Now at the tmux level we can discuss the same bindings using the example above.
+
+#+begin_src yaml
+bind-key -T virt         C-i        if-shell -F "#{==:#{window_name},emacs}" "send-keys Escape '[105;5u'" "send-keys -H 09" \; set key-table root
+bind-key -T root         C-S-i      send-keys Escape  "[105;6u"
+bind-key -T virt         C-M-i      send-keys Escape "[105;7u" \; set key-table root
+bind-key -T virt         C-M-S-i    send-keys Escape "[105;8u" \; set key-table root
+#+end_src
+
+- =M-i=: This is not bound, because it is already send as-is by tmux to the underlying CLI application.
+- =M-S-i=: Same as above.
+- =C-i=: This is interesting --- if the tmux window name is "emacs", we send the CSI-u encoding. Otherwise, we send the =TAB= key. My tmux configuration (insert link) constantly (automatically) renames the current window to show the active pane's current directory, or the name of the executable. So if the executable name is "emacs" (terminal emacs), then the window name is also "emacs" --- and because we know that emacs is smart enough to handle CSI-u encoded bytes, we send them. For all other CLI applications, we just send TAB because chances are that they will probably break if we send CSI-u bytes.
+- =C-S-i=: This simply sends the =CSI-u= encoded version of =C-S-i=.[fn:: At this point I regret using the =i= key as an example as the =CSI-u= and =C-S-i= keywords look too much like each other, but oh well.] We don't have to ask the "is the underlying CLI application emacs or not" question here because the user has already pressed =C-S-i= on their own --- they would only have pressed this if they know that the application would have understood it.
+- =C-M-i=: This simply sends the =CSI-u= encoded version of =C-M-i=, and then turns off the =virt= key table (by resetting the active key table back to =root=, the default key table accessible with the =C-b= prefix key).
+- =C-M-S-i=: This simply sends the =CSI-u= encoded version of =C-M-S-i=, and then turns off the =virt= key table (by resetting the active key table back to =root=, the default key table accessible with the =C-b= prefix key).
+
+** Emacs
+
+Finally, emacs. At this level we just need to make emacs understand =CSI-u= encodings. Whether we decide to actually use all of the various possible combinations that can be encoded with =CSI-u= is another matter.
+
+First let me show you the code I use to make emacs understand our flavor of =CSI-u= encoding. I say "flavor" here because we actually use *lowercase* letters to encode our letters A-Z (e.g., I send code 105 (=i=) instead of code 73 (=I=)) regardless of whether we choose to press Shift (in contrast, the standard calls for changing the letter encoding to denote the presence or absence of the Shift key). Example:
+
+| Key combo | Official flavor | My flavor   |
+|-----------+-----------------+-------------|
+| C-i       | ESC [ 105;5u    | ESC [ 73;5u |
+| C-S-i     | ESC [ 73;5u     | ESC [ 73;6u |
+
+I think my style is cleaner. Anyway, here's the elisp code that makes emacs understand my flavor of CSI-u keys:
+
+#+begin_src emacs-lisp
+;; Enable `CSI u` support. See https://emacs.stackexchange.com/a/59225.  xterm
+;; with the resource ?.VT100.modifyOtherKeys: 1 GNU Emacs >=24.4 sets xterm in
+;; this mode and define some of the escape sequences but not all of them.  xterm
+;; with the resource ?.VT100.modifyOtherKeys: 1 GNU Emacs >=24.4 sets xterm in
+;; this mode and define some of the escape sequences but not all of them.
+(defun l/csi-u-support ()
+  (interactive)
+  (when (and (boundp 'xterm-extra-capabilities) (boundp 'xterm-function-map))
+    (let ((c 32))
+      ;; Create bindings for all ASCII codepoints from 32 (SPACE) to 126 (~).
+      ;; That is, make Emacs understand what these `CSI u' sequences mean.
+      (while (<= c 127)
+        (mapc (lambda (x)
+                (define-key xterm-function-map
+                  ;; What the terminal sends.
+                  (format (car x) c)
+                  ;; The Emacs key event to trigger.
+                  (apply 'l/char-mods c (cdr x))))
+              '(("\x1b[%d;2u" S)
+                ("\x1b[%d;3u" M)
+                ("\x1b[%d;4u" M S)
+                ("\x1b[%d;5u" C)
+                ("\x1b[%d;6u" C S)
+                ("\x1b[%d;7u" C M)
+                ("\x1b[%d;8u" C M S)))
+        (setq c (1+ c)))
+
+      ;; For C-{j-k} (e.g., "\x1b[106;5u" for C-j) and C-S-{j-k} (e.g.,
+      ;; "\x1b[106;6u" for C-S-j), we have to bind things a bit differently
+      ;; because Emacs's key event recognizes the character "10" as C-j. So If
+      ;; we reference bindings with "C-j" elsewhere, such as using doom's `map!'
+      ;; macro, Emacs expect a key event with character value 10, and not 105
+      ;; ("j" character's ASCII value). We convert 105 to 10 by just masking the
+      ;; lower 5 bits. Likewise, because the value itself (10) is already a
+      ;; "control" character, there is no need to apply the control character
+      ;; modifier itself, which is why they are missing in the list of bindings
+      ;; below.
+      ;;
+      ;; We only bind keys that we use here. The keys that are not bound are
+      ;; left alone, to leave them unmapped. This way, l-disambiguation-mode can
+      ;; recognize those unbound keys properly.
+      (setq special-keys '(?h ?j ?k ?l ?o))
+      (while special-keys
+        (setq c (car special-keys))
+        (mapc (lambda (x)
+                (define-key xterm-function-map
+                  (format (car x) c)
+                  (apply 'l/char-mods (logand c #b11111) (cdr x))))
+              '(("\x1b[%d;5u")
+                ("\x1b[%d;6u" S)
+                ("\x1b[%d;7u" M)
+                ("\x1b[%d;8u" M S)))
+        (setq special-keys (cdr special-keys)))
+
+      ;; Take care of `CSI u` encoding of special keys. These are:
+      ;;
+      ;; 9      TAB
+      ;; 13     RET (Enter)
+      ;; 27     ESC
+      ;; 32     SPC
+      ;; 64     @
+      ;; 91     [
+      ;; 127    DEL (Backspace)
+      ;;
+      ;; We don't bother with codes 32 64 91 127 because they're already taken
+      ;; care of in the first loop above for the range 32-127.
+      (setq special-keys '(9 13 27))
+      (while special-keys
+       (setq c (car special-keys))
+       (mapc (lambda (x)
+              (define-key xterm-function-map
+                (format (car x) c)
+                (apply 'l/char-mods c (cdr x))))
+        '(("\x1b[%d;2u" S)
+          ("\x1b[%d;3u" M)
+          ("\x1b[%d;4u" M S)
+          ("\x1b[%d;5u" C)
+          ("\x1b[%d;6u" C S)
+          ("\x1b[%d;7u" C M)
+          ("\x1b[%d;8u" C M S)))
+       (setq special-keys (cdr special-keys))))))
+
+(eval-after-load "xterm" '(l/csi-u-support))
+#+end_src
+
+* Sample stuff
+
+** Plaintext
+
+#+begin_src
+Blah blah blah.
+#+end_src
+
+** List items
+
+- *apple*
+- /banana/
+- candy
+
+** Raw code insertion
+
+- i toy/parking-space.rb
+
+** Math
+
+Some inline math: $2+2=4$.
+
+\[
+\mathrm{E} = \mathrm{mc}^2
+\]
