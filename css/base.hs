@@ -248,6 +248,10 @@ myStylesheet = do
             noMargin
             paragraphListIndent
             paddingBottom (em 1)
+            li ? do
+              p ? do
+                ev padding $ px 0
+                paddingBottom (em 1)
             ul ? do
               noMargin
               paragraphIndent0
