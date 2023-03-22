@@ -13,7 +13,7 @@ gen-css:
 
 # JavaScript generated from Rust.
 gen-js:
-	make -C rust-js build
+	#make -C rust-js build
 
 sync: build-site
 	./sync.sh
