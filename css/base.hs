@@ -73,7 +73,7 @@ myStylesheet = do
         fontSizeCustom Clay.Font.small
       hr ? do
         fontSizeCustom Clay.Font.small
-        border solid (px 1) $ rgbHex 0x000000
+        border (px 1) solid $ rgbHex 0x000000
         margin 0 auto (em 1) auto
         width (pct 76)
       div' ? do
@@ -131,7 +131,7 @@ myStylesheet = do
               position absolute
               backgroundColor $ rgbHex bgHex
               vh padding (px 4) (px 4)
-              border solid (px 2) $ rgbHex 0x000000
+              border (px 2) solid $ rgbHex 0x000000
               -- Start out invisible from the user. JS activates it to be
               -- visible with opacity "1" when the desired mouse event fires up.
               opacity 0
@@ -184,7 +184,7 @@ myStylesheet = do
             td ? do
               vh padding (em 0) (em 0.5)
             td |+ td ? do
-              borderLeft solid (px 1) (rgbHex 0x000000)
+              borderLeft (px 1) solid (rgbHex 0x000000)
           table ? do
             ".ul" & do
               borderCollapse separate
@@ -221,7 +221,7 @@ myStylesheet = do
                   hSymmetricGradientBorder (rgbHex bgHex) (rgbHex 0x888888) 80 (px 1)
                   borderTopWidth (px 0)
                   hr ? do
-                    border solid (px 1) $ rgbHex 0xcccccc
+                    border (px 1) solid $ rgbHex 0xcccccc
                     marginBottom (px 0)
                     width (pct 76)
                   p ? do
