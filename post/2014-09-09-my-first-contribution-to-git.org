@@ -6,9 +6,7 @@ tags: programming, git
 #+STARTUP: indent showall
 #+OPTIONS: ^:nil
 
-I am happy to say that my
-[[https://marc.info/?l=git&m=140700284616433&w=2][first]]
-[[https://marc.info/?l=git&m=140751902721342&w=2][patches]] were
+I am happy to say that my [[https://lore.kernel.org/git/1407002817-29221-1-git-send-email-linusarver@gmail.com/][first series]] was
 [[https://github.com/git/git/commit/4645b014c5c82a3b75337][recently
 merged]] into the master Git branch! Now, I am by no means a C or Git
 expert, so the patches only dealt with changes to the documentation. I
@@ -86,7 +84,7 @@ maintainer of Git, Junio Hamano, no less!
 
 He was very polite, and true to his duty as maintainer, very thorough.
 You can see the discussion that took place over at the
-[[https://marc.info/?l=git&m=140700284616433&w=2][mailing list
+[[https://lore.kernel.org/git/1407002817-29221-1-git-send-email-linusarver@gmail.com/][mailing list
 archive]]. I sent off my second version of my 7-commit patch series
 after a few days, and waited.
 
