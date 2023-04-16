@@ -1,0 +1,41 @@
+From 5d67fd42bdd1becede37c4b722db137a8dda2ff8 Mon Sep 17 00:00:00 2001
+From: Linus Arver <linusa@google.com>
+Date: Mon, 20 Mar 2023 09:00:00 -0700
+Subject: [PATCH 2/9] explain the "update-cache" binary
+
+Also tweak verify_path() to use a slightly more explicit comparison.
+---
+ update-cache.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/update-cache.c b/update-cache.c
+index a4fc05e838..76d2153316 100644
+--- a/update-cache.c
++++ b/update-cache.c
+@@ -203,7 +203,7 @@ static int verify_path(char *path)
+ 
+ 	goto inside;
+ 	for (;;) {
+-		if (!c)
++		if (c == '\0')
+ 			return 1;
+ 		if (c == '/') {
+ inside:
+@@ -216,6 +216,14 @@ inside:
+ 	}
+ }
+ 
++/**
++ * Give file paths to add to the dircache (staging area). This is a primitive
++ * "git add" that only understands entire files. This is also before .gitignore
++ * files were implemented, so we ignore paths that have any hidden dot-files in
++ * them at any point in their path hierarchy (see verify_path()).
++ *
++ * We cannot add directories either, only files (with actual contents!).
++ */
+ int main(int argc, char **argv)
+ {
+ 	int i, newfd, entries;
+-- 
+2.38.1
+

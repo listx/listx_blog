@@ -1,0 +1,290 @@
+From ab34e42e6ca15b5d48506a2a14e92d058a5cb0aa Mon Sep 17 00:00:00 2001
+From: Linus Arver <linusa@google.com>
+Date: Mon, 20 Mar 2023 09:00:00 -0700
+Subject: [PATCH 9/9] add STUDY_NOTES.md
+
+This a lot of missing information from the very first (initial) root
+commit of GIT and modern (circa 2023) Git.
+
+It links to various interesting bits in history (namely the commits and
+relevant mailing list discussions) to fill in the gaps as to why things
+were changed the way they were in its early days.
+---
+ STUDY_NOTES.md | 265 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 265 insertions(+)
+ create mode 100644 STUDY_NOTES.md
+
+diff --git a/STUDY_NOTES.md b/STUDY_NOTES.md
+new file mode 100644
+index 0000000000..524a82ab8e
+--- /dev/null
++++ b/STUDY_NOTES.md
+@@ -0,0 +1,265 @@
++# Root-commit Git study notes
++
++This is a special branch of Git for learning purposes. It is special because it
++is based off the absolute minimal "ancient" implementation of Git (Linus
++Torvald's root commit at
++[`e83c5163316f89bfbde7d9ab23ca2e25604af290`](https://github.com/git/git/commit/e83c5163316f89bfbde7d9ab23ca2e25604af290)),
++with some small changes to make it easy to compile with
++[Nix](https://nixos.org/download.html) (see the Makefile changes) and also
++"feel" more like modern Git (namely, the use of `.git/` instead of
++`.dircache/`). Yes, you can technically grab the [100th or so
++commit](https://github.com/git/git/commit/6ad6d3d36c5924c8ff502ebbb6a6216df01e7efb)
++which basically has all of the changes I made, but you'd be dealing with a lot
++more code to read. If you just want to quickly understand Git's data structures,
++there's honestly nothing faster than reading the root commit (it's only ~1000
++lines of C, including comments) and with some additional notes to fill in any
++missing gaps (which this document tries to do).
++
++The biggest revelation I had while creating these notes is that Git's data
++structures have proven to be incredibly stable --- the initial idea of an object
++database (`.git/objects/...`) and the cache (`.git/index`) were there from day 1
++and are still the main workhorses for Git. Knowing these two concepts will
++radically reduce the perceived complexity of modern Git's numerous bells and
++whistles, as every other thing you see in the `.git` folder are mere extensions
++of these two essential data structures.
++
++This version comes with a basic Usage Guide to help users actually use the
++binaries that shipped with the root commit. Run `make` (you need the [Nix
++package manager](https://nixos.org/download.html)) and try to use the commands
++in the order described in the Usage Guide below. After (or perhaps before?) you
++run each command, read its source code. You might want to have a look at
++`cache.h` first --- but the main "meat" of it all is in `update-cache.c` ---
++which makes sense, because the cache is always updated first before anything is
++written to the object database.
++
++Pro tip: use
++[`6ad6d3d36c5924c8ff502ebbb6a6216df01e7efb`](https://github.com/git/git/commit/6ad6d3d36c5924c8ff502ebbb6a6216df01e7efb)
++as a shortcut to view the first 100ish commits in Git's history. This is handy
++to understand some of the early changes that went into Git. As a bonus, this
++commit also updates the README to capture the workflow of actually using GIT in
++its ancient form. Perhaps it is obvious, but use `git log -p README` to see its
++history.
++
++# Data structures
++
++The two big data structures are:
++
++1. The object database (all files under `.git/objects/...`), and
++2. The index file (aka "cache", at `.git/index`).
++
++Refer to README for a more thorough discussion of these data structures. But
++here are a few more interesting notes about each data structure.
++
++## The Object Database
++
++### The 8-bit fanout
++
++The object database has 256 folders, named `00` through `ff` in hex notation
++(the first 8 bits of the 20-byte SHA1 hashing scheme used to generate the object
++IDs for this database).  You may wonder why do we bother with this structure
++(after all, all files are already named with their unique SHA1 hash so the
++chance of an innocent collision is virtually zero). Torvalds stated in [April
++2005](https://lore.kernel.org/git/Pine.LNX.4.58.0504220844390.2344@ppc970.osdl.org/)
++that he didn't want hundreds of thousands of files in one subdirectory:
++
++```
++The 8-bit initial fan-out is very much a
++middle ground: we waste some space (and some time) doing it, but it does
++make the really horrible case largely go away.
++```
++
++The "horrible case" probably refers to the possibility of hundreds of thousands
++of files all residing in a single directory, which Torvalds brought up in the
++linked email.
++
++### Object IDs
++
++You can run `sha1sum` of any file in the object database and the output (SHA1
++hash) will match the filename path. E.g.,
++
++```sh
++$ sha1sum .git/objects/cc/41b0dfbe81a71ca922cda3c9de9db3a25a56b4
++cc41b0dfbe81a71ca922cda3c9de9db3a25a56b4  .git/objects/cc/41b0dfbe81a71ca922cda3c9de9db3a25a56b4
++```
++
++and notice that `cc41b0dfbe81a71ca922cda3c9de9db3a25a56b4` matches the
++`cc/41b0dfbe81a71ca922cda3c9de9db3a25a56b4`. However, this is no longer the case
++and you'll get a different SHA1 hash using any recent Git version. The reason is
++because Git originally hashed the compressed (post-zlibbed) contents, but now it
++hashes the decompressed (pre-zlibbed) content. This switch-over was done in
++[`d98b46f8d9a3daf965a39f8c0089c1401e0081ee`](https://github.com/git/git/commit/d98b46f8d9a3daf965a39f8c0089c1401e0081ee)
++and
++[`f18ca7316631914776136455c151d70318299459`](https://github.com/git/git/commit/f18ca7316631914776136455c151d70318299459),
++just a couple weeks after the root commit, mainly for performance reasons
++(because `write-tree` was taking too long in applying patches). See [the
++original discussion](
++https://lore.kernel.org/git/Pine.LNX.4.58.0504192337120.6467@ppc970.osdl.org/)
++and the ["Object DB conversion"
++announcement](https://lore.kernel.org/git/Pine.LNX.4.58.0504200144260.6467@ppc970.osdl.org/).
++
++Also see [this page](https://matthew-brett.github.io/curious-git/reading_git_objects.html) for a guide on using Python to check the hashes of objects (in case you want to check the hash output independently of Git tooling).
++
++### Only basic compression
++
++Modern Git uses at least two additional schemes not present in this initial
++version to help reduce redundant data: pack files (record deltas of similar
++objects), and recursive tree objects (that's right, in the original
++implementation, a tree object could only refer to blobs).
++
++#### Pack files
++
++Note that in this version, Git treats a file's content as an atomic unit of data
++--- it doesn't perform any form of "chunking" to divide it up into smaller bits
++(similar to what bittorrent does). So every file will get its own blob, and the
++only way that a blob will be reused (thus saving disk space) in a subsequent
++commit is if does not change. It must match identically!
++
++You may think, "why not just divide a file into chunks, and make blobs out of
++each chunk?" --- that way, you'd naturally get some level of deduping, even
++without any additional work. Torvalds [considered this but rejected the idea for
++two reasons: performance and
++simplicity](https://lore.kernel.org/git/Pine.LNX.4.58.0504151117360.7211@ppc970.osdl.org/).
++
++Just a couple months after the above email though, Git [learned about pack
++files](https://github.com/git/git/commit/c323ac7d9c573c5ee8b45b9b9def92a4d4d8204d).
++Basically, pack files compress a range of reachable objects between two commits
++and puts them all into two files, a pack index (`.idx`) and pack (`.pack`) file.
++The basic idea is that you can put all of these objects together in the `.pack`
++file, allowing you to do some level of compression inside it (assuming you have
++lots of objects that have similar content). Here is a description of how it
++would work in [Torvald's own
++words](https://lore.kernel.org/git/Pine.LNX.4.58.0506260905200.19755@ppc970.osdl.org/).
++Here's a somewhat retrospective
++[announcement](https://lore.kernel.org/git/Pine.LNX.4.58.0506271755140.19755@ppc970.osdl.org/),
++which explains that the previous "delta object" approach (where Git stored delta
++objects in the object database) is deprecated (however, do note that the
++algorithms to find the deltas (`diff_delta()`) was re-used in the pack files, so
++not everything was discarded).
++
++If you're wondering why the pack files have a separate dedicated index file, it
++basically comes down to [performance and simplicity,
++again](https://lore.kernel.org/git/Pine.LNX.4.58.0506261206170.19755@ppc970.osdl.org/).
++
++#### Recursive tree objects
++
++As trees can currently only refer to blobs only, this means that every commit is
++somewhat wasteful (although this has the unique property that a single commit
++refers to a single tree object that has everything in it).
++
++Recursive tree objects were added in
++[`d6d3f9d0125a7215f3cdc2600b2307ca55b69536`](https://github.com/git/git/commit/d6d3f9d0125a7215f3cdc2600b2307ca55b69536).
++
++## The Cache
++
++The cache, or index file, represents a tree "snapshot". It is what is staged,
++ready to be committed. More precisely, it is just a `cache_header` followed by a
++list of `cache_entry` values, where each `cache_entry` is a `blob` object's
++metadata. Among other things, the `cache_header` records how many cache entries
++there are in the index file. This is still true in modern Git as of March 2023
++--- if you run `hexdump -C .git/index | head -n1` you can see, for example:
++
++``` sh
++$ hexdump -C .git/index | head -n1
++00000000  44 49 52 43 00 00 00 01  00 00 00 0d 64 15 77 69  |DIRC........d.wi|
++```
++
++where the `DIRC` is a magic number (standing for `dircache`, the original name
++of the `.git` folder) followed by 4 bytes (unsigned int) for the index version
++and another 4 bytes showing the number of cache entries, or file paths, that are
++being "tracked" for purposes of tree object creation. In the example above the
++index version is `1` (modern Git uses version `2`), and there are `0x0d` or `13`
++cache entries, or files, that would make up the current tree.
++
++Note that if you run the above on an index file created by the original
++`update-cache`, you would see instead something like:
++
++``` sh
++$ hexdump -C .git/index | head -n1
++00000000  43 52 49 44 01 00 00 00  01 00 00 00 2b 1a 2d 28  |CRID........+.-(|
++```
++
++because the byte order was using little-endian, "host byte order". This is what
++is meant by "native CPU byte format" comment in `cache.h` (because most CPUs are
++Intel, and Intel uses little-endian). The byte order was changed in
++[`ccc4feb579265266d0a4a73c0c9443ecc0c26ce3`](https://github.com/git/git/commit/ccc4feb579265266d0a4a73c0c9443ecc0c26ce3)
++to use big-endian, also called "network byte order", for convenience over NFS.
++
++## Other missing things vs modern Git
++
++This initial version of Git does not have support for `HEAD` (`.git/HEAD`) or
++branches (`.git/refs/heads/...`). In fact there are no human-friendly references
++at all! But one can easily understand that references are just pointers to the
++object store --- all you would need is a way to keep track of the latest commit
++by saving its object ID (SHA1 hash) somewhere. The simplest possible thing you
++could do is to have a file with this object ID in it --- and this is what modern
++Git (still) does. The old
++[README](https://github.com/git/git/commit/6ad6d3d36c5924c8ff502ebbb6a6216df01e7efb)
++notes that in practice, the SHA1 hash was written at `.git/HEAD` in practice. It
++was formally recognized as such just a day later in
++[`839a7a06f35bf8cd563a41d6db97f453ab108129`](https://github.com/git/git/commit/839a7a06f35bf8cd563a41d6db97f453ab108129),
++as part of the `git-prune-script` and `git-pull-script` helpers to help with
++merging.
++
++## Usage Guide
++
++This guide explains how the earliest version of Git (root commit) works. You can
++read these steps and also look up the C source code and read them to get a
++better sense of how everything works.
++
++1. Initialize the object database with `init-db`. This is the `.git` directory.
++2. Make changes to files. These files can be any file except the `.git`
++   directory. We don't have the concept of `.gitignore` yet, and also, all
++   dotfiles (any file that begins with a `.`) are ignored and cannot be tracked
++   by Git.
++3. Stage modified files with `update-cache <FILE> [...FILES]`. This compresses
++   these files' contents and saves them to the object database, such that each
++   file gets its own object database file. At this point the files are tracked
++   by Git. It also results in adding this file's metadata (essentially the
++   filename and SHA1 of its contents) to the `.git/index` file.
++4. (Optional) Check the diff of what is in the `.git/index` (staged) versus the
++   current working tree with `show-diff`. We are just diffing whatever is in the
++   current cache `.git/index` (essentially the last known
++   "tree-to-be-written-to-object-database-but-not-yet") and what is on disk at
++   those paths that the cache describes. The diffing comparison is basic and is
++   based on timestamps and inodes (presumably for performance).
++
++   This diff is the ancient equivalent of `git diff`. If we add those files that
++   have been modified with `update-cache`, then `show-diff` will show nothing,
++   because the working tree files on disk match what is in the index file (just
++   like how modern `git diff` will show nothing, unless you invoke `git diff
++   --cached`, in this situation).
++
++   Note also that we are not comparing things to a previous commit of any kind.
++   Instead we are always only diffing the files that were touched/modified
++   (during the course of normal development) and what the index file has. It's
++   even more primitive than the modern "detached HEAD mode" in Git because we do
++   not automatically diff against a "current commit" because the concept of a
++   "current commit" doesn't exist yet --- we literally have blobs, trees, and
++   commits in the object database, the index file (describing whatever paths
++   make up another (perhaps new and unique) tree object), and the working tree
++   (everything except the `.git` folder).
++
++   Lastly, the `show-diff` command shells out to `diff` (so the codebase doesn't
++   have any fancy diffing algorithms).
++5. Run `write-tree` to save the data in `.git/index` is its own tree object in
++   the object database. The SHA1 of this tree object is printed to STDOUT. Take
++   a note of this SHA1 hash, as it will be referenced to construct a commit
++   (changeset) object.
++6. (Optional) Check the SHA1 from `write-tree` with `read-tree <SHA1>`. This
++   will display the tree object (by displaying its blobs).
++7. Create a new commit with `echo "my-commit-message" | commit-tree <SHA1>`,
++   using the SHA1 from step 5 above. This will create a new commit object and
++   write it to the object database.
++8. (Optional) Check the commit with `cat-file <COMMIT_SHA1>`. This will write
++   the commit message and metadata (including the tree SHA (and parent commit
++   SHAs for non-root commits)) to a temporary file. You can just `cat` out this
++   file to see it (commit date, author name, email, etc.).
++
++   The fact that `cat-file` writes to disk is a bit annoying, and so it learned
++   to output to STDOUT in
++   [`bf0c6e839c692142784caf07b523cd69442e57a5`](https://github.com/git/git/commit/bf0c6e839c692142784caf07b523cd69442e57a5).
++9. Repeat steps 2-7 above, but for step 5 pass in the `-p <SHA1>` flag to mark
++   it as a child of a previous commit SHA. You can pass in multiple `-p` flags
++   to denote multiple parents (e.g., a merge). For the very first merge in Git's
++   own history, see
++   [`b51ad4314078298194d23d46e2b4473ffd32a88a`](https://github.com/git/git/commit/b51ad4314078298194d23d46e2b4473ffd32a88a).
+-- 
+2.38.1
+

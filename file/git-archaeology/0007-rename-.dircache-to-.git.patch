@@ -1,0 +1,179 @@
+From 79f87578ffa8608f6d1e4fc00b1f25546c6e4dd9 Mon Sep 17 00:00:00 2001
+From: Linus Arver <linusa@google.com>
+Date: Mon, 20 Mar 2023 09:00:00 -0700
+Subject: [PATCH 7/9] rename .dircache to .git
+
+---
+ Makefile       |  2 +-
+ README         |  2 +-
+ cache.h        |  2 +-
+ cat-file.c     |  2 +-
+ init-db.c      |  4 ++--
+ read-cache.c   | 10 +++++-----
+ update-cache.c | 14 +++++++-------
+ 7 files changed, 18 insertions(+), 18 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index c2ee1c5bda..2da6c0fdff 100644
+--- a/Makefile
++++ b/Makefile
+@@ -40,4 +40,4 @@ clean:
+ 	rm -f *.o $(PROG) temp_git_file_*
+ 
+ backup: clean
+-	cd .. ; tar czvf dircache.tar.gz dir-cache
++	cd .. ; tar czvf index.tar.gz .git
+diff --git a/README b/README
+index 27577f7684..cf550e258c 100644
+--- a/README
++++ b/README
+@@ -122,7 +122,7 @@ it's not something "git" does for you.
+ Another way of saying the same thing: "git" itself only handles content
+ integrity, the trust has to come from outside. 
+ 
+-	Current Directory Cache (".dircache/index")
++	Current Directory Cache (".git/index")
+ 
+ The "current directory cache" is a simple binary file, which contains an
+ efficient representation of a virtual directory content at some random
+diff --git a/cache.h b/cache.h
+index d4d2c22638..87cb50d240 100644
+--- a/cache.h
++++ b/cache.h
+@@ -69,7 +69,7 @@ extern struct cache_entry **active_cache;
+ extern unsigned int active_nr, active_alloc;
+ 
+ #define DB_ENVIRONMENT "SHA1_FILE_DIRECTORY"
+-#define DEFAULT_DB_ENVIRONMENT ".dircache/objects"
++#define DEFAULT_DB_ENVIRONMENT ".git/objects"
+ 
+ /**
+  * Determine how many bytes a new cache_entry would _actually_ need (for
+diff --git a/cat-file.c b/cat-file.c
+index bc3ac5e0fa..6c209002c4 100644
+--- a/cat-file.c
++++ b/cat-file.c
+@@ -6,7 +6,7 @@
+  * "blob") and write the contents back out to a temporary file.
+  *
+  * E.g., for the file
+- * ".dircache/objects/aa/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", you can do
++ * ".git/objects/aa/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", you can do
+  * "cat-file aabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb".
+  */
+ int main(int argc, char **argv)
+diff --git a/init-db.c b/init-db.c
+index e66665a0cb..fe863b3a40 100644
+--- a/init-db.c
++++ b/init-db.c
+@@ -5,8 +5,8 @@ int main()
+ 	char *sha1_dir = getenv(DB_ENVIRONMENT), *path;
+ 	int len, i;
+ 
+-	if (mkdir(".dircache", 0700) < 0) {
+-		perror("unable to create .dircache");
++	if (mkdir(".git", 0700) < 0) {
++		perror("unable to create .git");
+ 		exit(1);
+ 	}
+ 
+diff --git a/read-cache.c b/read-cache.c
+index be4317b29f..86eb2591ad 100644
+--- a/read-cache.c
++++ b/read-cache.c
+@@ -67,16 +67,16 @@ char *sha1_file_name(unsigned char *sha1)
+ 		char *sha1_file_directory = getenv(DB_ENVIRONMENT) ? : DEFAULT_DB_ENVIRONMENT;
+ 		int len = strlen(sha1_file_directory);
+ 
+-		/* base = ".dircache/objects" + 60 chars */
++		/* base = ".git/objects" + 60 chars */
+ 		base = malloc(len + 60);
+ 		memcpy(base, sha1_file_directory, len);
+ 
+ 		/* Zero-out the 60 trailing chars. */
+ 		memset(base+len, 0, 60);
+ 
+-		/* base = ".dircache/objects/" + 59 NUL chars */
++		/* base = ".git/objects/" + 59 NUL chars */
+ 		base[len] = '/';
+-		/* base = ".dircache/objects/??/" + 57 NUL chars */
++		/* base = ".git/objects/??/" + 57 NUL chars */
+ 		base[len+3] = '/';
+ 		/* Point "name" to the ?? from above. */
+ 		name = base + len + 1;
+@@ -193,7 +193,7 @@ int write_sha1_file(char *buf, unsigned len)
+ int write_sha1_buffer(unsigned char *sha1, void *buf, unsigned int size)
+ {
+ 	/**
+-	 * filename can be, e.g., ".dircache/objects/dc/..." (where "dc" is the
++	 * filename can be, e.g., ".git/objects/dc/..." (where "dc" is the
+ 	 * first byte of SHA1, and "..." is the 38 remaining characters for the 19
+ 	 * SHA1 byte values.)
+ 	 *
+@@ -261,7 +261,7 @@ int read_cache(void)
+ 		sha1_file_directory = DEFAULT_DB_ENVIRONMENT;
+ 	if (access(sha1_file_directory, X_OK) < 0)
+ 		return error("no access to SHA1 file directory");
+-	fd = open(".dircache/index", O_RDONLY);
++	fd = open(".git/index", O_RDONLY);
+ 	if (fd < 0)
+ 		return (errno == ENOENT) ? 0 : error("open failed");
+ 
+diff --git a/update-cache.c b/update-cache.c
+index f09e732973..c5d64f8721 100644
+--- a/update-cache.c
++++ b/update-cache.c
+@@ -108,8 +108,8 @@ static int add_cache_entry(struct cache_entry *ce)
+  * Finalize a cache_entry by actually computing its compressed contents' SHA1
+  * signature (ce->sha1). "fd" is the file descriptor whose (compressed) contents
+  * we want to turn into a blob (along with some metadata alonge the way). We
+- * also write this compressed data into ".dircache/objects/dc/..." ("dc" is just
+- * an example byte name, and there are 255 others).
++ * also write this compressed data into ".git/objects/dc/..." ("dc" is just an
++ * example byte name, and there are 255 others).
+  */
+ static int index_fd(int namelen, struct cache_entry *ce, int fd, struct stat *st)
+ {
+@@ -250,7 +250,7 @@ static int write_cache(int newfd, struct cache_entry **cache, int entries)
+ /*
+  * We fundamentally don't like some paths: we don't want
+  * dot or dot-dot anywhere, and in fact, we don't even want
+- * any other dot-files (.dircache or anything else). They
++ * any other dot-files (.git or anything else). They
+  * are hidden, for chist sake.
+  *
+  * Also, we don't want double slashes or slashes at the
+@@ -276,7 +276,7 @@ inside:
+ }
+ 
+ /**
+- * Give file paths to add to the dircache (staging area). This is a primitive
++ * Give file paths to add to the .git/index (staging area). This is a primitive
+  * "git add" that only understands entire files. This is also before .gitignore
+  * files were implemented, so we ignore paths that have any hidden dot-files in
+  * them at any point in their path hierarchy (see verify_path()).
+@@ -293,7 +293,7 @@ int main(int argc, char **argv)
+ 		return -1;
+ 	}
+ 
+-	newfd = open(".dircache/index.lock", O_RDWR | O_CREAT | O_EXCL, 0600);
++	newfd = open(".git/index.lock", O_RDWR | O_CREAT | O_EXCL, 0600);
+ 	if (newfd < 0) {
+ 		perror("unable to create new cachefile");
+ 		return -1;
+@@ -309,10 +309,10 @@ int main(int argc, char **argv)
+ 			goto out;
+ 		}
+ 	}
+-	if (!write_cache(newfd, active_cache, active_nr) && !rename(".dircache/index.lock", ".dircache/index"))
++	if (!write_cache(newfd, active_cache, active_nr) && !rename(".git/index.lock", ".git/index"))
+ 		return 0;
+ out:
+-	unlink(".dircache/index.lock");
++	unlink(".git/index.lock");
+ 
+ 	return 0;
+ }
+-- 
+2.38.1
+

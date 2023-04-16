@@ -1,0 +1,189 @@
+From 5283d4a8d49fee24c1f302d92f59f1371fb93244 Mon Sep 17 00:00:00 2001
+From: Linus Arver <linusa@google.com>
+Date: Mon, 20 Mar 2023 09:00:00 -0700
+Subject: [PATCH 6/9] better understananding of how the cache works
+
+---
+ cache.h        | 10 +++++++++-
+ cat-file.c     |  9 +++++++++
+ read-cache.c   | 14 ++++++++++++--
+ update-cache.c | 43 +++++++++++++++++++++++++++++++++++++------
+ 4 files changed, 67 insertions(+), 9 deletions(-)
+
+diff --git a/cache.h b/cache.h
+index 9e076e12a5..d4d2c22638 100644
+--- a/cache.h
++++ b/cache.h
+@@ -22,7 +22,7 @@
+  * just a cache, after all.
+  */
+ 
+-#define CACHE_SIGNATURE 0x44495243	/* "DIRC" */
++#define CACHE_SIGNATURE 0x44495243	/* "DIRC" in hex. */
+ struct cache_header {
+ 	unsigned int signature;
+ 	unsigned int version;
+@@ -94,6 +94,14 @@ extern unsigned int active_nr, active_alloc;
+  */
+ #define ce_size(ce) cache_entry_size((ce)->namelen)
+ 
++/**
++ * This computes a new (larger) number for the number of elements we want to
++ * store in active_cache. The +16 is to handle the case where x is 0 (because
++ * without the +16, we'd get 0 forever). As this is called repeatedly, it tends
++ * toward growing at a rate of 1.5 times the size of the previous size because
++ * the "+16" becomes less and less important. IOW the space complexity is
++ * O(1.5 * x).
++ */
+ #define alloc_nr(x) (((x)+16)*3/2)
+ 
+ /* Initialize the cache information */
+diff --git a/cat-file.c b/cat-file.c
+index 159e6b2be1..bc3ac5e0fa 100644
+--- a/cat-file.c
++++ b/cat-file.c
+@@ -1,5 +1,14 @@
+ #include "cache.h"
+ 
++/**
++ * Given a SHA1 hash (you can get this by literally concatenating the directory
++ * and filename of any file in the object store), print out its type (e.g.,
++ * "blob") and write the contents back out to a temporary file.
++ *
++ * E.g., for the file
++ * ".dircache/objects/aa/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", you can do
++ * "cat-file aabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb".
++ */
+ int main(int argc, char **argv)
+ {
+ 	unsigned char sha1[20];
+diff --git a/read-cache.c b/read-cache.c
+index 93082c838d..be4317b29f 100644
+--- a/read-cache.c
++++ b/read-cache.c
+@@ -265,7 +265,7 @@ int read_cache(void)
+ 	if (fd < 0)
+ 		return (errno == ENOENT) ? 0 : error("open failed");
+ 
+-	map = (void *)-1;
++	map = MAP_FAILED;
+ 	if (!fstat(fd, &st)) {
+ 		map = NULL;
+ 		size = st.st_size;
+@@ -274,13 +274,23 @@ int read_cache(void)
+ 			map = mmap(NULL, size, PROT_READ, MAP_PRIVATE, fd, 0);
+ 	}
+ 	close(fd);
+-	if (-1 == (int)(long)map)
++	if (map == MAP_FAILED)
+ 		return error("mmap failed");
+ 
+ 	hdr = map;
+ 	if (verify_hdr(hdr, size) < 0)
+ 		goto unmap;
+ 
++	/**
++	 * Finally, we're done with proactive error checks.
++	 * We've loaded the index file (essentially memory dump of the cache from a
++	 * previous run of update-cache) to memory with mmap. Now just put it into a
++	 * more manageable data structure, into the active_cache array.
++	 *
++	 * Notice that active_cache only stores pointers to cache_entries. This
++	 * makes sense because the actual values were already mmap'ed into memory
++	 * above.
++	 */
+ 	active_nr = hdr->entries;
+ 	active_alloc = alloc_nr(active_nr);
+ 	active_cache = calloc(active_alloc, sizeof(struct cache_entry *));
+diff --git a/update-cache.c b/update-cache.c
+index 877367b80a..f09e732973 100644
+--- a/update-cache.c
++++ b/update-cache.c
+@@ -6,15 +6,25 @@ static int cache_name_compare(const char *name1, int len1, const char *name2, in
+ 	int cmp;
+ 
+ 	cmp = memcmp(name1, name2, len);
++	/* There is a mismatch in the first len bytes. */
+ 	if (cmp)
+ 		return cmp;
++	/* The first len bytes are identical, so compare based on overall length. */
+ 	if (len1 < len2)
+ 		return -1;
+ 	if (len1 > len2)
+ 		return 1;
++	/* The two names are identical. */
+ 	return 0;
+ }
+ 
++/**
++ * This function helps us determine the index into the active_cache[] array for
++ * a given cache_entry, based on its name. It's basically a hashing scheme
++ * because we try to place the entry in the middle of the first and last
++ * entries, if possible (instead of trying to put entries consecutively next to
++ * each other, as a regular array would). It's essentially binary search.
++ */
+ static int cache_name_pos(const char *name, int namelen)
+ {
+ 	int first, last;
+@@ -22,16 +32,25 @@ static int cache_name_pos(const char *name, int namelen)
+ 	first = 0;
+ 	last = active_nr;
+ 	while (last > first) {
+-		int next = (last + first) >> 1;
+-		struct cache_entry *ce = active_cache[next];
++		/* Try the middle position first. */
++		int mid = (first + last) >> 1;
++		struct cache_entry *ce = active_cache[mid];
+ 		int cmp = cache_name_compare(name, namelen, (const char *)ce->name, ce->namelen);
++		/**
++		 * Return a negative number only if the name matches the ce->name
++		 * exactly. This is important for remove_file_from_cache() below.
++		 *
++		 * We "encode" the index value into a negative number, while still
++		 * taking into account the case where "mid" is 0. The -1 at the end
++		 * ensures that we can also handle the mid == 0 case.
++		 */
+ 		if (!cmp)
+-			return -next-1;
++			return -mid-1;
+ 		if (cmp < 0) {
+-			last = next;
++			last = mid;
+ 			continue;
+ 		}
+-		first = next+1;
++		first = mid+1;
+ 	}
+ 	return first;
+ }
+@@ -39,6 +58,17 @@ static int cache_name_pos(const char *name, int namelen)
+ static int remove_file_from_cache(const char *path)
+ {
+ 	int pos = cache_name_pos(path, strlen(path));
++	/**
++	 * Only perform the removal if the file we want to remove matches the
++	 * name already found in the cache.
++	 *
++	 * If pos is negative, make it positive and subtract 1. E.g., if -6, then
++	 * make it 5. This "decodes" it to an actual (natural) index number.
++	 *
++	 * Don't read too deeply into the algorithm below in the current state
++	 * though, because it was refactored a few days later in
++	 * 76e7f4ec485f24b167b76db046dc2ca4562debd4.
++	 */
+ 	if (pos < 0) {
+ 		pos = -pos-1;
+ 		active_nr--;
+@@ -78,7 +108,8 @@ static int add_cache_entry(struct cache_entry *ce)
+  * Finalize a cache_entry by actually computing its compressed contents' SHA1
+  * signature (ce->sha1). "fd" is the file descriptor whose (compressed) contents
+  * we want to turn into a blob (along with some metadata alonge the way). We
+- * also write this compressed data into ".dircache/objects/dc/...".
++ * also write this compressed data into ".dircache/objects/dc/..." ("dc" is just
++ * an example byte name, and there are 255 others).
+  */
+ static int index_fd(int namelen, struct cache_entry *ce, int fd, struct stat *st)
+ {
+-- 
+2.38.1
+

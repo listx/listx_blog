@@ -1,0 +1,347 @@
+From e369bb7db94853a7f471214064bf733ee8d74224 Mon Sep 17 00:00:00 2001
+From: Linus Arver <linusa@google.com>
+Date: Mon, 20 Mar 2023 09:00:00 -0700
+Subject: [PATCH 1/9] fix build warnings and errors
+
+Also add reproducible Make target for Nix.
+---
+ Makefile       |  9 ++++++---
+ cache.h        |  7 ++++---
+ cat-file.c     |  4 +++-
+ init-db.c      |  8 ++++----
+ read-cache.c   | 22 +++++++++++++---------
+ read-tree.c    |  3 +--
+ show-diff.c    |  9 ++++-----
+ update-cache.c | 17 ++++++++++-------
+ write-tree.c   |  4 ++--
+ 9 files changed, 47 insertions(+), 36 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index a6bba79ba1..c2ee1c5bda 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,14 +1,17 @@
+-CFLAGS=-g
++CFLAGS=-g -Wall -Wextra -std=gnu99
+ CC=gcc
+ 
+ PROG=update-cache show-diff init-db write-tree read-tree commit-tree cat-file
+ 
+-all: $(PROG)
++all:
++	nix-shell -p openssl_1_1 -p zlib --command "make clean && make build"
++
++build: $(PROG)
+ 
+ install: $(PROG)
+ 	install $(PROG) $(HOME)/bin/
+ 
+-LIBS= -lssl
++LIBS= -lssl -lcrypto -lz
+ 
+ init-db: init-db.o
+ 
+diff --git a/cache.h b/cache.h
+index 98a32a9ad3..150c6e07a3 100644
+--- a/cache.h
++++ b/cache.h
+@@ -9,6 +9,7 @@
+ #include <stdarg.h>
+ #include <errno.h>
+ #include <sys/mman.h>
++#include <string.h>
+ 
+ #include <openssl/sha.h>
+ #include <zlib.h>
+@@ -58,9 +59,9 @@ struct cache_entry {
+ 	unsigned char name[0];
+ };
+ 
+-const char *sha1_file_directory;
+-struct cache_entry **active_cache;
+-unsigned int active_nr, active_alloc;
++extern const char *sha1_file_directory;
++extern struct cache_entry **active_cache;
++extern unsigned int active_nr, active_alloc;
+ 
+ #define DB_ENVIRONMENT "SHA1_FILE_DIRECTORY"
+ #define DEFAULT_DB_ENVIRONMENT ".dircache/objects"
+diff --git a/cat-file.c b/cat-file.c
+index 74a0a234dd..159e6b2be1 100644
+--- a/cat-file.c
++++ b/cat-file.c
+@@ -17,7 +17,9 @@ int main(int argc, char **argv)
+ 	fd = mkstemp(template);
+ 	if (fd < 0)
+ 		usage("unable to create tempfile");
+-	if (write(fd, buf, size) != size)
++	if ((unsigned long)write(fd, buf, size) != size)
+ 		strcpy(type, "bad");
+ 	printf("%s: %s\n", template, type);
++
++	return 0;
+ }
+diff --git a/init-db.c b/init-db.c
+index 25dc13fe10..31e82da1bb 100644
+--- a/init-db.c
++++ b/init-db.c
+@@ -1,9 +1,9 @@
+ #include "cache.h"
+ 
+-int main(int argc, char **argv)
++int main()
+ {
+ 	char *sha1_dir = getenv(DB_ENVIRONMENT), *path;
+-	int len, i, fd;
++	int len, i;
+ 
+ 	if (mkdir(".dircache", 0700) < 0) {
+ 		perror("unable to create .dircache");
+@@ -19,8 +19,8 @@ int main(int argc, char **argv)
+ 	sha1_dir = getenv(DB_ENVIRONMENT);
+ 	if (sha1_dir) {
+ 		struct stat st;
+-		if (!stat(sha1_dir, &st) < 0 && S_ISDIR(st.st_mode))
+-			return;
++		if (!(stat(sha1_dir, &st) < 0) && S_ISDIR(st.st_mode))
++			return 0;
+ 		fprintf(stderr, "DB_ENVIRONMENT set to bad directory %s: ", sha1_dir);
+ 	}
+ 
+diff --git a/read-cache.c b/read-cache.c
+index c924a6e0fc..2f99304321 100644
+--- a/read-cache.c
++++ b/read-cache.c
+@@ -70,7 +70,7 @@ char *sha1_file_name(unsigned char *sha1)
+ 		name = base + len + 1;
+ 	}
+ 	for (i = 0; i < 20; i++) {
+-		static char hex[] = "0123456789abcdef";
++		static const char hex[] = "0123456789abcdef";
+ 		unsigned int val = sha1[i];
+ 		char *pos = name + i*2 + (i > 0);
+ 		*pos++ = hex[val >> 4];
+@@ -84,7 +84,7 @@ void * read_sha1_file(unsigned char *sha1, char *type, unsigned long *size)
+ 	z_stream stream;
+ 	char buffer[8192];
+ 	struct stat st;
+-	int i, fd, ret, bytes;
++	int fd, ret, bytes;
+ 	void *map, *buf;
+ 	char *filename = sha1_file_name(sha1);
+ 
+@@ -106,7 +106,7 @@ void * read_sha1_file(unsigned char *sha1, char *type, unsigned long *size)
+ 	memset(&stream, 0, sizeof(stream));
+ 	stream.next_in = map;
+ 	stream.avail_in = st.st_size;
+-	stream.next_out = buffer;
++	stream.next_out = (unsigned char *)buffer;
+ 	stream.avail_out = sizeof(buffer);
+ 
+ 	inflateInit(&stream);
+@@ -120,7 +120,7 @@ void * read_sha1_file(unsigned char *sha1, char *type, unsigned long *size)
+ 
+ 	memcpy(buf, buffer + bytes, stream.total_out - bytes);
+ 	bytes = stream.total_out - bytes;
+-	if (bytes < *size && ret == Z_OK) {
++	if ((unsigned long)bytes < *size && ret == Z_OK) {
+ 		stream.next_out = buf + bytes;
+ 		stream.avail_out = *size - bytes;
+ 		while (inflate(&stream, Z_FINISH) == Z_OK)
+@@ -145,9 +145,9 @@ int write_sha1_file(char *buf, unsigned len)
+ 	compressed = malloc(size);
+ 
+ 	/* Compress it */
+-	stream.next_in = buf;
++	stream.next_in = (unsigned char *)buf;
+ 	stream.avail_in = len;
+-	stream.next_out = compressed;
++	stream.next_out = (unsigned char *)compressed;
+ 	stream.avail_out = size;
+ 	while (deflate(&stream, Z_FINISH) == Z_OK)
+ 		/* nothing */;
+@@ -168,12 +168,15 @@ int write_sha1_file(char *buf, unsigned len)
+ int write_sha1_buffer(unsigned char *sha1, void *buf, unsigned int size)
+ {
+ 	char *filename = sha1_file_name(sha1);
+-	int i, fd;
++	int fd;
+ 
+ 	fd = open(filename, O_WRONLY | O_CREAT | O_EXCL, 0666);
+ 	if (fd < 0)
+ 		return (errno == EEXIST) ? 0 : -1;
+-	write(fd, buf, size);
++	if (write(fd, buf, size) != size) {
++		perror("unable to write sha1 buffer");
++		return -1;
++	}
+ 	close(fd);
+ 	return 0;
+ }
+@@ -204,7 +207,8 @@ static int verify_hdr(struct cache_header *hdr, unsigned long size)
+ 
+ int read_cache(void)
+ {
+-	int fd, i;
++	int fd;
++	unsigned int i;
+ 	struct stat st;
+ 	unsigned long size, offset;
+ 	void *map;
+diff --git a/read-tree.c b/read-tree.c
+index 1b47742d8c..e040b01cb2 100644
+--- a/read-tree.c
++++ b/read-tree.c
+@@ -12,7 +12,7 @@ static int unpack(unsigned char *sha1)
+ 	if (strcmp(type, "tree"))
+ 		usage("expected a 'tree' node");
+ 	while (size) {
+-		int len = strlen(buffer)+1;
++		unsigned int len = strlen(buffer)+1;
+ 		unsigned char *sha1 = buffer + len;
+ 		char *path = strchr(buffer, ' ')+1;
+ 		unsigned int mode;
+@@ -27,7 +27,6 @@ static int unpack(unsigned char *sha1)
+ 
+ int main(int argc, char **argv)
+ {
+-	int fd;
+ 	unsigned char sha1[20];
+ 
+ 	if (argc != 2)
+diff --git a/show-diff.c b/show-diff.c
+index b8522886a1..59bd8764b6 100644
+--- a/show-diff.c
++++ b/show-diff.c
+@@ -30,7 +30,7 @@ static int match_stat(struct cache_entry *ce, struct stat *st)
+ 	return changed;
+ }
+ 
+-static void show_differences(struct cache_entry *ce, struct stat *cur,
++static void show_differences(struct cache_entry *ce,
+ 	void *old_contents, unsigned long long old_size)
+ {
+ 	static char cmd[1000];
+@@ -42,7 +42,7 @@ static void show_differences(struct cache_entry *ce, struct stat *cur,
+ 	pclose(f);
+ }
+ 
+-int main(int argc, char **argv)
++int main(void)
+ {
+ 	int entries = read_cache();
+ 	int i;
+@@ -55,12 +55,11 @@ int main(int argc, char **argv)
+ 		struct stat st;
+ 		struct cache_entry *ce = active_cache[i];
+ 		int n, changed;
+-		unsigned int mode;
+ 		unsigned long size;
+ 		char type[20];
+ 		void *new;
+ 
+-		if (stat(ce->name, &st) < 0) {
++		if (stat((const char *)ce->name, &st) < 0) {
+ 			printf("%s: %s\n", ce->name, strerror(errno));
+ 			continue;
+ 		}
+@@ -74,7 +73,7 @@ int main(int argc, char **argv)
+ 			printf("%02x", ce->sha1[n]);
+ 		printf("\n");
+ 		new = read_sha1_file(ce->sha1, type, &size);
+-		show_differences(ce, &st, new, size);
++		show_differences(ce, new, size);
+ 		free(new);
+ 	}
+ 	return 0;
+diff --git a/update-cache.c b/update-cache.c
+index 5085a5cb53..a4fc05e838 100644
+--- a/update-cache.c
++++ b/update-cache.c
+@@ -24,7 +24,7 @@ static int cache_name_pos(const char *name, int namelen)
+ 	while (last > first) {
+ 		int next = (last + first) >> 1;
+ 		struct cache_entry *ce = active_cache[next];
+-		int cmp = cache_name_compare(name, namelen, ce->name, ce->namelen);
++		int cmp = cache_name_compare(name, namelen, (const char *)ce->name, ce->namelen);
+ 		if (!cmp)
+ 			return -next-1;
+ 		if (cmp < 0) {
+@@ -36,22 +36,23 @@ static int cache_name_pos(const char *name, int namelen)
+ 	return first;
+ }
+ 
+-static int remove_file_from_cache(char *path)
++static int remove_file_from_cache(const char *path)
+ {
+ 	int pos = cache_name_pos(path, strlen(path));
+ 	if (pos < 0) {
+ 		pos = -pos-1;
+ 		active_nr--;
+-		if (pos < active_nr)
++		if ((unsigned int)pos < active_nr)
+ 			memmove(active_cache + pos, active_cache + pos + 1, (active_nr - pos - 1) * sizeof(struct cache_entry *));
+ 	}
++	return 0;
+ }
+ 
+ static int add_cache_entry(struct cache_entry *ce)
+ {
+ 	int pos;
+ 
+-	pos = cache_name_pos(ce->name, ce->namelen);
++	pos = cache_name_pos((const char *)ce->name, ce->namelen);
+ 
+ 	/* existing match? Just replace it */
+ 	if (pos < 0) {
+@@ -67,13 +68,13 @@ static int add_cache_entry(struct cache_entry *ce)
+ 
+ 	/* Add it in.. */
+ 	active_nr++;
+-	if (active_nr > pos)
++	if (active_nr > (unsigned int)pos)
+ 		memmove(active_cache + pos + 1, active_cache + pos, (active_nr - pos - 1) * sizeof(ce));
+ 	active_cache[pos] = ce;
+ 	return 0;
+ }
+ 
+-static int index_fd(const char *path, int namelen, struct cache_entry *ce, int fd, struct stat *st)
++static int index_fd(int namelen, struct cache_entry *ce, int fd, struct stat *st)
+ {
+ 	z_stream stream;
+ 	int max_out_bytes = namelen + st->st_size + 200;
+@@ -150,7 +151,7 @@ static int add_file_to_cache(char *path)
+ 	ce->st_size = st.st_size;
+ 	ce->namelen = namelen;
+ 
+-	if (index_fd(path, namelen, ce, fd, &st) < 0)
++	if (index_fd(namelen, ce, fd, &st) < 0)
+ 		return -1;
+ 
+ 	return add_cache_entry(ce);
+@@ -245,4 +246,6 @@ int main(int argc, char **argv)
+ 		return 0;
+ out:
+ 	unlink(".dircache/index.lock");
++
++	return 0;
+ }
+diff --git a/write-tree.c b/write-tree.c
+index 921f981353..ce67c18c03 100644
+--- a/write-tree.c
++++ b/write-tree.c
+@@ -24,9 +24,9 @@ static int prepend_integer(char *buffer, unsigned val, int i)
+ 
+ #define ORIG_OFFSET (40)	/* Enough space to add the header of "tree <size>\0" */
+ 
+-int main(int argc, char **argv)
++int main(void)
+ {
+-	unsigned long size, offset, val;
++	unsigned long size, offset;
+ 	int i, entries = read_cache();
+ 	char *buffer;
+ 
+-- 
+2.38.1
+

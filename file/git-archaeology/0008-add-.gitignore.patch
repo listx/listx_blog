@@ -1,0 +1,29 @@
+From b0afea3a5e71d8bafd3c63d8a6bf1f024209a042 Mon Sep 17 00:00:00 2001
+From: Linus Arver <linusa@google.com>
+Date: Mon, 20 Mar 2023 09:00:00 -0700
+Subject: [PATCH 8/9] add .gitignore
+
+This is a "convenience commit" to help make shell prompts with git
+commands look clean when we run "make" to compile things.
+---
+ .gitignore | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+ create mode 100644 .gitignore
+
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+index 0000000000..81edfa63d7
+--- /dev/null
++++ b/.gitignore
+@@ -0,0 +1,8 @@
++*.o
++cat-file
++commit-tree
++init-db
++read-tree
++show-diff
++update-cache
++write-tree
+-- 
+2.38.1
+

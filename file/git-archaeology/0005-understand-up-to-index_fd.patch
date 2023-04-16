@@ -1,0 +1,182 @@
+From ff040783e3244e1f6adca6d2797a01db6ab1b2ea Mon Sep 17 00:00:00 2001
+From: Linus Arver <linusa@google.com>
+Date: Mon, 20 Mar 2023 09:00:00 -0700
+Subject: [PATCH 5/9] understand up to index_fd()
+
+---
+ cache.h        |  5 +++++
+ init-db.c      |  4 ++++
+ read-cache.c   | 38 ++++++++++++++++++++++++++++++++++++++
+ update-cache.c | 32 ++++++++++++++++++++++++++++----
+ 4 files changed, 75 insertions(+), 4 deletions(-)
+
+diff --git a/cache.h b/cache.h
+index cc9f99cf35..9e076e12a5 100644
+--- a/cache.h
++++ b/cache.h
+@@ -56,6 +56,11 @@ struct cache_entry {
+ 	unsigned int st_size;
+ 	unsigned char sha1[20];
+ 	unsigned short namelen;
++	/**
++	 * The "name" comes last because it's the path for a file and is of variable
++	 * length. Putting it here makes computing the bytes needed for a
++	 * cache_entry in the cache_entry_size macro.
++	 */
+ 	unsigned char name[0];
+ };
+ 
+diff --git a/init-db.c b/init-db.c
+index 31e82da1bb..e66665a0cb 100644
+--- a/init-db.c
++++ b/init-db.c
+@@ -38,6 +38,10 @@ int main()
+ 	}
+ 	path = malloc(len + 40);
+ 	memcpy(path, sha1_dir, len);
++	/**
++	 * Create 256 subdirectories, one directory for each possible value of the
++	 * first byte of a SHA1 hash.
++	 */
+ 	for (i = 0; i < 256; i++) {
+ 		sprintf(path+len, "/%02x", i);
+ 		if (mkdir(path, 0700) < 0) {
+diff --git a/read-cache.c b/read-cache.c
+index 2f99304321..93082c838d 100644
+--- a/read-cache.c
++++ b/read-cache.c
+@@ -57,23 +57,48 @@ char * sha1_to_hex(unsigned char *sha1)
+ char *sha1_file_name(unsigned char *sha1)
+ {
+ 	int i;
++	/**
++	 * Static allocation! This way we avoid re-computing the sha1_file_directory
++	 * (*base) on every invocation of this function.
++	 */
+ 	static char *name, *base;
+ 
+ 	if (!base) {
+ 		char *sha1_file_directory = getenv(DB_ENVIRONMENT) ? : DEFAULT_DB_ENVIRONMENT;
+ 		int len = strlen(sha1_file_directory);
++
++		/* base = ".dircache/objects" + 60 chars */
+ 		base = malloc(len + 60);
+ 		memcpy(base, sha1_file_directory, len);
++
++		/* Zero-out the 60 trailing chars. */
+ 		memset(base+len, 0, 60);
++
++		/* base = ".dircache/objects/" + 59 NUL chars */
+ 		base[len] = '/';
++		/* base = ".dircache/objects/??/" + 57 NUL chars */
+ 		base[len+3] = '/';
++		/* Point "name" to the ?? from above. */
+ 		name = base + len + 1;
+ 	}
+ 	for (i = 0; i < 20; i++) {
+ 		static const char hex[] = "0123456789abcdef";
+ 		unsigned int val = sha1[i];
++		/**
++		 * We need 2 bytes ("00"-"ff") to represent an integer value of a single
++		 * byte (0-255). Hence the "i*2".
++		 *
++		 * The (i > 0) is for whether we're in our first iteration of this loop
++		 * or not. This matters because the first byte is special, because on
++		 * disk it gets its own folder with a trailing "/" slash (the "??/" part
++		 * above). So all subsequent bytes after the first byte need to be
++		 * offset by an extra byte. Hence the "(i > 0)" which evaluates to 1 if
++		 * this the case.
++		 */
+ 		char *pos = name + i*2 + (i > 0);
++		/* Convert the top 4 bits of the byte to a hex char. */
+ 		*pos++ = hex[val >> 4];
++		/* Convert the lower 4 bits of the byte to a hex char. */
+ 		*pos = hex[val & 0xf];
+ 	}
+ 	return base;
+@@ -167,10 +192,23 @@ int write_sha1_file(char *buf, unsigned len)
+ 
+ int write_sha1_buffer(unsigned char *sha1, void *buf, unsigned int size)
+ {
++	/**
++	 * filename can be, e.g., ".dircache/objects/dc/..." (where "dc" is the
++	 * first byte of SHA1, and "..." is the 38 remaining characters for the 19
++	 * SHA1 byte values.)
++	 *
++	 * The "buf" is the compressed contents _and_ the compressed metadata
++	 * describing this content (blob, tree, etc).
++	 */
+ 	char *filename = sha1_file_name(sha1);
+ 	int fd;
+ 
+ 	fd = open(filename, O_WRONLY | O_CREAT | O_EXCL, 0666);
++	/**
++	 * If the file already exists (EEXIST), then we assume that it has already
++	 * been written to previously (correctly). For other open() errors, return
++	 * -1.
++	 */
+ 	if (fd < 0)
+ 		return (errno == EEXIST) ? 0 : -1;
+ 	if (write(fd, buf, size) != size) {
+diff --git a/update-cache.c b/update-cache.c
+index f98fbfdafc..877367b80a 100644
+--- a/update-cache.c
++++ b/update-cache.c
+@@ -75,19 +75,39 @@ static int add_cache_entry(struct cache_entry *ce)
+ }
+ 
+ /**
+- * Read the contents of a file, compress it with zlib, then hash it with SHA1?
++ * Finalize a cache_entry by actually computing its compressed contents' SHA1
++ * signature (ce->sha1). "fd" is the file descriptor whose (compressed) contents
++ * we want to turn into a blob (along with some metadata alonge the way). We
++ * also write this compressed data into ".dircache/objects/dc/...".
+  */
+ static int index_fd(int namelen, struct cache_entry *ce, int fd, struct stat *st)
+ {
++	SHA_CTX c;
+ 	z_stream stream;
++	/**
++	 * Here we add 200 bytes as padding. This is most likely a performance
++	 * optimization for malloc(), similar to the 8-byte alignment we did in the
++	 * cache_entry_size macro.
++	 */
+ 	int max_out_bytes = namelen + st->st_size + 200;
+ 	void *out = malloc(max_out_bytes);
+ 	void *metadata = malloc(namelen + 200);
+-	void *in = mmap(NULL, st->st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+-	SHA_CTX c;
+ 
++	/**
++	 * mmap() can return MAP_FAILED, which is defined as
++	 *
++	 *   #define MAP_FAILED  ((void *) -1)
++	 *
++	 * on glibc
++	 * (https://github.com/bminor/glibc/blob/9e2ff880f3cbc0b4ec8505ad2ce4a1c92d7f6d56/misc/sys/mman.h#L44).
++	 *
++	 * Note that mmap() will fail if the given file descriptor is for a path
++	 * that is empty (such as a directory or a file with 0 bytes in it).
++	 */
++	void *in = mmap(NULL, st->st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+ 	close(fd);
+-	if (!out || (int)(long)in == -1)
++
++	if (!out || in == MAP_FAILED)
+ 		return -1;
+ 
+ 	memset(&stream, 0, sizeof(stream));
+@@ -155,6 +175,10 @@ static int add_file_to_cache(const char *path)
+ 	ce->st_size = st.st_size;
+ 	ce->namelen = namelen;
+ 
++	/**
++	 * Calculate the SHA1 of the file and also write its SHA1 object file to
++	 * disk.
++	 */
+ 	if (index_fd(namelen, ce, fd, &st) < 0)
+ 		return -1;
+ 
+-- 
+2.38.1
+
