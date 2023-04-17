@@ -27,7 +27,7 @@ Pretty much everything makes sense and I don't have to use Google to reason abou
 ** Keep your build system simple
 
 I've used a stupidly simple build system of creating symlinks to "install" my configuration --- all with the help of a single ~Makefile~.
-It's not very flexible, and to be honest my Shell sklls are much better than what they used to be such that I could replace this setup with a script.
+It's not very flexible, and to be honest my Shell skills are much better than what they used to be such that I could replace this setup with a script.
 But alas, the need for such a change has not been serious enough to warrant it.
 
 Moreover, having a simple "build" system ensures robustness; the more I get older, the more I value systems that have a long "bit-rot halflife".
