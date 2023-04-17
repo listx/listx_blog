@@ -244,6 +244,10 @@ myStylesheet = do
             paddingBottom (em 1)
             p ? do
               ev padding $ px 0
+            li ? do
+              p ? do
+                ev padding $ px 0
+                paddingBottom (em 1)
           ul ? do
             noMargin
             paragraphListIndent
