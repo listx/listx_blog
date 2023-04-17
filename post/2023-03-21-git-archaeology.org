@@ -164,10 +164,7 @@ match identically!
 
 You may think, "why not just divide a file into chunks, and make blobs
 out of each chunk?" --- that way, you'd naturally get some level of
-deduping, even without any additional work. Torvalds
-[[https://lore.kernel.org/git/Pine.LNX.4.58.0504151117360.7211@ppc970.osdl.org/][considered
-this but rejected the idea for two reasons: performance and
-simplicity]].
+deduping, even without any additional work. Torvalds [[https://lore.kernel.org/git/Pine.LNX.4.58.0504151117360.7211@ppc970.osdl.org/][considered this but rejected the idea for two reasons: performance and simplicity]].
 
 Just a couple months after the above email though, Git
 [[https://github.com/git/git/commit/c323ac7d9c573c5ee8b45b9b9def92a4d4d8204d][learned
