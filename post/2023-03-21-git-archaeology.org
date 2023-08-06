@@ -244,11 +244,10 @@ is a way to keep track of the latest commit by saving its object ID
 have a file with this object ID in it --- and this is what modern Git
 (still) does. The old
 [[https://github.com/git/git/commit/6ad6d3d36c5924c8ff502ebbb6a6216df01e7efb][README]]
-notes that in practice, the SHA1 hash was written at =.git/HEAD= in
-practice. It was formally recognized as such just a day later in
-[[https://github.com/git/git/commit/839a7a06f35bf8cd563a41d6db97f453ab108129][=839a7a06f35bf8cd563a41d6db97f453ab108129=]],
-as part of the =git-prune-script= and =git-pull-script= helpers to help
-with merging.
+notes that in practice, the SHA1 hash was written at =.git/HEAD=.  It was
+formally recognized as such just a day later in
+[[https://github.com/git/git/commit/839a7a06f35bf8cd563a41d6db97f453ab108129][=839a7a06f35bf8cd563a41d6db97f453ab108129=]], as part of the =git-prune-script=
+and =git-pull-script= helpers to help with merging.
 
 ** Usage Guide
 This guide explains how the earliest version of Git (root commit) works.
