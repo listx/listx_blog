@@ -1,0 +1,39 @@
+---
+title: "Lilac and Codex"
+tags: programming
+---
+
+#+STARTUP: indent showall
+#+OPTIONS: ^:nil
+
+TL;DR: Check out my new open source projects, [[https://funloop.org/lilac][Lilac]] ([[https://github.com/listx/lilac][GitHub]]) and [[https://funloop.org/codex][Codex]] ([[https://github.com/listx/codex][GitHub]])!
+
+* Lilac
+
+[[https://funloop.org/lilac][Lilac]] builds on top of Emacs Orgmode to make Literate Programming (LP) targeting
+HTML
+much more pleasant than the default experience. It's unapologetically
+opinionated. It encourages heavy use of Noweb-style references.
+
+Most people don't believe in LP, which means it'll get little use. But there is
+at least one user, officially...
+
+* Codex
+
+[[https://funloop.org/codex][Codex]] uses Lilac! Codex is a collection of blogpost-worthy solutions for some
+programming
+problems. I'm mainly doing this because it's really fun for me when I dive deep
+into technical problems.
+
+Using Lilac and LP is a natural choice for Codex, because many (if not all?) the
+topics are small enough to be read and understood in one sitting. Bite-sized
+knowledge, my favorite!
+
+* LP is amazing
+
+I'm starting to think that any new programming project of mine should be done
+with LP. There's already been numerous times when I had to dig deep into Lilac
+to edit things around after taking a long break, fearing that I may have trouble
+regaining context to become productive; and each time I was surprised to see how
+easy it was to context-switch. Thanks to Donald Knuth for introducing LP to the
+world.
