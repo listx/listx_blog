@@ -35,5 +35,6 @@ I'm starting to think that any new programming project of mine should be done
 with LP. There's already been numerous times when I had to dig deep into Lilac
 to edit things around after taking a long break, fearing that I may have trouble
 regaining context to become productive; and each time I was surprised to see how
-easy it was to context-switch. Thanks to Donald Knuth for introducing LP to the
-world.
+easy it was to context-switch.
+
+Thank you, Donald Knuth, for introducing LP to the world!
