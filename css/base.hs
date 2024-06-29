@@ -81,7 +81,6 @@ myStylesheet = do
           textAlign $ alignSide sideCenter
       div' ? do
         "#sticky-title" & do
-          position sticky
           "top" -: "0"
 
           -- This places this element above MathJax formulas and our custom
