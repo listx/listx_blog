@@ -33,7 +33,13 @@ pkgs.mkShell ({
     pkgs.zlib
 
     # Rust
-    pkgs.rust-bin.stable.latest.default
+    # For now just run `gen-js` from inside the `nix-shell` in order to install
+    # Rust via rustup and to eventually generate the WASM code from Rust
+    # ("rust-js/js/rust_js_bg.wasm" and "rust-js/js/rust_js.js").
+
+    #pkgs.rust-bin.stable.latest.default
+    pkgs.rustup
+    pkgs.wasm-pack
 
     # For updating Nix dependencies.
     pkgs.niv

@@ -15,9 +15,11 @@ gen-css:
 	nix-shell --command "cabal exec -- base"
 .PHONY: gen-css
 
-# JavaScript generated from Rust.
+# JavaScript generated from Rust. For now enter nix-shell first, then run `make
+# gen-js`.
 gen-js:
-	#make -C rust-js build
+	rustup default stable
+	make -C rust-js build
 .PHONY: gen-js
 
 sync: build-site
