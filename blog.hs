@@ -89,7 +89,7 @@ main = hakyll $ do
     compile copyFileCompiler
 
   -- Add some default pages
-  match (fromList ["about.org", "etc.org"]) $ do
+  match (fromList ["about.org"]) $ do
     route   $ setExtension "html"
     compile $ pandocCompilerWithTransformM
       defaultHakyllReaderOptions

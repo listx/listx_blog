@@ -40,20 +40,54 @@ Below are some of them.
 
 * Elsewhere on the Web
 
-- [[https://www.linkedin.com/in/linusarver/][LinkedIn]]
-- [[https://github.com/listx][GitHub]] (=listx=)
-- [[https://twitter.com/linusarver][Twitter]]
-- [[https://online-go.com/player/213337][Online Go Server]] (=funloop=)
-- [[https://www.reddit.com/user/listx][Reddit]] (=listx=)
-- [[https://www.deviantart.com/magic-byte][DeviantArt]] (=magic-byte=)
-- [[https://zuttobenkyou.wordpress.com/][Wordpress (old blog)]]
+** [[https://git.github.io/rev_news/2024/03/31/edition-109/#developer-spotlight-linus-arver][Git Rev News: Edition 109 (March 31st, 2024) Developer Spotlight]]
 
-** Misc
+Some months after I started contributing to Git, the community kindly asked me
+for an interview. What an honor!
 
-- [[https://git.github.io/rev_news/2024/03/31/edition-109/#developer-spotlight-linus-arver][Git Rev News: Edition 109 (March 31st, 2024) Developer Spotlight]]
+** The Great "k8s.gcr.io" Vanity Domain Flip (November 2020)
+
+*[[https://www.youtube.com/watch?v=F2IFjz7sr9Q][Video]]*
+
+A tale about what happened behind the scenes in the Kubernetes community
+infrastructure-wise in 2019-2020, while the rest of the world slept.  Special
+thanks to [[https://www.linkedin.com/in/stephenaugustus/][Stephen Augustus]] from VMware who pitched the idea for the talk
+initially and helping with the recording as well.
+
+** Git: Your Favorite Tool (July 2015)
+
+*[[https://github.com/listx/listx_blog/blob/master/file/git.org][Source]]*, *[[https://github.com/listx/listx_blog/blob/master/file/git.pdf][PDF]]*
+
+These slides are from a talk I gave internally at [[https://twinprime.com/][Twin Prime]] (they were later
+acquired by SalesForce).  I designed the slides so that they are readable as-is,
+without a real presentation.  Last but not least, I hereby release these slides
+into the Public Domain --- do whatever you like with them!
+
+** Bitscans and De Bruijn Sequences (2014)
+
+*[[https://github.com/listx/listx_blog/blob/master/file/debruijn-sequence-tutorial.pdf][PDF]]*
+
+I wrote this paper originally in 2011--2012, but it was not released until it
+was finally revised in 2014.
 
 * Contact
 
 Please email me at [[mailto:linus@ucla.edu][linus@ucla.edu]] for anything related to this blog. I have long
 since graduated from UCLA, but they gave me a lifetime email address. Thank you,
 UCLA!
+
+** Accounts on other sites
+
+Somewhat active:
+
+- [[https://www.linkedin.com/in/linusarver/][LinkedIn]]
+- [[https://github.com/listx][GitHub]] (=listx=)
+- [[https://exercism.org/profiles/listx][Exercism]] (=listx=)
+- [[https://online-go.com/player/213337][Online Go Server]] (=funloop=)
+- [[https://www.reddit.com/user/listx][Reddit]] (=listx=)
+
+Historical artifacts:
+
+- [[https://www.deviantart.com/magic-byte][DeviantArt]] (=magic-byte=)
+- [[https://twitter.com/linusarver][Twitter]]
+- [[https://zuttobenkyou.wordpress.com/][Wordpress (old blog)]]
