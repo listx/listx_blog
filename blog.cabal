@@ -49,7 +49,7 @@ executable base
 -- Source code examples
 executable test_game_button_seq
   main-is: test_hash_ver.hs
-  ghc-options: -Wall -Werror -fno-warn-tabs
+  ghc-options: -Wall -Werror -fno-warn-tabs -fno-warn-x-partial
   other-modules: GameButtonSeq
   build-depends:
       base >=4.7
@@ -62,7 +62,7 @@ executable test_game_button_seq
 
 executable analyze
   main-is: analyze.hs
-  ghc-options: -Wall -Werror -fno-warn-tabs
+  ghc-options: -Wall -Werror -fno-warn-tabs -fno-warn-x-partial
   other-modules: TextFreq
   build-depends:
       base >=4.7
@@ -74,7 +74,7 @@ executable analyze
 
 executable test_srm485_afraid_of_even
   main-is: test-unmutate.hs
-  ghc-options: -Wall -fno-warn-tabs
+  ghc-options: -Wall -Werror -fno-warn-tabs -fno-warn-x-partial
   other-modules: Unmutate
   build-depends:
       base >=4.7

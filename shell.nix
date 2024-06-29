@@ -1,36 +1,52 @@
-# https://stackoverflow.com/a/56180220/437583
-
 let
-    pkgs = import (builtins.fetchGit {
-        url = https://github.com/NixOS/nixpkgs;
-        ref = "nixos-22.11";
-        rev = "ab1254087f4cdf4af74b552d7fc95175d9bdbb49";
-    }) {
-#	overlays = [
-#		(self: super: {
-#			rustc = (super.rustc.override {
-#				stdenv = self.stdenv.override {
-#					targetPlatform = super.stdenv.targetPlatform // {
-#						parsed = {
-#							cpu = { name = "wasm32"; };
-#							vendor = {name = "unknown";};
-#							kernel = {name = "unknown";};
-#							abi = {name = "unknown";};
-#						};
-#					};
-#				};
-#			}).overrideAttrs (attrs: {
-#				configureFlags = attrs.configureFlags ++ ["--set=build.docs=false"];
-#			});
-#		})
-#	];
+  # Nixpkgs snapshot.
+  sources = import ./nix/sources.nix;
+  # Overlays
+  oxalica-rust-overlay = import sources.rust-overlay;
+  # Build rust crates.
+  naersk = final: prev: {
+    naersk = pkgs.callPackage sources.naersk
+      {
+        inherit sources;
+      };
     };
+  # The final "pkgs" attribute with all the bells and whistles of our overlays.
+  pkgs = import sources.nixpkgs {
+    overlays = [
+      oxalica-rust-overlay
+      naersk
+    ];
+  };
+
+  darwin-cargo-build-rustflags = pkgs.lib.attrsets.optionalAttrs pkgs.stdenv.isDarwin {
+    CARGO_BUILD_RUSTFLAGS = "-C link-arg=-undefined -C link-arg=dynamic_lookup";
+  };
 in
 
-pkgs.haskell.lib.buildStackProject {
-    name = "my-project";
-    buildInputs = [
-      # pkgs.haskell.compiler.ghc8107
-      #pkgs.rustc
-      # For zlib (it is a transitive dependency).
-      pkgs.zlib ]; }
+# This is our development shell.
+pkgs.mkShell ({
+  buildInputs = [
+    # Haskell
+    pkgs.haskell.compiler.ghc982
+    pkgs.cabal-install
+    # Haskell libs need zlib.
+    pkgs.zlib
+
+    # Rust
+    pkgs.rust-bin.stable.latest.default
+
+    # For updating Nix dependencies.
+    pkgs.niv
+
+    # Misc
+    pkgs.git
+    pkgs.less
+  ]
+  # For file_system on macOS.
+  ++ pkgs.lib.optionals pkgs.stdenv.isDarwin (with pkgs.darwin.apple_sdk.frameworks; [
+    Cocoa
+    CoreFoundation
+    CoreServices
+    Security
+  ]);
+} // darwin-cargo-build-rustflags)

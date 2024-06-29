@@ -248,7 +248,7 @@ cbExpandRawInput block = case block of
   bList (Plain [Str "i", Space, Str fp, Space, Str range]) = injectRaw (T.unpack fp) range
   bList x = return (False, x)
   maybeBullets [] = [BulletList []]
-  maybeBullets xss = case head xss of
+  maybeBullets xss@(xs:_) = case xs of
     ((True, _):_) -> concatMap (map snd) xss
     _ -> [BulletList $ map (map snd) xss]
   injectRaw fp range = do

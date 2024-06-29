@@ -378,7 +378,7 @@ myStylesheet = do
   where
   div' = Clay.div
   paddingForStickyTitle = "scroll-margin-top" -: "110px"
-  cPageWidth :: Double
+  cPageWidth :: Number
   cPageWidth = 900
   codeBgHex :: Int
   codeBgHex = bgHex - 0x0f0f0f
