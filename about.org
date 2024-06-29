@@ -3,17 +3,18 @@ title: About this site
 ---
 
 Hello!
-My name is Linus Arver and this is my blog.
-Please email me at [[mailto:linus@ucla.edu][linus@ucla.edu]] for anything related to this blog.
-I have long since graduated from UCLA, but they gave me a lifetime email address. Thank you, UCLA!
+My name is Linus Arver and this is my blog. I originally started a blog about
+various programming-related things [[https://zuttobenkyou.wordpress.com/][here]], but I wanted more control over how the
+content is generated/stored, and so I created this site. The source code for it
+(static content generator) is [[https://github.com/listx/listx_blog][here]], and the generated output (the static
+content) is [[https://github.com/listx/listx.github.io][here]].
 
 * On Programming
 
-I have fun writing computer programs.
+I have way too much fun writing computer programs.
 It is by far my favorite hobby, ever since I rediscovered it in 2009.
-There's just something about making the computer solve your problems that just never gets old...!
-
-I originally started a blog about various programming-related things [[https://zuttobenkyou.wordpress.com/][here]], but I wanted more control over how the content is generated/stored, and so I created this site.
+There's just something about making the computer solve your problems that just
+never gets old...!
 
 * Recommended Software
 
@@ -21,13 +22,20 @@ I use free/open-source software almost exclusively as much as possible.
 Below are some of them.
 
 - [[https://nixos.org][NixOS]] - my favorite OS
-- [[http://terminus-font.sourceforge.net/][Terminus]] - my favorite bitmapped monospaced font
-- [[https://github.com/alacritty/alacritty][Alacritty]] - a modern terminal
+- [[https://github.com/LnL7/nix-darwin][nix-darwin]] - gives you NixOS-like
+  configuration for your Mac
+- [[https://github.com/eigilnikolajsen/commit-mono][Commit Mono]] - my favorite
+  monospaced font
+- [[https://github.com/wez/wezterm][WezTerm]] - a terminal emulator,
+  configurable with Lua
+- [[https://github.com/tmux/tmux][tmux]] - terminal multiplexer
 - [[http://xmonad.org/][xmonad]] - the crash-proof tiled window manager
-- [[https://neovim.io/][Neovim]] - an advanced text editor
-- [[https://github.com/emacs-mirror/emacs][Emacs]] - an even more advanced text editor
-- [[https://github.com/emacs-evil/evil][Evil]] - an Emacs addon that makes it behave like Vim
-- [[https://github.com/The-Compiler/qutebrowser][Qutebrowser]] - a lightweight browser with Vim bindings
+- [[https://github.com/emacs-mirror/emacs][Emacs]] - an advanced text editor
+- [[https://github.com/doomemacs/doomemacs][Doom Emacs]] - Emacs with batteries
+  included
+- [[https://github.com/The-Compiler/qutebrowser][Qutebrowser]] - a lightweight
+  browser with Vim bindings
+- [[https://orgmode.org/][Org Mode]] - sufficiently flexible note-taking system
 - [[https://www.tug.org/texlive/][TeX Live]] - programmable typesetting
 
 * Elsewhere on the Web
@@ -39,3 +47,13 @@ Below are some of them.
 - [[https://www.reddit.com/user/listx][Reddit]] (=listx=)
 - [[https://www.deviantart.com/magic-byte][DeviantArt]] (=magic-byte=)
 - [[https://zuttobenkyou.wordpress.com/][Wordpress (old blog)]]
+
+** Misc
+
+- [[https://git.github.io/rev_news/2024/03/31/edition-109/#developer-spotlight-linus-arver][Git Rev News: Edition 109 (March 31st, 2024) Developer Spotlight]]
+
+* Contact
+
+Please email me at [[mailto:linus@ucla.edu][linus@ucla.edu]] for anything related to this blog. I have long
+since graduated from UCLA, but they gave me a lifetime email address. Thank you,
+UCLA!
