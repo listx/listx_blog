@@ -1,0 +1,26 @@
+* About
+
+This is the source code for [[https://funloop.org/][my blog]].
+The compiled output can be found at [[https://github.com/listx/listx.github.io][another GitHub repository]].
+
+* Compiling
+
+To compile and generate the site, just run =make=. Below are some things to keep
+in mind.
+
+- We use =nix-shell= to track dependencies like Haskell (for Hakyll in
+  particular) and other things.
+
+- We use =cabal= to build and install the =blog= binary executable which is our
+  static site generator based on Hakyll. But we're lazy and don't modify any of
+  the Cabal configuration files, so things are installed/cached into your
+  =$HOME/.cache/cabal= folder.
+
+- Similary we use =rustup= for some of the Rust code and we use =rustup= for it
+  because we haven't figured out how to do it in pure Nix. This is for the
+  =rust-js= stuff (see the toplevel folder of the same name).
+
+- We use a janky =Makefile= to capture some of the incantations to get things
+  compiled. We're lazy though and haven't actually captured any of the
+  dependencies based on the fileystem, which is what =make= is designed for. So
+  this means everything is a =.PHONY= rule and nothing is cached.
