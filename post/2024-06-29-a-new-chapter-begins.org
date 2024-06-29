@@ -1,0 +1,54 @@
+---
+title: "A New Chapter Begins"
+tags: life
+---
+
+#+STARTUP: indent showall
+#+OPTIONS: ^:nil
+
+* Jobs
+
+I recently started work at Qantas, focusing on backend systems written in
+Clojure. It's an interesting change from the Golang work I did at Google for the
+Kubernetes community (primarily on [[https://github.com/kubernetes-sigs/prow][Prow]], the Kubernetes-native CI system). I
+expect to learn lots of new things and continue to grow as an engineer.
+
+The opportunity at Qantas presents a unique proposition to me because I've
+somehow managed to avoid getting familiar with Java and the JVM so far in my
+career. I've been doing some Clojure exercises on [[https://exercism.org/profiles/listx][Exercism]] for a few weeks now
+and am getting the hang of the language. And I've been liking it so far --- it
+feels like Haskell without all of the mind-bending GHC extensions, plus a great
+library/ecosystem story (seamless JVM interop). Oh and I actually prefer Lisp
+syntax over Haskell syntax (I'll choose Lisp macros over Template Haskell, every
+time).
+
+* Blog
+
+I have some other blog post items in the backlog, so I plan on getting around to
+them in due time. I've just cleaned out some of the bitrot that's been plaguing
+this site's codebase for a while, so things are in working order again.
+
+* Git
+
+I must mention that a few months back the Git community interviewed me for their
+[[https://git.github.io/rev_news/2024/03/31/edition-109/#developer-spotlight-linus-arver][Developer Spotlight]]! Sadly I haven't been involved much with Git as of late (due
+to moving countries, and also battling a nasty cold), but I do hope to upstream
+the 50+ patches I still have locally for improving the parser for the
+=git-interpret-trailers= subcommand. You could say that those patches helped me
+understand how to work with the Git mailing list (as well as getting used to
+writing C again).
+
+I also started using Notmuch again inside Emacs to communicate with the mailing
+list. I should write a short post about it.
+
+* Australia
+
+I'm now in Australia! How exciting! I fell in love with the country when I first
+visited it in 2019, and now I feel very lucky to call Australia home. I'm slowly
+getting used to the accent, and I do wonder if I'll ever pick it up myself.
+
+The weather has been a bit wild (we had a cold snap with sub-zero temperatures
+in the first couple weeks of winter), but I really can't complain because it's
+still quite nice compared to Seattle's cold and wet climate.
+
+Cheers!
