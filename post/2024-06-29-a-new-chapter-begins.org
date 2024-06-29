@@ -9,7 +9,7 @@ tags: life
 * Jobs
 
 I recently started work at Qantas, focusing on backend systems written in
-Clojure. It's an interesting change from the Golang work I did at Google for the
+Clojure! It's an interesting change from the Golang work I did at Google for the
 Kubernetes community (primarily on [[https://github.com/kubernetes-sigs/prow][Prow]], the Kubernetes-native CI system). I
 expect to learn lots of new things and continue to grow as an engineer.
 
