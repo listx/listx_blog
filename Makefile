@@ -42,3 +42,9 @@ build-site: build-binaries
 watch: build-binaries
 	cabal run -- blog watch --host $(BLOG_IP) --port $(BLOG_PORT)
 .PHONY: watch
+
+nixpkgs_stable_channel := nixos-24.05
+update-deps: nix/sources.json nix/sources.nix
+	niv update nixpkgs --branch $(nixpkgs_stable_channel)
+	niv update
+	touch update-deps
