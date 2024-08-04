@@ -1,3 +1,5 @@
+# This Makefile is expected to be run inside a nix-shell.
+
 PROJ_ROOT := $(shell git rev-parse --show-toplevel)
 BLOG_IP?=10.0.0.46
 BLOG_PORT?=8020
@@ -7,16 +9,15 @@ all: sync
 
 # Check for broken links.
 check:
-	nix-shell --command "cabal run -- blog check"
+	cabal run -- blog check
 .PHONY: check
 
 gen-css:
-	nix-shell --command "cabal build -- base" >/dev/null
-	nix-shell --command "cabal exec -- base"
+	cabal build -- base >/dev/null
+	cabal exec -- base
 .PHONY: gen-css
 
-# JavaScript generated from Rust. For now enter nix-shell first, then run `make
-# gen-js`.
+# JavaScript generated from Rust.
 gen-js:
 	rustup default stable
 	make -C rust-js build
@@ -27,17 +28,17 @@ sync: build-site
 .PHONY: sync
 
 cabal-update:
-	nix-shell --command "cabal update"
+	cabal update
 .PHONY: cabal-update
 
 build-binaries:
-	nix-shell --command "cabal build"
+	cabal build
 .PHONY: build-binaries
 
 build-site: build-binaries
-	nix-shell --command "cabal run -- blog rebuild"
+	cabal run -- blog rebuild
 .PHONY: build-site
 
 watch: build-binaries
-	nix-shell --command "cabal run -- blog watch --host $(BLOG_IP) --port $(BLOG_PORT)"
+	cabal run -- blog watch --host $(BLOG_IP) --port $(BLOG_PORT)
 .PHONY: watch
