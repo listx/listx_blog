@@ -1,0 +1,228 @@
+---
+title: "Using Git the Right Way"
+tags: git, programming
+---
+
+#+STARTUP: indent showall
+#+OPTIONS: ^:nil
+
+I'll first describe 3 different levels of Git proficiency. Then I'll discuss
+ways to actually use Git "The Right Way" to get the most value out of it, and
+end with some tips. Hopefully by the end of this post you'll want to become an
+advanced Git user if you're not one already.
+
+* Beginner
+
+You use Git as a necessary evil, because it's mandated by your company to use
+it. It's the only way for you to contribute code, so you put up with it.
+
+You use =git commit .= to commit everything in the (top-level?) directory, because
+you don't know how to use =git rebase -i= effectively.
+
+* Intermediate
+
+You realize that Git is a useful tool for organizing code changes. You have
+multiple branches and know how to keep each one up-to-date. You might also know
+how to use =git rebase -i= to clean up history, for example to separate out
+formatting changes from semantic changes.
+
+You use =git add -p= to help avoid needing to reach for =git rebase -i=.
+
+* Advanced
+
+You appreciate Git commit messages as an important tool for archiving historical
+context and knowledge about every code change. These commit messages are written
+in stone forever, so you take care to craft each one with the utmost care. You
+care about giving a good reason (the /why/) in each commit message. And sometimes
+there are multiple "why" reasons: why you are authoring the commit at all in the
+first place, as well as why you are choosing the particular approach in the code.
+
+This makes it pleasant for others to review your code, because you've taken the
+time to explain everything in each commit, perhaps even preemptively answering
+questions that code reviewers might have.
+
+You try your best to help others understand the benefit of clean, beautiful Git
+history, because you know that future maintainers of the codebase will
+appreciate the story behind how it evolved over time.
+
+* Using Git "The Right Way" as an Advanced User
+
+But what does it mean to use Git as an advanced user? How do commits
+actually get created in an advanced way? This is what that looks like in
+practice:
+
+- You have to make each commit do exactly one thing, and also explain why you
+  did it that way (esp. if there are several alternative paths you rejected).
+
+- You have to order each commit so that it makes sense from the reviewer's point
+  of view as they review each commit one at a time (for example, you don't want
+  to have a pure formatting (whitespace) commit right in the middle of your
+  5-commit PR).
+
+- When you get PR comments, you have to go back to each commit and modify each
+  one accordingly. That is, you mustn't add a trailing "address PR comments"
+  commit at the end which does 5 different things in one commit. That's because
+  there is little value in preserving the original approach (with all its warts)
+  if they're going to be deprecated within the same PR by an "address PR
+  comments" commit at the end. And such commits are by definition poorly crafted
+  because they often do 2, 3, or 5 things at once in a single commit.
+
+The last point may be the dealbreaker for most Git users, because it requires
+=git rebase -i= familiarity. However there are at least two fantastic benefits
+that you get from a codebase where Git was used in "The Right Way":
+
+- *Code review becomes much more effective*, because reviewers only have to focus
+  on one (neatly-explained and crafted) commit at a time. The signal-to-noise
+  ratio of each commit is high, so reviewers can spend more of their brainpower
+  actually thinking about the code, instead of fighting an uphill battle against
+  poorly organized commits that do several things at once (perhaps even wasting
+  time commenting on commit 1, only to see in commit 2 that a large chunk of
+  commit 1 has already been deprecated).
+
+- *Using =git-blame= becomes less noisy*, because you're not led back to messy
+  commits. This matters even more when the original authors of the codebase are
+  gone, because the value of a Git repo is that it can tell you a story of how
+  code changed over time. The value of this story is directly correlated with
+  the quality of the commit history. Woe to the developer who is led by
+  =git-blame= to a mega-commit (perhaps squashed together automatically by
+  GitHub), which squashes together 20 commits all together into a single
+  2000-line diff.
+
+The benefit to code review alone should be reason enough for you to get better
+at using Git if you're not comfortable with it already.
+
+* Tips for getting better at Git
+
+** Most useful Git commands
+
+If I had to recommend 2 commands (which are most often neglected), it would be:
+
+- =git add -p= to add only those pieces that belong logically together, and
+
+- =git rebase -i= to modify history for both preparing a PR for review, as well as
+  addressing review comments on a commit-by-commit basis (and not overall PR
+  basis as mentioned above with "address PR comments")
+
+These two commands help you craft small, short-and-sweet commits that do one
+thing well. It makes code review a breeze because the reviewer only has to look
+at each of these small commits, one at a time.
+
+** Don't create meaningless merges
+
+Another thing you can do is to avoid merging in the latest =main= (or =master=)
+branch into your PR branch. GitHub shockingly encourages this horrible behavior,
+encouraging newcomers to create many useless merge commits in a PR before it is
+merged, making a real mess of the history.
+
+Never merge =main= into your branch. Instead, every PR should have only 1 merge
+commit --- when the PR is merged into =main=. This keeps the history clean.
+
+** Rich commit messages
+
+Lastly, I recommend using the *active voice* in *present tense (imperative mood)* to
+keep commit messages as *direct* as possible. Here's an example of a noisy commit
+message not adhering to these rules:
+
+#+begin_example
+fixed string buffer to have dynamically allocated memory instead of statically allocated limit of 255 characters sometimes we might need more than this esp on production
+#+end_example
+
+Terrible, right? Here's why:
+
+- There's no commit message. It's just the commit title.
+
+- The commit title is a long string (far over the recommended 50-character
+  limit) that will get truncated by GitHub on some of its UIs, not to mention
+  other Git tooling.
+
+- There is no use of punctuation like this sentence which makes it a run-on
+  sentence that makes it hard to read because punctuation was designed to help
+  break up long series of words into smaller chunks of logical groupings do you
+  really like to read long sentences without any punctuation I don't think so
+  but if you do then I don't know what to say about that.
+
+- It's messy. There are several ideas here (string buffers, memory allocation,
+  hardcoded limits, and real-world production use-cases), but they aren't really
+  given any attention individually. Instead they're all jumbled up together into
+  one big mess.
+
+In summary, there are all of these /speed bumps/ that just get in your way. It has
+a very low signal-to-noise ratio. Well, at least it's better than "fix string
+bug" or some other lazy gibberish.
+
+Now consider how the same commit message could have been written:
+
+#+begin_example
+module foo: use dynamic strings to avoid truncation
+
+The use of the 255-character limit for strings in module foo was first
+introduced in 0a6f593 (use fixed sizes for strings, 2022-03-14). This
+worked for a long time because we always knew (at program init time)
+what each string looked like.
+
+But then 51b475c (allow changing strings during runtime, 2024-06-29)
+introduced the ability for strings to be reassigned during runtime, not
+just at program initialization. This means that sometimes users were
+assigning strings longer than 255 characters without realizing that this
+was the case, because we don't perform input validation during string
+reassignments. This led to these strings getting silently truncated,
+leading to a jarring experience later on.
+
+Drop the 255-character limit, and instead use dynamic strings. We could
+probably get away with a larger 1024-character limit, but then given how
+most strings are far less than 1024 characters, using a larger hardcoded
+limit would lead to a large amount of memory being wasted in practice.
+If we do need to go back to a larger hardcoded limit in the future, we
+could consider moving toward a model of multiple hardcoded limits,
+perhaps 255, 512, and 1024. For now, using dynamic allocation everywhere
+is simpler, so that's what we do here.
+#+end_example
+
+And here's why it's better:
+
+- It had a clear title. It even has a "module foo" prefix to signal that it's
+  about the "foo" module.
+
+- It shares some historical knowledge (which is already present in Git but
+  perhaps not obvious to those not familiar with "module foo") to explain the
+  problem, its origins, and current status quo. It references important
+  historical events with the associated commit messages, using =git show
+  --no-patch --pretty=reference= output. The historical tour of these important
+  commits provides a huge amount of value behind the motivation of this commit.
+
+- It uses imperative mood "Drop the 255-character limit, and instead use dynamic
+  strings" to emphasize (and summarize) what's actually changing in this commit.
+  So now when reviewers read this commit, they already know what to look for
+  (did the committer actually remove all fixed string limits?). This /empowers/
+  reviewers, because now they know what to expect.
+
+- It explains how the problem was happening, with "This means that sometimes
+  users were assigning strings longer than 255 characters without realizing that
+  this was the case, because we don't perform input validation during string
+  reassignments." A good reviewer may ask "why not just add input validation as
+  an alternative solution, instead of using dynamic allocation, to fix the
+  problem?" during code review. A commit message isn't good because it's some
+  bulletproof case for doing something a particular way --- it also exposes
+  (perhaps unintentionally) any possible weaknesses with the chosen approach by
+  providing sufficient context into the problem space.
+
+- It uses well-formed sentences! With punctuation!
+
+- It has no typos and observes the "~50 char title, 72 char commit message"
+  rule. The 72 characters for commit messages could be relaxed to 80 or 100, but
+  you don't want it too long because shorter columns are simply easier to read
+  when scanning the text with your eyes.
+
+Of course, it is longer. And it took more effort to write. I'm arguing that such
+effort is worth it for future maintainers (maybe it'll be the same person who
+authored the commit 6 months later who has forgotten everything about "module
+foo").
+
+* Conclusion
+
+Hopefully I've convinced you that using Git is much more nuanced than simply
+knowing the right commands. If you want to get exposure to a project that
+follows the above recommendations (full of advanced Git users), I recommend the
+[[https://git-scm.com/community][Git project itself]].
+
+Please use Git to its full potential. Don't settle!
