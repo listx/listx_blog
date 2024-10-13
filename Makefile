@@ -1,7 +1,7 @@
 # This Makefile is expected to be run inside a nix-shell.
 
 PROJ_ROOT := $(shell git rev-parse --show-toplevel)
-BLOG_IP?=10.0.0.46
+BLOG_ADDR?=localhost
 BLOG_PORT?=8020
 
 all: sync
@@ -40,7 +40,7 @@ build-site: build-binaries
 .PHONY: build-site
 
 watch: build-binaries
-	cabal run -- blog watch --host $(BLOG_IP) --port $(BLOG_PORT)
+	cabal run -- blog watch --host $(BLOG_ADDR) --port $(BLOG_PORT)
 .PHONY: watch
 
 nixpkgs_stable_channel := nixos-24.05
