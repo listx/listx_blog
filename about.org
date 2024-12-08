@@ -40,10 +40,10 @@ Below are some of them.
 
 * Elsewhere on the Web
 
-** [[https://git.github.io/rev_news/2024/03/31/edition-109/#developer-spotlight-linus-arver][Git Rev News: Edition 109 (March 31st, 2024) Developer Spotlight]]
+** Git Rev News: Edition 109 (March 31st, 2024) Developer Spotlight
 
 Some months after I started contributing to Git, the community kindly asked me
-for an interview. What an honor!
+for [[https://git.github.io/rev_news/2024/03/31/edition-109/#developer-spotlight-linus-arver][an interview]]. What an honor!
 
 ** The Great "k8s.gcr.io" Vanity Domain Flip (November 2020)
 
