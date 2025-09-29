@@ -1,0 +1,26 @@
+---
+title: "Status Update"
+tags: update
+---
+
+#+STARTUP: indent showall
+#+OPTIONS: ^:nil
+
+It's been a long time. The most important thing you should know is that I've
+been working on a new version of [[https://funloop.org/lilac-legacy][Lilac]]; as such I've renamed the existing
+version as ~lilac-legacy~.
+
+I've learned over the past year or so that I prefer literate programming over
+any other programming paradigm. Sadly the tooling is just not that great
+(~lilac-legacy~ included) if you want to work with Orgmode as the foundation. This
+is why I've spent a fair amount of time rewriting Lilac from scratch. I hope to
+unveil it soon (hopefully within this year).
+
+Another thing: I will probably port this blog over to use the new Lilac version
+over the coming months. The reason is, I don't want to maintain the tech stack
+behind Hakyll (and the other programs I've written over the years on this blog).
+Or, I may decide to just freeze the old posts and move them to a separate page.
+Although, that's probably not very desirable because it will break links for
+people who have linked to this blog (there are quite a few hits if you search
+for ~funloop.org~ on GitHub). I haven't really done a blog tech stack migration
+before (while keeping the same domain name), so it'll be interesting.
