@@ -6,11 +6,11 @@ tags: programming
 #+STARTUP: indent showall
 #+OPTIONS: ^:nil
 
-TL;DR: Check out my new open source projects, [[https://funloop.org/lilac][Lilac]] ([[https://github.com/listx/lilac][GitHub]]) and [[https://funloop.org/codex][Codex]] ([[https://github.com/listx/codex][GitHub]])!
+TL;DR: Check out my new open source projects, [[https://funloop.org/lilac-legacy][Lilac]] ([[https://github.com/listx/lilac-legacy][GitHub]]) and [[https://funloop.org/codex][Codex]] ([[https://github.com/listx/codex][GitHub]])!
 
 * Lilac
 
-[[https://funloop.org/lilac][Lilac]] builds on top of Emacs Orgmode to make Literate Programming (LP) targeting
+[[https://funloop.org/lilac-legacy][Lilac]] builds on top of Emacs Orgmode to make Literate Programming (LP) targeting
 HTML
 much more pleasant than the default experience. It's unapologetically
 opinionated. It encourages heavy use of Noweb-style references.
