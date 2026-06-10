@@ -13,5 +13,5 @@ code/toy/binary-search-c
 code/toy/binary-search-hs
 .direnv
 dist-newstyle/
-listx.github.io
+site
 update-deps
