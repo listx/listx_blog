@@ -1,0 +1,9 @@
+:PROPERTIES:
+:ID:       5178f8a3-b675-4fc3-9670-4ef213e5742b
+:END:
+#+title: Blog
+
+Posts older than 2026 were generated with Hakyll. Post-2026, we use Lilac for
+converting Org files to HTML.
+
+  - ...
