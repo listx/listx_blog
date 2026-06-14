@@ -1,50 +1,42 @@
-# This Makefile is expected to be run inside a nix-shell.
+org_files := $(shell find . -name "*.org" -exec grep -l "^:ID: " {} +)
 
-PROJ_ROOT := $(shell git rev-parse --show-toplevel)
-BLOG_ADDR?=localhost
-BLOG_PORT?=8020
+obj_files := $(org_files:%.org=%.lobj)
 
-all: sync
+archive_file := site.larc
+
+all: tangle weave lint
 .PHONY: all
 
-# Check for broken links.
-check:
-	cabal run -- blog check
-.PHONY: check
+$(obj_files) &: $(org_files)
+	lilac compile $?
+	touch $(obj_files)
 
-gen-css:
-	cabal build -- base >/dev/null
-	cabal exec -- base
-.PHONY: gen-css
+$(archive_file): $(obj_files)
+	lilac archive $^ --out-file $@
 
-# JavaScript generated from Rust.
-gen-js:
-	rustup default stable
-	make -C rust-js build
-.PHONY: gen-js
+tangle: $(archive_file)
+	lilac tangle $< --out-dir .
+	touch tangle
 
-sync: build-site
-	./sync.sh
-.PHONY: sync
+weave: $(archive_file)
+	lilac weave $< --out-dir ./site --write-css --write-js
+	touch weave
 
-cabal-update:
-	cabal update
-.PHONY: cabal-update
+lint: $(archive_file)
+	lilac lint $<
+	touch lint
 
-build-binaries:
-	cabal build
-.PHONY: build-binaries
+gitconfig:
+	git config diff.orderfile .git-orderfile
+.PHONY: gitconfig
 
-build-site: build-binaries
-	cabal run -- blog rebuild
-.PHONY: build-site
+update:
+	niv update nixpkgs --branch nixos-25.11
+.PHONY: update
 
-watch: build-binaries
-	cabal run -- blog watch --host $(BLOG_ADDR) --port $(BLOG_PORT)
-.PHONY: watch
-
-nixpkgs_stable_channel := nixos-24.05
-update-deps: nix/sources.json nix/sources.nix
-	niv update nixpkgs --branch $(nixpkgs_stable_channel)
-	niv update
-	touch update-deps
+clean:
+	rm -rf \
+		$(archive_file) \
+		$(obj_files) \
+		site/*
+.PHONY: clean

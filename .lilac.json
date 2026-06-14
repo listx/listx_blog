@@ -1,0 +1,17 @@
+{
+    "name": "Linus Arver's Website",
+    "homepage": "https://git.sr.ht/~listx/listx_site",
+    "repo": "https://git.sr.ht/~listx/listx_site",
+    "version": "",
+    "nonTangledPathspecs": [
+        ":(exclude,top)*.org",
+        ":(exclude,top)LICENSE",
+        ":(exclude,top)art.md",
+        ":(exclude,top)code/",
+        ":(exclude,top)favicon*",
+        ":(exclude,top)file/",
+        ":(exclude,top)img/",
+        ":(exclude,top)post/",
+        ":(exclude,top)rust-js/"
+    ]
+}

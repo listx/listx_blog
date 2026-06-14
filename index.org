@@ -5,7 +5,8 @@
 
 #+name: index
 #+begin_src txt
-blog.org
+post
+build.org
 #+end_src
 
 Hello! My name is Linus Arver and this is my blog. I originally started a blog
