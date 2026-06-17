@@ -2,6 +2,8 @@
 *.o
 *.lobj
 *.larc
+*.tar
+*.tar.gz
 **/__pycache__/
 code/2017-04-02-calling-c-from-haskell/hs/ffi
 code/2021-03-15-bresenham-circle-drawing-algorithm/golden.yaml
@@ -9,7 +11,9 @@ code/toy/binary-search-c
 code/toy/binary-search-hs
 .direnv
 site
+.srht-pages-token
 update-deps
 tangle
 weave
 lint
+publish
