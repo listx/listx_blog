@@ -9,7 +9,6 @@ code/toy/binary-search-c
 code/toy/binary-search-hs
 .direnv
 site
-site-repo
 update-deps
 tangle
 weave

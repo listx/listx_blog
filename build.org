@@ -29,6 +29,7 @@ there that still reference it. See [[id:d33f8893-02be-4e99-9d53-0e2c274ba3d3][Ol
     "repo": "https://git.sr.ht/~listx/listx_site",
     "version": "",
     "nonTangledPathspecs": [
+        ":(exclude,top).gitmodules",
         ":(exclude,top)*.org",
         ":(exclude,top)LICENSE",
         ":(exclude,top)art.md",
@@ -36,6 +37,7 @@ there that still reference it. See [[id:d33f8893-02be-4e99-9d53-0e2c274ba3d3][Ol
         ":(exclude,top)favicon*",
         ":(exclude,top)file/",
         ":(exclude,top)img/",
+        ":(exclude,top)legacy-generated-repo/",
         ":(exclude,top)post/",
         ":(exclude,top)rust-js/"
     ]
@@ -198,7 +200,6 @@ code/toy/binary-search-c
 code/toy/binary-search-hs
 .direnv
 site
-site-repo
 update-deps
 tangle
 weave
