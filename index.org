@@ -1,7 +1,7 @@
 :PROPERTIES:
 :ID:       6fdb43cb-40ab-42fc-af32-a30e53dfdf28
 :END:
-#+title: About
+#+title: Home
 
 #+name: index
 #+begin_src txt
@@ -11,7 +11,7 @@ build.org
 
 Hello! My name is Linus Arver and this is my personal website.
 
-* Short bio
+* About me
 
 Originally from Seoul, South Korea, I spent most of my adolescence and adult
 life in the USA (California and Washington state). After getting married to my
