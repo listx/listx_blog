@@ -3,7 +3,131 @@
 :END:
 #+title: Blog
 
-Posts older than 2026 were generated with Hakyll. Post-2026, we use Lilac for
-converting Org files to HTML.
+Posts older than 2026 were generated with Hakyll (not Lilac), so they'll look
+very different than this site.
 
-  - ...
+  - 2025-09-29 [[file:2025-09-29-general-update.html][Status Update]]
+
+  - 2024-10-11 [[file:2024-10-11-using-git-the-right-way.html][Using Git the Right Way]]
+
+  - 2024-06-29 [[file:2024-06-29-a-new-chapter-begins.html][A New Chapter Begins]]
+
+  - 2023-11-21 [[file:2023-11-21-lilac-and-codex.html][Lilac and Codex]]
+
+  - 2023-03-21 [[file:2023-03-21-git-archaeology.html][Git Archaeology]]
+
+  - 2021-03-15 [[file:2021-03-15-bresenham-circle-drawing-algorithm.html][Bresenham's Circle Drawing Algorithm]]
+
+  - 2021-01-05 [[file:2021-01-05-mpd-and-replaygain.html][Using MPD for ReplayGain]]
+
+  - 2021-01-04 [[file:2021-01-04-thoughts-on-baduk.html][Thoughts on Baduk]]
+
+  - 2020-12-05 [[file:2020-12-05-twosum-problem-explained.html][The Two Sum Problem Explained]]
+
+  - 2019-11-13 [[file:2019-11-13-esrille-nisse-three-years-later.html][The Esrille Nisse: Three Years Later]]
+
+  - 2019-11-11 [[file:2019-11-11-status-update.html][Status Update]]
+
+  - 2018-11-11 [[file:2018-11-11-status-update.html][Status Update]]
+
+  - 2017-11-11 [[file:2017-11-11-useful-manpages.html][Useful Manpages]]
+
+  - 2017-05-13 [[file:2017-05-13-tower-of-hanoi.html][The Math Behind the Tower of Hanoi Problem]]
+
+  - 2017-04-14 [[file:2017-04-14-computing-fibonacci-numbers.html][The Fastest Way to Compute the Nth Fibonacci Number: The Doubling Method]]
+
+  - 2017-04-02 [[file:2017-04-02-calling-c-from-haskell.html][Calling C from Haskell]]
+
+  - 2016-12-04 [[file:2016-12-04-open-sourcing-my-dotfiles.html][Open-sourcing My Dotfiles]]
+
+  - 2016-12-03 [[file:2016-12-03-vim-macro-replay.html][Replaying Vim Macros]]
+
+  - 2016-10-30 [[file:2016-10-30-shelling-out-from-latex.html][Shelling Out From Latex]]
+
+  - 2016-10-01 [[file:2016-10-01-my-esrille-layout.html][My Esrille Layout: The ZQ Layout]]
+
+  - 2016-09-24 [[file:2016-09-24-parking-lot-problem-revisited.html][The Parking Lot Problem, or Smallest Free Number]]
+
+  - 2016-08-28 [[file:2016-08-28-texlive-with-docker.html][TexLive 2016 with Docker]]
+
+  - 2016-07-17 [[file:2016-07-17-git-diff-improved.html][Improved git-diff(1)]]
+
+  - 2016-04-29 [[file:2016-04-29-software-development-philosophy.html][Software Development Philosophy]]
+
+  - 2016-04-14 [[file:2016-04-14-esrille-nisse-keyboard.html][My Quest for Keyboard Perfection: The Esrille Nisse]]
+
+  - 2016-01-04 [[file:2016-01-04-status-update.html][Status Update]]
+
+  - 2015-09-12 [[file:2015-09-12-tig-tips.html][Tig Tips]]
+
+  - 2015-08-01 [[file:2015-08-01-why-i-use-nixos.html][Why I Use NixOS]]
+
+  - 2015-07-28 [[file:2015-07-28-literate-haskell-mmm-mode.html][Emacs: Setting Up mmm-mode for Literate Haskell]]
+
+  - 2015-06-25 [[file:2015-06-25-urxvt-plugins.html][Useful rxvt-unicode (URxvt) Plugins]]
+
+  - 2015-05-04 [[file:2015-05-04-puzzle-srm-485-afraid-of-even.html][SRM 485: AfraidOfEven]]
+
+  - 2015-04-22 [[file:2015-04-22-letter-word-frequency.html][Programming Puzzles: Letter and Word Frequency]]
+
+  - 2015-02-27 [[file:2015-02-27-removing-modulo-bias-redux.html][Generating Random Numbers without Modulo Bias, Redux]]
+
+  - 2015-02-24 [[file:2015-02-24-puzzle-game-button-recognizer.html][Programming Puzzle: Game Button Sequence Recognizer]]
+
+  - 2015-02-10 [[file:2015-02-10-using-nix-from-arch.html][Using the Nix Package Manager for Haskell Development from Arch Linux]]
+
+  - 2014-12-13 [[file:2014-12-13-implementing-binary-search.html][Implementing Binary Search]]
+
+  - 2014-09-22 [[file:2014-09-22-parking-lot-problem.html][The Parking Lot Problem: A Successor to FizzBuzz?]]
+
+  - 2014-09-09 [[file:2014-09-09-my-first-contribution-to-git.html][My First Contribution to Git]]
+
+  - 2014-09-05 [[file:2014-09-05-rpn-calculator.html][Reverse Polish Notation (RPN) Calculator in Ruby and Haskell]]
+
+  - 2014-08-11 [[file:2014-08-11-find-files-with-80+-columns.html][Find Lines with 80+ Columns in Multiple Files]]
+
+  - 2014-06-04 [[file:2014-06-04-nvrm-api-mismatch.html][Solving the "NVRM: API mismatch" Problem on Arch Linux]]
+
+  - 2014-05-20 [[file:2014-05-20-quad-monitor-setup.html][Quad Monitor Setup]]
+
+  - 2014-05-02 [[file:2014-05-02-linus-haskell-coding-style.html][Linus's Haskell Coding Style (LHCS)]]
+
+  - 2014-03-19 [[file:2014-03-19-opengl-haskell-3-matrices.html][OpenGL from Haskell (#3: Matrices)]]
+
+  - 2014-03-15 [[file:2014-03-15-opengl-from-haskell.html][OpenGL from Haskell]]
+
+  - 2014-01-24 [[file:2014-01-24-cabal2pkgbuild.html][cabal2pkgbuild: A Replacement for `cabal2arch`]]
+
+  - 2014-01-06 [[file:2014-01-06-using-cblrepo-in-arch-linux.html][Using cblrepo in Arch Linux]]
+
+  - 2013-12-09 [[file:2013-12-09-brother-mfc-9840cdw-linux-setup-2.html][Brother MFC-9840CDW: Setup on Arch Linux, Redux]]
+
+  - 2013-11-19 [[file:2013-11-19-akg-k702.html][Review: AKG K702 Headphones]]
+
+  - 2013-11-13 [[file:2013-11-13-filco-majestouch-2-ninja-cherry-brown-mx.html][Review: Filco Majestouch 2 Ninja Cherry Brown MX Keyboard]]
+
+  - 2013-09-07 [[file:2013-09-07-development-best-practices.html][Development Best Practices]]
+
+  - 2013-08-21 [[file:2013-08-21-functors-for-newbies.html][Functors for Newbies]]
+
+  - 2013-08-07 [[file:2013-08-07-brother-mfc-9840cdw-linux-setup.html][Brother MFC-9840CDW: Setup on Arch Linux]]
+
+  - 2013-07-12 [[file:2013-07-12-generating-random-numbers-without-modulo-bias.html][Generating Random Numbers without Modulo Bias]]
+
+  - 2013-06-13 [[file:2013-06-13-leopold-cherry-brown-mx.html][Review: Leopold Tactile Touch Tenkeyless Keyboard (MX Brown)]]
+
+  - 2013-06-06 [[file:2013-06-06-realforce-104ug-hi-pro.html][Review: Realforce 104UG Hi-Pro]]
+
+  - 2013-05-31 [[file:2013-05-31-becoming-a-programmer.html][Becoming a Programmer]]
+
+  - 2013-04-30 [[file:2013-04-30-emacs-unix-filter.html][Emacs: Using a Unix Filter]]
+
+  - 2013-04-23 [[file:2013-04-23-mwc-high-quality-fixed-seeds.html][Haskell: System.Random.MWC: High Quality Fixed Seeds]]
+
+  - 2013-03-10 [[file:2013-03-10-installing-arch-and-enabling-system-encryption.html][Installing Arch Linux and Enabling System Encryption]]
+
+  - 2013-01-21 [[file:2013-01-21-programming-life-skill.html][Programming as a Life Skill]]
+
+  - 2013-01-12 [[file:2013-01-12-total-bithead.html][Using the Total Bithead with ALSA on Arch Linux]]
+
+  - 2013-01-11 [[file:2013-01-11-using-hakyll.html][Using Hakyll with GitHub Pages]]

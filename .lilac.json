@@ -13,7 +13,18 @@
         ":(exclude,top)file/",
         ":(exclude,top)img/",
         ":(exclude,top)legacy-generated-repo/",
-        ":(exclude,top)post/",
+        ":(exclude,top)post/2013-*.org",
+        ":(exclude,top)post/2014-*.org",
+        ":(exclude,top)post/2015-*.org",
+        ":(exclude,top)post/2016-*.org",
+        ":(exclude,top)post/2017-*.org",
+        ":(exclude,top)post/2018-*.org",
+        ":(exclude,top)post/2019-*.org",
+        ":(exclude,top)post/2020-*.org",
+        ":(exclude,top)post/2021-*.org",
+        ":(exclude,top)post/2023-*.org",
+        ":(exclude,top)post/2024-*.org",
+        ":(exclude,top)post/2025-*.org",
         ":(exclude,top)rust-js/"
     ]
 }
