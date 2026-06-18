@@ -7,6 +7,7 @@
 #+begin_src txt
 post
 build.org
+projects.org
 #+end_src
 
 Hello! My name is Linus Arver and this is my personal website.
@@ -131,3 +132,7 @@ programming tool I developed, while retaining most of the original content as
 is. The source code of the latest version is also hosted in Sourcehut [[https://git.sr.ht/~listx/personal-website][here]]. See
 [[id:3f5e36da-6bd8-4ed4-a5d2-86653847e87f][Publishing the site]] for details around how the site is built with and published
 to Sourcehut.
+
+Most of this site is for my [[id:5178f8a3-b675-4fc3-9670-4ef213e5742b][Blog]]. However, there is also a [[id:bbd93f83-aec3-4349-b91b-e2831c141c8c][Projects]] page where
+you can navigate to other software projects that have their own set of
+documentation.

@@ -50,7 +50,8 @@ there that still reference it. See [[id:d33f8893-02be-4e99-9d53-0e2c274ba3d3][Ol
         ":(exclude,top)post/2023-*.org",
         ":(exclude,top)post/2024-*.org",
         ":(exclude,top)post/2025-*.org",
-        ":(exclude,top)rust-js/"
+        ":(exclude,top)rust-js/",
+        ":(exclude,top)syscfg/"
     ]
 }
 #+end_src
@@ -59,7 +60,8 @@ there that still reference it. See [[id:d33f8893-02be-4e99-9d53-0e2c274ba3d3][Ol
 
 #+header: :tangle Makefile
 #+begin_src makefile
-org_files := $(shell find . -name "*.org" -exec grep -l "^:ID: " {} +)
+org_files := $(shell find . -path "./syscfg" -prune -o \
+	-name "*.org" -exec grep -l "^:ID: " {} +)
 
 obj_files := $(org_files:%.org=%.lobj)
 
@@ -127,11 +129,19 @@ site.tar.gz: weave
 	rm -f site.tar site.tar.gz
 	tar cvf site.tar -C legacy-generated-repo --exclude='**/.*' . # (ref:Makefile:publish-legacy)
 	tar rvf site.tar -C site .
+
+	# (ref:Makefile:publish-syscfg)
+	make -C syscfg/doc weave
+	find syscfg -type f -not -path '*/.*' \
+		\( -name '*.html' \
+		-o -path 'syscfg/css/*' \
+		-o -path 'syscfg/js/*' \) \
+		| tar rvf site.tar -T -
 	gzip site.tar
 
 SRHT_TOKEN != cat .srht-pages-token 2>/dev/null || echo ""
 
-publish: site.tar.gz
+publish: site.tar.gz syscfg/doc/weave
 	@if [ -z "$(SRHT_TOKEN)" ]; then \
 		echo "Error: .srht-pages-token is empty or missing." >&2; \
 		exit 1; \
@@ -145,6 +155,9 @@ publish: site.tar.gz
 
 [[(Makefile:publish-legacy)]] bundles up the old legacy content into a tar file,
 after which we tar up Lilac's woven content into the same tar file.
+
+[[(Makefile:publish-syscfg)]] publishes the https://git.sr.ht/~listx/syscfg
+as a ~syscfg~ subdirectory.
 
 Publishing the site requires a personal access token from Sourcehut, which we
 ignore from our repo (checking it into Git would be a disaster!). The actual

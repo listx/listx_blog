@@ -25,6 +25,7 @@
         ":(exclude,top)post/2023-*.org",
         ":(exclude,top)post/2024-*.org",
         ":(exclude,top)post/2025-*.org",
-        ":(exclude,top)rust-js/"
+        ":(exclude,top)rust-js/",
+        ":(exclude,top)syscfg/"
     ]
 }

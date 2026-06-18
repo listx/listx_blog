@@ -1,3 +1,6 @@
 [submodule "legacy-generated-repo"]
 	path = legacy-generated-repo
 	url = https://github.com/listx/listx.github.io.git
+[submodule "syscfg"]
+	path = syscfg
+	url = https://git.sr.ht/~listx/syscfg

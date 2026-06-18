@@ -1,4 +1,5 @@
-org_files := $(shell find . -name "*.org" -exec grep -l "^:ID: " {} +)
+org_files := $(shell find . -path "./syscfg" -prune -o \
+	-name "*.org" -exec grep -l "^:ID: " {} +)
 
 obj_files := $(org_files:%.org=%.lobj)
 
@@ -30,11 +31,19 @@ site.tar.gz: weave
 	rm -f site.tar site.tar.gz
 	tar cvf site.tar -C legacy-generated-repo --exclude='**/.*' . #
 	tar rvf site.tar -C site .
+
+	#
+	make -C syscfg/doc weave
+	find syscfg -type f -not -path '*/.*' \
+		\( -name '*.html' \
+		-o -path 'syscfg/css/*' \
+		-o -path 'syscfg/js/*' \) \
+		| tar rvf site.tar -T -
 	gzip site.tar
 
 SRHT_TOKEN != cat .srht-pages-token 2>/dev/null || echo ""
 
-publish: site.tar.gz
+publish: site.tar.gz syscfg/doc/weave
 	@if [ -z "$(SRHT_TOKEN)" ]; then \
 		echo "Error: .srht-pages-token is empty or missing." >&2; \
 		exit 1; \
