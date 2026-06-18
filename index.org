@@ -9,10 +9,19 @@ post
 build.org
 #+end_src
 
-Hello! My name is Linus Arver and this is my blog. I originally started a blog
-about various programming-related things [[https://zuttobenkyou.wordpress.com/][here]], but I wanted more control over
-how the content is generated/stored, and so I created this site. The source code
-for it (static content generator) is [[https://github.com/listx/listx_blog][here]].
+Hello! My name is Linus Arver and this is my personal website.
+
+* Short bio
+
+Originally from Seoul, South Korea, I spent most of my adolescence and adult
+life in the USA (California and Washington state). After getting married to my
+Australian wife during Covid, we moved to Melbourne, Australia in 2024.
+
+Careerwise, I actually went to law school after college, only to find out that I
+really did not enjoy that field (I strongly recommend not going to law school
+unless you absolutely are 100% sure you want to be there). I developed a hobby
+for programming while still in law school, and eventually wound up joining a
+tech startup in 2015. I've been in tech ever since.
 
 * On Programming
 
@@ -111,3 +120,12 @@ Historical artifacts:
   - [[https://twitter.com/linusarver][Twitter]]
 
   - [[https://zuttobenkyou.wordpress.com/][Wordpress (old blog)]]
+
+* About this site
+
+I originally started a blog about various programming-related things [[https://zuttobenkyou.wordpress.com/][here]] (late
+2000s), but I wanted more control over how the content is generated/stored, and
+so I created [[https://github.com/listx/listx_blog][here]] in 2013. This version used [[https://jaspervdj.be/hakyll/][Hakyll]] as the static site
+generator. In 2026, I switched away from Hakyll to Lilac, a custom literate
+programming tool I developed, while retaining most of the original content as
+is. The source code of the latest version is also hosted in Sourcehut [[https://git.sr.ht/~listx/personal-website][here]].
