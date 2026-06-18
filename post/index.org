@@ -3,6 +3,12 @@
 :END:
 #+title: Blog
 
+* Posts
+
+This part is intentionally left blank.
+
+* Legacy posts (Hakyll)
+
 Posts older than 2026 were generated with Hakyll (not Lilac), so they'll look
 very different than this site.
 
@@ -131,3 +137,45 @@ very different than this site.
   - 2013-01-12 [[file:2013-01-12-total-bithead.html][Using the Total Bithead with ALSA on Arch Linux]]
 
   - 2013-01-11 [[file:2013-01-11-using-hakyll.html][Using Hakyll with GitHub Pages]]
+
+* New post script
+
+[[mkpost.bb]] is a [[https://babashka.org/][Babashka]] script which creates a new blank Org file with a new
+UUID.
+
+#+name: mkpost.bb
+#+header: :tangle post/mkpost.bb
+#+header: :shebang #!/usr/bin/env bb
+#+begin_src clojure
+(require '[clojure.string :as str]
+         '[babashka.fs :as fs])
+
+(if (empty? *command-line-args*)
+  (binding [*out* *err*]
+    (println "Usage: mkpost.sh <WORD_1>...<WORD_N>
+    where WORD_1...WORD_N are word(s) separated by whitespace.
+
+Example:
+    mkpost.sh foo bar baz")
+    (System/exit 1))
+
+  (let [sep "-"
+        ;; Handle filename text generation (hyphenated, lowercase)
+        joined (->> *command-line-args*
+                    (map str/lower-case)
+                    (str/join sep))
+        date-str (str (java.time.LocalDate/now))
+        fname (str date-str "-" joined ".org")
+
+        ;; Handle Org header info (space-separated, original casing)
+        title-str (str/join " " *command-line-args*)
+        uuid-str (str (java.util.UUID/randomUUID))
+
+        file-content (str ":PROPERTIES:\n"
+                          ":ID:       " uuid-str "\n"
+                          ":END:\n"
+                          "#+title: " title-str "\n\nHello\n")]
+
+    (spit fname file-content)
+    (println (str "Created file: " fname))))
+#+end_src
