@@ -25,8 +25,8 @@ there that still reference it. See [[id:d33f8893-02be-4e99-9d53-0e2c274ba3d3][Ol
 #+begin_src json
 {
     "name": "Linus Arver's Website",
-    "homepage": "https://git.sr.ht/~listx/listx_site",
-    "repo": "https://git.sr.ht/~listx/listx_site",
+    "homepage": "https://listx.srht.site",
+    "repo": "https://git.sr.ht/~listx/personal-website",
     "version": "",
     "nonTangledPathspecs": [
         ":(exclude,top).gitmodules",

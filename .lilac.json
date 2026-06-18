@@ -1,7 +1,7 @@
 {
     "name": "Linus Arver's Website",
-    "homepage": "https://git.sr.ht/~listx/listx_site",
-    "repo": "https://git.sr.ht/~listx/listx_site",
+    "homepage": "https://listx.srht.site",
+    "repo": "https://git.sr.ht/~listx/personal-website",
     "version": "",
     "nonTangledPathspecs": [
         ":(exclude,top).gitmodules",
