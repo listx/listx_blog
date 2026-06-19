@@ -1,4 +1,5 @@
-org_files := $(shell find . -path "./syscfg" -prune -o \
+org_files := $(shell find . \
+	\( -path "./syscfg" -o -path "./codex" \) -prune -o \
 	-name "*.org" -exec grep -l "^:ID: " {} +)
 
 obj_files := $(org_files:%.org=%.lobj)
@@ -39,6 +40,14 @@ site.tar.gz: weave
 		-o -path 'syscfg/css/*' \
 		-o -path 'syscfg/js/*' \) \
 		| tar rvf site.tar -T -
+
+	#
+	cd codex && git submodule update --init --recursive
+	find -L codex -path 'codex/deps/elisp/lilac/deps' -prune -o \
+		-type f \
+		-not -path '*/.*' \
+		\( -name '*.html' -o -name '*.css' -o -name '*.js' \) \
+		| tar rvhf site.tar --exclude='codex/deps/elisp/lilac/deps' -T -
 	gzip site.tar
 
 SRHT_TOKEN != cat .srht-pages-token 2>/dev/null || echo ""

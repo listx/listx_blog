@@ -9,6 +9,7 @@
         ":(exclude,top)LICENSE",
         ":(exclude,top)art.md",
         ":(exclude,top)code/",
+        ":(exclude,top)codex/",
         ":(exclude,top)favicon*",
         ":(exclude,top)file/",
         ":(exclude,top)img/",

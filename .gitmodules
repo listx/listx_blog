@@ -4,3 +4,6 @@
 [submodule "syscfg"]
 	path = syscfg
 	url = https://git.sr.ht/~listx/syscfg
+[submodule "codex"]
+	path = codex
+	url = https://git.sr.ht/~listx/codex
