@@ -101,7 +101,7 @@ site.tar.gz: $(archive_file) weave vendor/mathjax-modern-font
 		-type f \
 		-not -path '*/.*' \
 		\( -name '*.html' -o -name '*.css' -o -name '*.js' \) \
-		| tar rvhf site.tar --exclude='codex/deps/elisp/lilac/deps' -T -
+		| tar rvhf site.tar --hard-dereference --exclude='codex/deps/elisp/lilac/deps' -T -
 
 	#
 	tar rvf site.tar vendor
