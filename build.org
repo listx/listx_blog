@@ -52,7 +52,8 @@ there that still reference it. See [[id:d33f8893-02be-4e99-9d53-0e2c274ba3d3][Ol
         ":(exclude,top)post/2024-*.org",
         ":(exclude,top)post/2025-*.org",
         ":(exclude,top)rust-js/",
-        ":(exclude,top)syscfg/"
+        ":(exclude,top)syscfg/",
+        ":(exclude,top)vendor/"
     ]
 }
 #+end_src
@@ -102,10 +103,13 @@ update:
 .PHONY: update
 
 clean:
+	git -C legacy-generated-repo reset --hard
+	git -C codex reset --hard
 	rm -rf \
 		$(archive_file) \
 		$(obj_files) \
-		site/*
+		site.tar site.tar.gz \
+		site/* \
 .PHONY: clean
 #+end_src
 
@@ -127,13 +131,23 @@ we tar it up and deploy to Sourcehut. That way the old content won't be broken
 
 #+name: Makefile:publish
 #+begin_src makefile
-site.tar.gz: weave
+site.tar.gz: $(archive_file) weave vendor/mathjax-modern-font
 	rm -f site.tar site.tar.gz
-	tar cvf site.tar -C legacy-generated-repo --exclude='**/.*' . # (ref:Makefile:publish-legacy)
+	git -C legacy-generated-repo reset --hard
+	git -C codex reset --hard
+	make -C syscfg/doc weave
+	cd codex && git submodule update --init --recursive
+
+	# (ref:Makefile:publish-fix-mathjax)
+	<<fix-mathjax>>
+
+	# (ref:Makefile:publish-legacy)
+	tar cvf site.tar -C legacy-generated-repo --exclude='**/.*' .
+
+	# (ref:Makefile:publish-site)
 	tar rvf site.tar -C site .
 
 	# (ref:Makefile:publish-syscfg)
-	make -C syscfg/doc weave
 	find syscfg -type f -not -path '*/.*' \
 		\( -name '*.html' \
 		-o -path 'syscfg/css/*' \
@@ -141,13 +155,23 @@ site.tar.gz: weave
 		| tar rvf site.tar -T -
 
 	# (ref:Makefile:publish-codex)
-	cd codex && git submodule update --init --recursive
 	find -L codex -path 'codex/deps/elisp/lilac/deps' -prune -o \
 		-type f \
 		-not -path '*/.*' \
 		\( -name '*.html' -o -name '*.css' -o -name '*.js' \) \
 		| tar rvhf site.tar --exclude='codex/deps/elisp/lilac/deps' -T -
+
+	# (ref:Makefile:publish-mathjax)
+	tar rvf site.tar vendor
 	gzip site.tar
+
+	# (ref:Makefile:publish-cleanup)
+	git -C legacy-generated-repo reset --hard
+	git -C codex reset --hard
+
+# (ref:Makefile:publish-get-mathjax-fonts)
+vendor/mathjax-modern-font:
+	./get-mathjax-fonts.sh
 
 SRHT_TOKEN != cat .srht-pages-token 2>/dev/null || echo ""
 
@@ -166,6 +190,9 @@ publish: site.tar.gz syscfg/doc/weave
 [[(Makefile:publish-legacy)]] bundles up the old legacy content into a tar file,
 after which we tar up Lilac's woven content into the same tar file.
 
+[[(Makefile:publish-site)]] publishes the main site; this comes after
+[[(Makefile:publish-legacy)]] just in case we want to overwrite any old pages.
+
 [[(Makefile:publish-syscfg)]] publishes the https://git.sr.ht/~listx/syscfg
 as a ~syscfg~ subdirectory.
 
@@ -175,6 +202,118 @@ Publishing the site requires a personal access token from Sourcehut, which we
 ignore from our repo (checking it into Git would be a disaster!). The actual
 command to publish is quite straightforward though, as we just need to invoke a
 single ~curl~ command.
+
+[[(Makefile:publish-get-mathjax-fonts)]] cleans up the submodule directories,
+because fixing the MathJax results in modifying tracked files. This way we
+reduce the chance of accidentally commiting those changes to the main repo
+(because Git tracks whether a submodule is "dirty").
+
+*** Fix MathJax
+
+Because Sourcehut does not allow pulling in MathJax over a CDN, we have to
+modify the HTML files to use a locally vendored version
+[[(Makefile:publish-fix-mathjax)]] via [[fix-mathjax]], and also include MathJax
+dependencies in the tarball [[(Makefile:publish-mathjax)]].
+
+#+name: fix-mathjax
+#+begin_src sh
+find legacy-generated-repo -type f -name "*.html" \
+	-exec sed -i 's|https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML|/vendor/MathJax/tex-mml-chtml.js|g' {} +
+find site syscfg -type f -name "*.html" \
+	-exec sed -i 's|https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js|/vendor/MathJax/tex-mml-chtml.js|g' {} +
+find codex -path 'codex/deps' -prune -o \
+	-type f -name "*.html" \
+	-exec sed -i 's|https://cdn.jsdelivr.net/npm/mathjax@4.0.0-beta.4/tex-mml-chtml.js|/vendor/MathJax/tex-mml-chtml.js|g' {} +
+
+# (ref:fix-mathjax-reference-local-mathjax-fonts)
+find codex -path 'codex/deps' -prune -o -type f -name "*.html" -exec \
+	<<sed-inject-mathjax-font-codex>> {} +
+
+find legacy-generated-repo -type f -name "*.html" -exec \
+	<<sed-inject-mathjax-font-legacy>> {} +
+
+find site syscfg -type f -name "*.html" -exec \
+	<<sed-inject-mathjax-font>> {} +
+#+end_src
+
+Apparently just including ~tex-mml-chtml.js~ is not enough, because it is missing
+fonts. We have to download the fonts from NPM and then include it as well.
+
+#+name: get-mathjax-fonts.sh
+#+header: :tangle get-mathjax-fonts.sh
+#+header: :shebang #!/usr/bin/env bash
+#+begin_src bash
+set -euo pipefail
+
+FONT_PACKAGE="mathjax-modern-font"
+VERSION="4.1.2"
+
+pushd vendor
+
+if [[ -d "${FONT_PACKAGE}" ]]; then
+	echo "${FONT_PACKAGE} directory already exists"
+	exit
+fi
+
+curl -O "https://registry.npmjs.org/@mathjax/${FONT_PACKAGE}/-/${FONT_PACKAGE}-${VERSION}.tgz"
+tar -xzvf "${FONT_PACKAGE}-${VERSION}.tgz"
+mv package "${FONT_PACKAGE}"
+rm "${FONT_PACKAGE}-${VERSION}.tgz"
+#+end_src
+
+We execute [[get-mathjax-fonts.sh]] at [[(Makefile:publish-get-mathjax-fonts)]] to
+download the fonts and prepare it for inclusion into the ~vendor~ directory. The
+only thing remaining is to reference it in the HTML files in
+[[sed-inject-mathjax-font-codex]] [[(fix-mathjax-reference-local-mathjax-fonts)]].
+
+Below we modify the HTML files depending on their "flavor". The critical piece
+in each of the code blocks below is telling MathJax to load the fonts from the
+local ~/vendor/mathjax-modern-font~ directory. If we don't do this, then MathJax
+still tries to load fonts from a CDN, which will break for Sourcehut.
+
+#+name: sed-inject-mathjax-font-codex
+#+begin_src sh
+sed -i 's|output:[[:space:]]*{|loader: { paths: { "mathjax-modern": "/vendor/mathjax-modern-font" } },\
+output: {|'
+#+end_src
+
+#+name: sed-inject-mathjax-font-legacy
+#+begin_src sh
+sed -i '/<script type="text\/x-mathjax-config">/,/<\/script>/c\
+<script>\
+  window.MathJax = {\
+    tex: {\
+      ams: {\
+        multlineWidth: '\''85%'\''\
+      },\
+      tags: '\''ams'\'',\
+      tagSide: '\''right'\'',\
+      tagIndent: '\''.8em'\''\
+    },\
+    chtml: {\
+      scale: 1.0,\
+      displayAlign: '\''center'\'',\
+      displayIndent: '\''0em'\''\
+    },\
+    svg: {\
+      scale: 1.0,\
+      displayAlign: '\''center'\'',\
+      displayIndent: '\''0em'\''\
+    },\
+    loader: { paths: { "mathjax-modern": "/vendor/mathjax-modern-font" } },\
+    output: {\
+      font: '\''mathjax-modern'\'',\
+      displayOverflow: '\''overflow'\''\
+    }\
+  };\
+</script>'
+#+end_src
+
+#+name: sed-inject-mathjax-font
+#+begin_src sh
+sed -i '/window\.MathJax[[:space:]]*=[[:space:]]*{/a\
+  loader: { paths: { "mathjax-modern": "/vendor/mathjax-modern-font" } },'
+#+end_src
 
 * Hakyll setup
 
@@ -279,4 +418,5 @@ tangle
 weave
 lint
 publish
+vendor/
 #+end_src

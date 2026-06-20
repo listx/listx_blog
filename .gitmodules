@@ -7,3 +7,6 @@
 [submodule "codex"]
 	path = codex
 	url = https://git.sr.ht/~listx/codex
+[submodule "vendor/MathJax"]
+	path = vendor/MathJax
+	url = https://github.com/mathjax/MathJax.git

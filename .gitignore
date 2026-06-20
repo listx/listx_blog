@@ -18,3 +18,4 @@ tangle
 weave
 lint
 publish
+vendor/
