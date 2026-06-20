@@ -228,9 +228,13 @@ find codex -path 'codex/deps' -prune -o \
 # (ref:fix-mathjax-reference-local-mathjax-fonts)
 find codex -path 'codex/deps' -prune -o -type f -name "*.html" -exec \
 	<<sed-inject-mathjax-font-codex>> {} +
+find codex -path 'codex/deps' -prune -o -type f -name "*.html" -exec \
+	<<sed-inject-local-jquery-codex>> {} +
 
 find legacy-generated-repo -type f -name "*.html" -exec \
 	<<sed-inject-mathjax-font-legacy>> {} +
+find legacy-generated-repo -type f -name "*.html" -exec \
+	<<sed-inject-local-jquery-legacy>> {} +
 
 find site syscfg -type f -name "*.html" -exec \
 	<<sed-inject-mathjax-font>> {} +
@@ -313,6 +317,22 @@ sed -i '/<script type="text\/x-mathjax-config">/,/<\/script>/c\
 #+begin_src sh
 sed -i '/window\.MathJax[[:space:]]*=[[:space:]]*{/a\
   loader: { paths: { "mathjax-modern": "/vendor/mathjax-modern-font" } },'
+#+end_src
+
+*** Fix ~jQuery~
+
+Some of the pages pull in ~jQuery~ from upstream; we have to host these locally as
+well. They are vendored inside ~vendor~, but we need to make some more ~sed~
+replacements to make the relevant pages refer to the vendored version.
+
+#+name: sed-inject-local-jquery-codex
+#+begin_src sh
+sed -i 's|src="https://code.jquery.com/jquery-3.6.4.min.js"|src="/vendor/jquery-3.6.4.min.js"|g'
+#+end_src
+
+#+name: sed-inject-local-jquery-legacy
+#+begin_src sh
+sed -i 's|src="https://code.jquery.com/jquery-2.1.4.min.js"|src="/vendor/jquery-2.1.4.min.js"|g'
 #+end_src
 
 * Hakyll setup
@@ -419,4 +439,10 @@ weave
 lint
 publish
 vendor/
+#+end_src
+
+#+name: .gitattributes
+#+header: :tangle .gitattributes
+#+begin_src gitattributes
+vendor/*.js binary
 #+end_src
