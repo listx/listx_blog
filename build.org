@@ -187,9 +187,12 @@ publish: site.tar.gz syscfg/doc/weave
 		exit 1; \
 	fi
 	@echo "Uploading site to Sourcehut Pages..."
-	@curl --oauth2-bearer "$(SRHT_TOKEN)" \
+	curl -v --oauth2-bearer "$(SRHT_TOKEN)" \
 		-Fcontent=@site.tar.gz \
-		https://pages.sr.ht/publish/listx.srht.site
+		https://pages.sr.ht/publish/funloop.org
+	curl -v --oauth2-bearer "$(SRHT_TOKEN)" \
+		-Fcontent=@site.tar.gz \
+		https://pages.sr.ht/publish/www.funloop.org
 	touch publish
 #+end_src
 
