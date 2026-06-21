@@ -131,7 +131,7 @@ we tar it up and deploy to Sourcehut. That way the old content won't be broken
 
 #+name: Makefile:publish
 #+begin_src makefile
-site.tar.gz: $(archive_file) weave vendor/mathjax-modern-font
+site.tar.gz: $(archive_file) weave vendor/mathjax-modern-font vendor/google-fonts
 	rm -f site.tar site.tar.gz
 	git -C legacy-generated-repo reset --hard
 	git -C codex reset --hard
@@ -140,6 +140,7 @@ site.tar.gz: $(archive_file) weave vendor/mathjax-modern-font
 
 	# (ref:Makefile:publish-fix-mathjax)
 	<<fix-mathjax>>
+	<<fix-google-fonts>>
 
 	# (ref:Makefile:publish-legacy)
 	tar cvf site.tar -C legacy-generated-repo --exclude='**/.*' .
@@ -172,6 +173,10 @@ site.tar.gz: $(archive_file) weave vendor/mathjax-modern-font
 # (ref:Makefile:publish-get-mathjax-fonts)
 vendor/mathjax-modern-font:
 	./get-mathjax-fonts.sh
+
+vendor/google-fonts:
+	rm -rf vendor/google-fonts
+	./get-google-fonts.sh
 
 SRHT_TOKEN != cat .srht-pages-token 2>/dev/null || echo ""
 
@@ -333,6 +338,58 @@ sed -i 's|src="https://code.jquery.com/jquery-3.6.4.min.js"|src="/vendor/jquery-
 #+name: sed-inject-local-jquery-legacy
 #+begin_src sh
 sed -i 's|src="https://code.jquery.com/jquery-2.1.4.min.js"|src="/vendor/jquery-2.1.4.min.js"|g'
+#+end_src
+
+*** Fix Google fonts
+
+We have to host the fonts directly as well, instead of pulling them over the
+network from Google web fonts.
+
+The first thing to do is to download the fonts locally.
+
+#+name: get-google-fonts.sh
+#+header: :tangle get-google-fonts.sh
+#+header: :shebang #!/usr/bin/env bash
+#+begin_src bash
+set -euo pipefail
+
+mkdir -p vendor/google-fonts
+
+curl -fsSL -A 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' \
+'https://fonts.googleapis.com/css2?display=swap&family=Source+Code+Pro:ital,wght@0,400;0,700;1,400;1,700&family=Source+Sans+3:ital,wght@0,400;0,700;1,400;1,700&family=Source+Serif+4:ital,wght@0,400;0,700;1,400;1,700' \
+-o vendor/google-fonts/google-fonts.css
+
+# Filter specifically for links ending in .woff2
+grep -o 'https://fonts.gstatic.com[^)]*\.woff2' \
+	vendor/google-fonts/google-fonts.css |
+	sort -u |
+	while read -r url; do
+		curl -fsSL "$url" -o "vendor/google-fonts/$(basename "$url")"
+	done
+
+sed -i -E \
+'s|https://fonts.gstatic.com/[^)]*/([^/)]+\.woff2)|/vendor/google-fonts/\1|g' \
+vendor/google-fonts/google-fonts.css
+#+end_src
+
+Now make the HTML content refer to the local fonts.
+[[(fix-google-fonts-use-source-serif-4)]] makes the old blog posts use "Source Serif
+4", not "Source Serif Pro" (because the former is what we download).
+
+#+name: fix-google-fonts
+#+begin_src sh
+find site syscfg codex legacy-generated-repo -path 'codex/deps' -prune -o \
+	-type f -name "*.html" -exec \
+	<<sed-use-local-google-fonts>> {} +
+
+# (ref:fix-google-fonts-use-source-serif-4)
+sed -i 's|Source Serif Pro|Source Serif 4|g' legacy-generated-repo/css/base.css
+#+end_src
+
+#+name: sed-use-local-google-fonts
+#+begin_src sh
+sed -i \
+'s|href="https://fonts\.googleapis\.com[^"]*"|href="/vendor/google-fonts/google-fonts.css"|g'
 #+end_src
 
 * Hakyll setup

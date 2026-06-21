@@ -28,7 +28,7 @@ lint: $(archive_file)
 	lilac lint $<
 	touch lint
 
-site.tar.gz: $(archive_file) weave vendor/mathjax-modern-font
+site.tar.gz: $(archive_file) weave vendor/mathjax-modern-font vendor/google-fonts
 	rm -f site.tar site.tar.gz
 	git -C legacy-generated-repo reset --hard
 	git -C codex reset --hard
@@ -87,6 +87,14 @@ site.tar.gz: $(archive_file) weave vendor/mathjax-modern-font
 		sed -i '/window\.MathJax[[:space:]]*=[[:space:]]*{/a\
 		  loader: { paths: { "mathjax-modern": "/vendor/mathjax-modern-font" } },' {} +
 
+	find site syscfg codex legacy-generated-repo -path 'codex/deps' -prune -o \
+		-type f -name "*.html" -exec \
+		sed -i \
+		's|href="https://fonts\.googleapis\.com[^"]*"|href="/vendor/google-fonts/google-fonts.css"|g' {} +
+	
+	#
+	sed -i 's|Source Serif Pro|Source Serif 4|g' legacy-generated-repo/css/base.css
+
 	#
 	tar cvf site.tar -C legacy-generated-repo --exclude='**/.*' .
 
@@ -118,6 +126,10 @@ site.tar.gz: $(archive_file) weave vendor/mathjax-modern-font
 #
 vendor/mathjax-modern-font:
 	./get-mathjax-fonts.sh
+
+vendor/google-fonts:
+	rm -rf vendor/google-fonts
+	./get-google-fonts.sh
 
 SRHT_TOKEN != cat .srht-pages-token 2>/dev/null || echo ""
 
