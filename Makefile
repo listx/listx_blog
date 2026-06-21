@@ -129,7 +129,6 @@ vendor/mathjax-modern-font:
 	./get-mathjax-fonts.sh
 
 vendor/google-fonts:
-	rm -rf vendor/google-fonts
 	./get-google-fonts.sh
 
 SRHT_TOKEN != cat .srht-pages-token 2>/dev/null || echo ""
