@@ -129,9 +129,9 @@ I originally started a blog about various programming-related things [[https://z
 so I created [[https://github.com/listx/listx_blog][here]] in 2013. This version used [[https://jaspervdj.be/hakyll/][Hakyll]] as the static site
 generator. In 2026, I switched away from Hakyll to Lilac, a custom literate
 programming tool I developed, while retaining most of the original content as
-is. The source code of the latest version is also hosted in Sourcehut [[https://git.sr.ht/~listx/personal-website][here]]. See
+is. The source code of the latest version is also hosted in SourceHut [[https://git.sr.ht/~listx/personal-website][here]]. See
 [[id:3f5e36da-6bd8-4ed4-a5d2-86653847e87f][Publishing the site]] for details around how the site is built with and published
-to Sourcehut.
+to SourceHut.
 
 Most of this site is for my [[id:5178f8a3-b675-4fc3-9670-4ef213e5742b][Blog]]. However, there is also a [[id:bbd93f83-aec3-4349-b91b-e2831c141c8c][Projects]] page where
 you can navigate to other software projects that have their own set of

@@ -138,7 +138,7 @@ publish: site.tar.gz syscfg/doc/weave
 		echo "Error: .srht-pages-token is empty or missing." >&2; \
 		exit 1; \
 	fi
-	@echo "Uploading site to Sourcehut Pages..."
+	@echo "Uploading site to SourceHut Pages..."
 	@curl --oauth2-bearer "$(SRHT_TOKEN)" \
 		-Fcontent=@site.tar.gz \
 		https://pages.sr.ht/publish/funloop.org
