@@ -140,6 +140,7 @@ site.tar.gz: $(archive_file) weave vendor/mathjax-modern-font vendor/google-font
 
 	# (ref:Makefile:publish-fix-mathjax)
 	<<fix-mathjax>>
+	<<fix-jquery>>
 	<<fix-google-fonts>>
 
 	# (ref:Makefile:publish-legacy)
@@ -233,13 +234,9 @@ find codex -path 'codex/deps' -prune -o \
 # (ref:fix-mathjax-reference-local-mathjax-fonts)
 find codex -path 'codex/deps' -prune -o -type f -name "*.html" -exec \
 	<<sed-inject-mathjax-font-codex>> {} +
-find codex -path 'codex/deps' -prune -o -type f -name "*.html" -exec \
-	<<sed-inject-local-jquery-codex>> {} +
 
 find legacy-generated-repo -type f -name "*.html" -exec \
 	<<sed-inject-mathjax-font-legacy>> {} +
-find legacy-generated-repo -type f -name "*.html" -exec \
-	<<sed-inject-local-jquery-legacy>> {} +
 
 find site syscfg -type f -name "*.html" -exec \
 	<<sed-inject-mathjax-font>> {} +
@@ -329,6 +326,14 @@ sed -i '/window\.MathJax[[:space:]]*=[[:space:]]*{/a\
 Some of the pages pull in ~jQuery~ from upstream; we have to host these locally as
 well. They are vendored inside ~vendor~, but we need to make some more ~sed~
 replacements to make the relevant pages refer to the vendored version.
+
+#+name: fix-jquery
+#+begin_src sh
+find codex -path 'codex/deps' -prune -o -type f -name "*.html" -exec \
+	<<sed-inject-local-jquery-codex>> {} +
+find legacy-generated-repo -type f -name "*.html" -exec \
+	<<sed-inject-local-jquery-legacy>> {} +
+#+end_src
 
 #+name: sed-inject-local-jquery-codex
 #+begin_src sh

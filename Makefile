@@ -48,8 +48,6 @@ site.tar.gz: $(archive_file) weave vendor/mathjax-modern-font vendor/google-font
 	find codex -path 'codex/deps' -prune -o -type f -name "*.html" -exec \
 		sed -i 's|output:[[:space:]]*{|loader: { paths: { "mathjax-modern": "/vendor/mathjax-modern-font" } },\
 		output: {|' {} +
-	find codex -path 'codex/deps' -prune -o -type f -name "*.html" -exec \
-		sed -i 's|src="https://code.jquery.com/jquery-3.6.4.min.js"|src="/vendor/jquery-3.6.4.min.js"|g' {} +
 	
 	find legacy-generated-repo -type f -name "*.html" -exec \
 		sed -i '/<script type="text\/x-mathjax-config">/,/<\/script>/c\
@@ -80,12 +78,15 @@ site.tar.gz: $(archive_file) weave vendor/mathjax-modern-font vendor/google-font
 		    }\
 		  };\
 		</script>' {} +
-	find legacy-generated-repo -type f -name "*.html" -exec \
-		sed -i 's|src="https://code.jquery.com/jquery-2.1.4.min.js"|src="/vendor/jquery-2.1.4.min.js"|g' {} +
 	
 	find site syscfg -type f -name "*.html" -exec \
 		sed -i '/window\.MathJax[[:space:]]*=[[:space:]]*{/a\
 		  loader: { paths: { "mathjax-modern": "/vendor/mathjax-modern-font" } },' {} +
+
+	find codex -path 'codex/deps' -prune -o -type f -name "*.html" -exec \
+		sed -i 's|src="https://code.jquery.com/jquery-3.6.4.min.js"|src="/vendor/jquery-3.6.4.min.js"|g' {} +
+	find legacy-generated-repo -type f -name "*.html" -exec \
+		sed -i 's|src="https://code.jquery.com/jquery-2.1.4.min.js"|src="/vendor/jquery-2.1.4.min.js"|g' {} +
 
 	find site syscfg codex legacy-generated-repo -path 'codex/deps' -prune -o \
 		-type f -name "*.html" -exec \
