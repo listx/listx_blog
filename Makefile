@@ -81,7 +81,9 @@ site.tar.gz: $(archive_file) weave vendor/mathjax-modern-font vendor/google-font
 	
 	find site syscfg -type f -name "*.html" -exec \
 		sed -i '/window\.MathJax[[:space:]]*=[[:space:]]*{/a\
-		  loader: { paths: { "mathjax-modern": "/vendor/mathjax-modern-font" } },' {} +
+		  loader: { paths: { "mathjax-modern": "/vendor/mathjax-modern-font" } },\
+		  output: { font: "mathjax-modern" },\
+		  chtml: { fontURL: "[mathjax-modern]/chtml/woff2" },' {} +
 
 	find codex -path 'codex/deps' -prune -o -type f -name "*.html" -exec \
 		sed -i 's|src="https://code.jquery.com/jquery-3.6.4.min.js"|src="/vendor/jquery-3.6.4.min.js"|g' {} +

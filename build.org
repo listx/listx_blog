@@ -323,7 +323,9 @@ sed -i '/<script type="text\/x-mathjax-config">/,/<\/script>/c\
 #+name: sed-inject-mathjax-font
 #+begin_src sh
 sed -i '/window\.MathJax[[:space:]]*=[[:space:]]*{/a\
-  loader: { paths: { "mathjax-modern": "/vendor/mathjax-modern-font" } },'
+  loader: { paths: { "mathjax-modern": "/vendor/mathjax-modern-font" } },\
+  output: { font: "mathjax-modern" },\
+  chtml: { fontURL: "[mathjax-modern]/chtml/woff2" },'
 #+end_src
 
 *** Fix ~jQuery~
