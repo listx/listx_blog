@@ -214,7 +214,7 @@ ignore from our repo (checking it into Git would be a disaster!). The actual
 command to publish is quite straightforward though, as we just need to invoke a
 single ~curl~ command.
 
-[[(Makefile:publish-get-mathjax-fonts)]] cleans up the submodule directories,
+[[(Makefile:publish-cleanup)]] cleans up the submodule directories,
 because fixing the MathJax results in modifying tracked files. This way we
 reduce the chance of accidentally commiting those changes to the main repo
 (because Git tracks whether a submodule is "dirty").
