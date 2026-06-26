@@ -21,41 +21,40 @@ there that still reference it. See [[id:d33f8893-02be-4e99-9d53-0e2c274ba3d3][Ol
 
 * Lilac configuration
 
-#+header: :tangle .lilac.json
-#+begin_src json
-{
-    "name": "Linus Arver's Website",
-    "homepage": "https://listx.srht.site",
-    "repo": "https://git.sr.ht/~listx/personal-website",
-    "version": "",
-    "nonTangledPathspecs": [
-        ":(exclude,top).gitmodules",
-        ":(exclude,top)*.org",
-        ":(exclude,top)LICENSE",
-        ":(exclude,top)art.md",
-        ":(exclude,top)code/",
-        ":(exclude,top)codex/",
-        ":(exclude,top)favicon*",
-        ":(exclude,top)file/",
-        ":(exclude,top)img/",
-        ":(exclude,top)legacy-generated-repo/",
-        ":(exclude,top)post/2013-*.org",
-        ":(exclude,top)post/2014-*.org",
-        ":(exclude,top)post/2015-*.org",
-        ":(exclude,top)post/2016-*.org",
-        ":(exclude,top)post/2017-*.org",
-        ":(exclude,top)post/2018-*.org",
-        ":(exclude,top)post/2019-*.org",
-        ":(exclude,top)post/2020-*.org",
-        ":(exclude,top)post/2021-*.org",
-        ":(exclude,top)post/2023-*.org",
-        ":(exclude,top)post/2024-*.org",
-        ":(exclude,top)post/2025-*.org",
-        ":(exclude,top)rust-js/",
-        ":(exclude,top)syscfg/",
-        ":(exclude,top)vendor/"
-    ]
-}
+#+header: :tangle Lilac.toml
+#+begin_src toml
+name = "Linus Arver's Website"
+homepage = "https://listx.srht.site"
+repo = "https://git.sr.ht/~listx/personal-website"
+version = ""
+nonTangledPathspecs = [
+   ":(exclude,top).gitmodules",
+   ":(exclude,top)*.org",
+   ":(exclude,top)LICENSE",
+   ":(exclude,top)art.md",
+   ":(exclude,top)code/",
+   ":(exclude,top)codex/",
+   ":(exclude,top)favicon*",
+   ":(exclude,top)file/",
+   ":(exclude,top)img/",
+   ":(exclude,top)legacy-generated-repo/",
+   ":(exclude,top)post/2013-*.org",
+   ":(exclude,top)post/2014-*.org",
+   ":(exclude,top)post/2015-*.org",
+   ":(exclude,top)post/2016-*.org",
+   ":(exclude,top)post/2017-*.org",
+   ":(exclude,top)post/2018-*.org",
+   ":(exclude,top)post/2019-*.org",
+   ":(exclude,top)post/2020-*.org",
+   ":(exclude,top)post/2021-*.org",
+   ":(exclude,top)post/2023-*.org",
+   ":(exclude,top)post/2024-*.org",
+   ":(exclude,top)post/2025-*.org",
+   ":(exclude,top)rust-js/",
+   ":(exclude,top)syscfg/",
+   ":(exclude,top)vendor/"
+]
+bibliography = []
 #+end_src
 
 * Publish locally
