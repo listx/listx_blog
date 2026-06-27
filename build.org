@@ -130,7 +130,7 @@ we tar it up and deploy to SourceHut. That way the old content won't be broken
 
 #+name: Makefile:publish
 #+begin_src makefile
-site.tar.gz: $(archive_file) weave vendor/mathjax-modern-font vendor/google-fonts
+site.tar.gz: $(archive_file) weave vendor/<<mathjax-font>>-font vendor/google-fonts
 	rm -f site.tar site.tar.gz
 	git -C legacy-generated-repo reset --hard
 	git -C codex reset --hard
@@ -171,7 +171,7 @@ site.tar.gz: $(archive_file) weave vendor/mathjax-modern-font vendor/google-font
 	git -C codex reset --hard
 
 # (ref:Makefile:publish-get-mathjax-fonts)
-vendor/mathjax-modern-font:
+vendor/<<mathjax-font>>-font:
 	./get-mathjax-fonts.sh
 
 vendor/google-fonts:
@@ -255,7 +255,7 @@ fonts. We have to download the fonts from NPM and then include it as well.
 #+begin_src bash
 set -euo pipefail
 
-FONT_PACKAGE="mathjax-modern-font"
+FONT_PACKAGE="<<mathjax-font>>-font"
 VERSION="4.1.2"
 
 pushd vendor
@@ -278,12 +278,17 @@ only thing remaining is to reference it in the HTML files in
 
 Below we modify the HTML files depending on their "flavor". The critical piece
 in each of the code blocks below is telling MathJax to load the fonts from the
-local ~/vendor/mathjax-modern-font~ directory. If we don't do this, then MathJax
+local ~/vendor/<<mathjax-font>>-font~ directory. If we don't do this, then MathJax
 still tries to load fonts from a CDN, which will break for SourceHut.
+
+#+name: mathjax-font
+#+begin_src txt
+mathjax-newcm
+#+end_src
 
 #+name: sed-inject-mathjax-font-codex
 #+begin_src sh
-sed -i 's|output:[[:space:]]*{|loader: { paths: { "mathjax-modern": "/vendor/mathjax-modern-font" } },\
+sed -i 's|output:[[:space:]]*{|loader: { paths: { "<<mathjax-font>>": "/vendor/<<mathjax-font>>-font" } },\
 output: {|'
 #+end_src
 
@@ -310,9 +315,9 @@ sed -i '/<script type="text\/x-mathjax-config">/,/<\/script>/c\
       displayAlign: '\''center'\'',\
       displayIndent: '\''0em'\''\
     },\
-    loader: { paths: { "mathjax-modern": "/vendor/mathjax-modern-font" } },\
+    loader: { paths: { "<<mathjax-font>>": "/vendor/<<mathjax-font>>-font" } },\
     output: {\
-      font: '\''mathjax-modern'\'',\
+      font: '\''<<mathjax-font>>'\'',\
       displayOverflow: '\''overflow'\''\
     }\
   };\
@@ -322,9 +327,8 @@ sed -i '/<script type="text\/x-mathjax-config">/,/<\/script>/c\
 #+name: sed-inject-mathjax-font
 #+begin_src sh
 sed -i '/window\.MathJax[[:space:]]*=[[:space:]]*{/a\
-  loader: { paths: { "mathjax-modern": "/vendor/mathjax-modern-font" } },\
-  output: { font: "mathjax-modern" },\
-  chtml: { fontURL: "[mathjax-modern]/chtml/woff2" },'
+  loader: { paths: { "<<mathjax-font>>": "/vendor/<<mathjax-font>>-font" } },\
+  output: { font: "<<mathjax-font>>" },'
 #+end_src
 
 *** Fix ~jQuery~

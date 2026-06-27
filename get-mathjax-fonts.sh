@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-FONT_PACKAGE="mathjax-modern-font"
+FONT_PACKAGE="mathjax-newcm-font"
 VERSION="4.1.2"
 
 pushd vendor

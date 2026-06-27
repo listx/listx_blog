@@ -28,7 +28,7 @@ lint: $(archive_file)
 	lilac lint $<
 	touch lint
 
-site.tar.gz: $(archive_file) weave vendor/mathjax-modern-font vendor/google-fonts
+site.tar.gz: $(archive_file) weave vendor/mathjax-newcm-font vendor/google-fonts
 	rm -f site.tar site.tar.gz
 	git -C legacy-generated-repo reset --hard
 	git -C codex reset --hard
@@ -46,7 +46,7 @@ site.tar.gz: $(archive_file) weave vendor/mathjax-modern-font vendor/google-font
 	
 	#
 	find codex -path 'codex/deps' -prune -o -type f -name "*.html" -exec \
-		sed -i 's|output:[[:space:]]*{|loader: { paths: { "mathjax-modern": "/vendor/mathjax-modern-font" } },\
+		sed -i 's|output:[[:space:]]*{|loader: { paths: { "mathjax-newcm": "/vendor/mathjax-newcm-font" } },\
 		output: {|' {} +
 	
 	find legacy-generated-repo -type f -name "*.html" -exec \
@@ -71,9 +71,9 @@ site.tar.gz: $(archive_file) weave vendor/mathjax-modern-font vendor/google-font
 		      displayAlign: '\''center'\'',\
 		      displayIndent: '\''0em'\''\
 		    },\
-		    loader: { paths: { "mathjax-modern": "/vendor/mathjax-modern-font" } },\
+		    loader: { paths: { "mathjax-newcm": "/vendor/mathjax-newcm-font" } },\
 		    output: {\
-		      font: '\''mathjax-modern'\'',\
+		      font: '\''mathjax-newcm'\'',\
 		      displayOverflow: '\''overflow'\''\
 		    }\
 		  };\
@@ -81,9 +81,8 @@ site.tar.gz: $(archive_file) weave vendor/mathjax-modern-font vendor/google-font
 	
 	find site syscfg -type f -name "*.html" -exec \
 		sed -i '/window\.MathJax[[:space:]]*=[[:space:]]*{/a\
-		  loader: { paths: { "mathjax-modern": "/vendor/mathjax-modern-font" } },\
-		  output: { font: "mathjax-modern" },\
-		  chtml: { fontURL: "[mathjax-modern]/chtml/woff2" },' {} +
+		  loader: { paths: { "mathjax-newcm": "/vendor/mathjax-newcm-font" } },\
+		  output: { font: "mathjax-newcm" },' {} +
 
 	find codex -path 'codex/deps' -prune -o -type f -name "*.html" -exec \
 		sed -i 's|src="https://code.jquery.com/jquery-3.6.4.min.js"|src="/vendor/jquery-3.6.4.min.js"|g' {} +
@@ -127,7 +126,7 @@ site.tar.gz: $(archive_file) weave vendor/mathjax-modern-font vendor/google-font
 	git -C codex reset --hard
 
 #
-vendor/mathjax-modern-font:
+vendor/mathjax-newcm-font:
 	./get-mathjax-fonts.sh
 
 vendor/google-fonts:
