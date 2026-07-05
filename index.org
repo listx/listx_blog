@@ -27,40 +27,66 @@ tech startup in 2015. I've been in tech ever since.
 * On Programming
 
 I have way too much fun writing computer programs. It is by far my favorite
-hobby, ever since I rediscovered it in 2009. There's just something about making
-the computer solve your problems that just never gets old...!
+hobby, ever since I rediscovered it in my mid 20s. There's just something about
+making the computer solve your problems that just never gets old!
 
-** Recommended Software
+** My tech stack
 
 For serious work, I use free/open-source software almost exclusively as much as
-possible. Below are some of them.
+possible. The list below has evolved over the years, but I do try to keep it up
+to date.
 
-  - [[https://nixos.org][NixOS]] - my favorite OS
+  - [[https://nixos.org][NixOS]]: I started using this over 10 years ago, mainly because it was the
+    only OS out there that was on a rolling release (if you use the unstable
+    branch) which also had clean rollbacks (uninstalls) of packages. Sadly the
+    idea of functional package management hasn't really caught on enough, and as
+    of 2026 the only other purely functional OS out there is Guix, which is
+    itself based on Nix.
 
-  - [[https://github.com/LnL7/nix-darwin][nix-darwin]] - gives you NixOS-like
-    configuration for your Mac
+  - [[https://github.com/LnL7/nix-darwin][nix-darwin]]: Gives you NixOS-like configuration for your Mac. Basically this
+    is the path of least resistance if you want to install a daemon (like
+    Docker) cleanly on Mac.
 
-  - [[https://github.com/eigilnikolajsen/commit-mono][Commit Mono]] - my favorite
-    monospaced font
+  - [[https://github.com/eigilnikolajsen/commit-mono][Commit Mono]]: My favorite monospaced font. I used to use Terminus for a long
+    time, but with higher DPI screens needed something that looked reall nice.
+    The main advantage of this font is it adjusts letters dynamically based on
+    what other letters are nearby --- which does make a noticeable difference.
 
-  - [[https://github.com/wez/wezterm][WezTerm]] - a terminal emulator,
-    configurable with Lua
+  - [[https://github.com/wez/wezterm][WezTerm]]: I used urxvt originally because it had Unicode support, then moved
+    to Alacritty for performance reasons. I then moved on to WezTerm because of
+    the flexibility provided by the Lua-based configuration.
 
-  - [[https://github.com/tmux/tmux][tmux]] - terminal multiplexer
+  - [[https://github.com/tmux/tmux][tmux]]: You can't use a shell without tmux. I have a nice nested tmux
+    configuration which makes using this super convenient when I'm SSH'ed into
+    another (more powerful) remote machine.
 
-  - [[http://xmonad.org/][xmonad]] - the crash-proof tiled window manager
+  - [[http://xmonad.org/][xmonad]]: I've used this for over a decade... but to be honest once I got my
+    tmux configuration up to speed (during Covid when I had to start working
+    remotely), the window manager itself just started mattering less. That's
+    because I spend most of my time inside tmux, which makes most of the
+    features of XMonad (or any other window manager) moot.
 
-  - [[https://github.com/emacs-mirror/emacs][Emacs]] - an advanced text editor
+  - [[https://github.com/emacs-mirror/emacs][Emacs]]: Ah, the one true text editor. I originally used Vim for a number of
+    years before moving to Emacs over a decade ago, pretty soon after the [[https://github.com/emacs-evil/evil][evil]]
+    project became usable. Unlike most people I use Emacs inside a terminal, and
+    because of my extensive modifications I'm able to use all of my keyboard's
+    modifiers (just like in GUI emacs). I need to blog about this one day...
 
-  - [[https://github.com/doomemacs/doomemacs][Doom Emacs]] - Emacs with batteries
-    included
+  - [[https://github.com/doomemacs/doomemacs][Doom Emacs]]: I used to have a custom Emacs configuration, but the cost of
+    updating this was just too much. I spent a week or so migrating over to Doom
+    Emacs and it's been fairly smooth sailing ever since.
 
-  - [[https://github.com/The-Compiler/qutebrowser][Qutebrowser]] - a lightweight
-    browser with Vim bindings
+  - [[https://github.com/The-Compiler/qutebrowser][Qutebrowser]]: This is useful for doing very quick browsing (opening tabs
+    quickly, searching quickly). However with the age of AI this need to do many
+    rigorous internet searches has gotten less important. So I don't really use
+    this all that often.
 
-  - [[https://orgmode.org/][Org Mode]] - sufficiently flexible note-taking system
+  - [[https://orgmode.org/][Orgmode]]: My favorite way to take notes. If you're using Emacs, you really
+    should be using Orgmode everywhere.
 
-  - [[https://www.tug.org/texlive/][TeX Live]] - programmable typesetting
+  - [[https://www.tug.org/texlive/][TeX Live]]: I still use this for my resume, because of the things I can do
+    with it. But also I'm just geeky and love to write code even for mundane
+    things like resumes.
 
 * Elsewhere on the Web
 
