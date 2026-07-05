@@ -7,6 +7,8 @@
 
 This part is intentionally left blank.
 
+  - 2026-07-06 [[id:25c8faae-2213-497c-bcf7-f69e0dfe1792][New site]]
+
 * Legacy posts (Hakyll)
 
 Posts older than 2026 were generated with Hakyll (not Lilac), so they'll look
