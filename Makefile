@@ -127,7 +127,7 @@ publish: site.tar.gz
 	@curl --oauth2-bearer "$(SRHT_TOKEN)" \
 		-Fcontent=@site.tar.gz \
 		https://pages.sr.ht/publish/funloop.org
-	printf \
+	@printf \
 		'<meta http-equiv="refresh" content="0; url=https://funloop.org/">' > index.html && \
 		tar -czf - index.html | \
 		curl --oauth2-bearer "$(SRHT_TOKEN)" \
