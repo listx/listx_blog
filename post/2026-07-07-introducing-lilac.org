@@ -1,0 +1,103 @@
+:PROPERTIES:
+:ID:       b51c3b34-3b75-4643-996c-81ee70851bd1
+:END:
+#+title: Introducing Lilac
+
+In my [[id:25c8faae-2213-497c-bcf7-f69e0dfe1792][last post]] I discussed the move away from Hakyll to my own program, Lilac.
+This post will describe the history behind Lilac and why I wrote it.
+
+* Literate Programming
+
+I like Literate Programming (LP). Lilac's main purpose is to allow LP with
+Orgmode.
+
+Before I get into how Lilac supports LP, let's have a look at the history behind
+it.
+
+* Lilac (Orgmode version)
+
+You could say that Orgmode already has support for LP. Indeed, it allows
+you to tangle source code blocks and also weave them (export them) to HTML.
+
+Originally I just wanted to tweak the HTML output of Orgmode's HTML export, so
+that the output would be deterministic. Surprisingly, Orgmode's default HTML
+export is very un-deterministic. For example, it does at least two things that
+make every HTML export different than the last, even if you didn't change
+anything in the Org file:
+
+  1) Headings get random HTML IDs. These change, so if you check your HTML into
+     version control you will always get a big diff of changed heading IDs every
+     time.
+
+  2) By default Org adds a timestamp to the HTML to say when it was exported.
+     Again this results in a changed output every time.
+
+There are some other quirks with how Orgmode works with Noweb references (child
+blocks):
+
+  1) If you have a Noweb reference, the target to it (the child block) must be
+     defined within the same Org file.
+
+  2) Somewhat frustratingly, Org will not link to the child block from the
+     parent block. So even though you are looking at HTML, if you see a child
+     block, you have to manually hunt for it in the page.
+
+To overcome some of these issues, I wrote the [[https://github.com/listx/lilac-legacy][first version of Lilac]] as an
+extension (in Emacs Lisp) to build on top of Orgmode. I ran into a couple more
+issues though:
+
+  1) Exporting larger documents began taking multiple seconds. It was so slow
+     that the feedback loop (of having a browser window open on the HTML page)
+     became too painful.
+
+  2) It was quite difficult to make Orgmode use a different color theme for
+     syntax highlighting (Orgmode by default will use the same color theme you
+     are using in your Emacs instance).
+
+  3) Running Emacs in a non-interactive way (aka "batch" mode) became annoying
+     because of the slowness of Emacs starting up.
+
+After a while I realized that I was fighting an uphill battle. That's when I
+decided to start writing my own LP tool (which would use Org files as input).
+
+* Lilac (Haskell rewrite)
+
+The rewrite began in September 2024. I chose Haskell for Lilac's rewrite because
+I just find Haskell's type system such a pleasure to use for maintaining code.
+Type signatures shine a light through even obscure bits of code.
+
+I used Orgmode's LP features to write Lilac in a literate style. About 6 months
+later, Lilac gained the ability to tangle itself (350e8495 (use lilac to tangle
+itself, 2025-04-15)). To my delight, at that point I realized that my Haskell
+version ran an order of magnitude faster than the Orgmode version. Later on when
+weaving was implemented, again I was delighted by the speed over vanilla Orgmode
+(by the way, Lilac's tangling and weaving is single-threaded, I haven't even
+gotten into using parallelism to speed things up).
+
+Lilac has gotten many more features since then. But out of all of them the most
+useful one for me is the ability to refer to code blocks from /outside/ the
+current file. That is, you can have a code block in ~foo.org~ refer to a child
+block in ~bar.org~. At first this feature didn't seem that interesting to me, but
+ever since adding support for it, I've started using it much more frequently.
+
+Other LP tools support this feature too, but not in the way Lilac does it. For
+example in vanilla Orgmode you're expected to just concatenate your multiple Org
+files together. But that approach now forces you to name each code block
+uniquely across multiple files, which is annoying. I just want to throw a bunch
+of Org files at my LP tool and let it figure things out on its own, without too
+much ceremony. That's what Lilac is like for me.
+
+* Current status of Lilac
+
+So [[https://lilac.funloop.org/][Lilac]] ([[https://git.sr.ht/~listx/lilac][source]]) is written in LP, and uses itself to tangle and weave itself.
+It's about 15K LOC of Haskell (the largest program I've ever written), in about
+32K LOC of Orgmode files. It's released under the GPL v2 license, just like the
+Linux Kernel and Git.
+
+One pain point right now is that you'll have to boil the ocean for it to build,
+becaused it hasn't been packaged up to Nixpkgs yet.
+
+The main thing I'm curious about though, is whether Lilac will stay in LP form.
+Hopefully it does for a long, long time.
+
+Happy hacking!
