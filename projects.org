@@ -8,5 +8,5 @@ mainly for my own reference, but hopefully others can find it useful.
 
 | Project | Description          |
 |---------+----------------------|
-| [[file:syscfg/index.html][syscfg]]  | My dotfiles          |
+| [[https://syscfg.funloop.org][syscfg]]  | My dotfiles          |
 | [[file:codex/index.html][codex]]   | Programming problems |
