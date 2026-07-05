@@ -26,7 +26,24 @@ nonTangledPathspecs = [
    ":(exclude,top)post/2024-*.org",
    ":(exclude,top)post/2025-*.org",
    ":(exclude,top)rust-js/",
-   ":(exclude,top)syscfg/",
    ":(exclude,top)vendor/"
 ]
-bibliography = []
+
+[htmlHead]
+onlyLocalImports = true
+injection = """
+<link rel="stylesheet" href="/vendor/source-fonts/source-fonts.css">
+<script>
+  window.MathJax = {
+      loader: { paths: { "mathjax-newcm": "/vendor/mathjax-newcm-font" } },
+      output: { font: "mathjax-newcm" },
+  tex: {
+      tags: 'ams'
+  },
+  options: {
+      ignoreHtmlClass: 'verbatim|code'
+  }
+};
+</script>
+<script id="MathJax-script" async="" src="/vendor/mathjax/tex-mml-chtml.js"></script>
+"""

@@ -1,5 +1,5 @@
 org_files := $(shell find . \
-	\( -path "./syscfg" -o -path "./codex" \) -prune -o \
+	\( -path "./codex" \) -prune -o \
 	-name "*.org" -exec grep -l "^:ID: " {} +)
 
 obj_files := $(org_files:%.org=%.lobj)
@@ -28,23 +28,19 @@ lint: $(archive_file)
 	lilac lint $<
 	touch lint
 
-site.tar.gz: $(archive_file) weave vendor/mathjax-newcm-font vendor/google-fonts
+site.tar.gz: $(archive_file) weave vendor/mathjax vendor/mathjax-newcm-font vendor/source-fonts
 	rm -f site.tar site.tar.gz
 	git -C legacy-generated-repo reset --hard
 	git -C codex reset --hard
-	make -C syscfg/doc weave
 	cd codex && git submodule update --init --recursive
 
 	#
 	find legacy-generated-repo -type f -name "*.html" \
-		-exec sed -i 's|https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML|/vendor/MathJax/tex-mml-chtml.js|g' {} +
-	find site syscfg -type f -name "*.html" \
-		-exec sed -i 's|https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js|/vendor/MathJax/tex-mml-chtml.js|g' {} +
+		-exec sed -i 's|https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML|/vendor/mathjax/tex-mml-chtml.js|g' {} +
 	find codex -path 'codex/deps' -prune -o \
 		-type f -name "*.html" \
-		-exec sed -i 's|https://cdn.jsdelivr.net/npm/mathjax@4.0.0-beta.4/tex-mml-chtml.js|/vendor/MathJax/tex-mml-chtml.js|g' {} +
+		-exec sed -i 's|https://cdn.jsdelivr.net/npm/mathjax@4.0.0-beta.4/tex-mml-chtml.js|/vendor/mathjax/tex-mml-chtml.js|g' {} +
 	
-	#
 	find codex -path 'codex/deps' -prune -o -type f -name "*.html" -exec \
 		sed -i 's|output:[[:space:]]*{|loader: { paths: { "mathjax-newcm": "/vendor/mathjax-newcm-font" } },\
 		output: {|' {} +
@@ -78,21 +74,16 @@ site.tar.gz: $(archive_file) weave vendor/mathjax-newcm-font vendor/google-fonts
 		    }\
 		  };\
 		</script>' {} +
-	
-	find site syscfg -type f -name "*.html" -exec \
-		sed -i '/window\.MathJax[[:space:]]*=[[:space:]]*{/a\
-		  loader: { paths: { "mathjax-newcm": "/vendor/mathjax-newcm-font" } },\
-		  output: { font: "mathjax-newcm" },' {} +
 
 	find codex -path 'codex/deps' -prune -o -type f -name "*.html" -exec \
 		sed -i 's|src="https://code.jquery.com/jquery-3.6.4.min.js"|src="/vendor/jquery-3.6.4.min.js"|g' {} +
 	find legacy-generated-repo -type f -name "*.html" -exec \
 		sed -i 's|src="https://code.jquery.com/jquery-2.1.4.min.js"|src="/vendor/jquery-2.1.4.min.js"|g' {} +
 
-	find site syscfg codex legacy-generated-repo -path 'codex/deps' -prune -o \
+	find codex legacy-generated-repo -path 'codex/deps' -prune -o \
 		-type f -name "*.html" -exec \
 		sed -i \
-		's|href="https://fonts\.googleapis\.com[^"]*"|href="/vendor/google-fonts/google-fonts.css"|g' {} +
+		's|href="https://fonts\.googleapis\.com[^"]*"|href="/vendor/source-fonts/source-fonts.css"|g' {} +
 	
 	#
 	sed -i 's|Source Serif Pro|Source Serif 4|g' legacy-generated-repo/css/base.css
@@ -102,13 +93,6 @@ site.tar.gz: $(archive_file) weave vendor/mathjax-newcm-font vendor/google-fonts
 
 	#
 	tar rvf site.tar -C site .
-
-	#
-	find syscfg -type f -not -path '*/.*' \
-		\( -name '*.html' \
-		-o -path 'syscfg/css/*' \
-		-o -path 'syscfg/js/*' \) \
-		| tar rvf site.tar -T -
 
 	#
 	find -L codex -path 'codex/deps/elisp/lilac/deps' -prune -o \
@@ -126,15 +110,15 @@ site.tar.gz: $(archive_file) weave vendor/mathjax-newcm-font vendor/google-fonts
 	git -C codex reset --hard
 
 #
-vendor/mathjax-newcm-font:
-	./get-mathjax-fonts.sh
+vendor/mathjax vendor/mathjax-newcm-font &:
+	./vendor-mathjax.sh
 
-vendor/google-fonts:
-	./get-google-fonts.sh
+vendor/source-fonts:
+	./vendor-source-fonts.sh
 
 SRHT_TOKEN != cat .srht-pages-token 2>/dev/null || echo ""
 
-publish: site.tar.gz syscfg/doc/weave
+publish: site.tar.gz
 	@if [ -z "$(SRHT_TOKEN)" ]; then \
 		echo "Error: .srht-pages-token is empty or missing." >&2; \
 		exit 1; \
