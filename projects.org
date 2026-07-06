@@ -6,7 +6,8 @@
 Here we list some of my projects that I find interesting enough to publish. It's
 mainly for my own reference, but hopefully others can find it useful.
 
-| Project | Description          |
-|---------+----------------------|
-| [[https://syscfg.funloop.org][syscfg]]  | My dotfiles          |
-| [[file:codex/index.html][codex]]   | Programming problems |
+| Project | Description               |
+|---------+---------------------------|
+| [[https://syscfg.funloop.org][syscfg]]  | My dotfiles               |
+| [[https://lilac.funloop.org/][Lilac]]   | Literate programming tool |
+| [[file:codex/index.html][codex]]   | Programming problems      |
