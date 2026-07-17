@@ -11,6 +11,22 @@ This post will describe the history behind Lilac and why I wrote it.
 I like Literate Programming (LP). Lilac's main purpose is to allow LP with
 Orgmode.
 
+Why LP? Why do I like it so much? Well, I've come to realize that of all the
+software I've written, I've had the most enjoyment with LP. I love fixing bugs
+in LP, because there's usually a ton of context around it and it's often trivial
+to pinpoint where and why something is not behaving correctly. At least that's
+been my experience in writing Lilac itself.
+
+Now that I've been practicing LP for a while, I just can't imagine using any
+other methodology for starting new projects. If you're skeptical about LP,
+consider this: every blog post about programming with code snippets is basically
+written in literate style.
+
+For me though, the main reason why LP appeals to me is the fact that it slows me
+down. It forces me to think things through before writing code. It's just more
+natural. Oftentimes I write what I want to do, then write how I want to fix it,
+before actually writing the code. And doing this really helps.
+
 Before I get into how Lilac supports LP, let's have a look at the history behind
 it.
 
