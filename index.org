@@ -153,7 +153,7 @@ Historical artifacts:
 I originally started a blog about various programming-related things [[https://zuttobenkyou.wordpress.com/][here]] (late
 2000s), but I wanted more control over how the content is generated/stored, and
 so I created [[https://github.com/listx/listx_blog][a different blog]] in 2013. This version used [[https://jaspervdj.be/hakyll/][Hakyll]] as the static site
-generator. In 2026, I switched away from Hakyll to Lilac, a custom literate
+generator. In 2026, I switched away from Hakyll to [[https://lilac.funloop.org][Lilac]], a custom literate
 programming tool I developed, while retaining most of the original content as
 is. The source code of the latest version is also hosted in SourceHut [[https://git.sr.ht/~listx/personal-website][here]]. See
 [[id:3f5e36da-6bd8-4ed4-a5d2-86653847e87f][Publishing the site]] for details around how the site is built with and published
