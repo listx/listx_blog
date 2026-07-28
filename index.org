@@ -36,12 +36,12 @@ For serious work, I use free/open-source software almost exclusively as much as
 possible. The list below has evolved over the years, but I do try to keep it up
 to date.
 
-  - [[https://nixos.org][NixOS]]: I started using this over 10 years ago, mainly because it was the
-    only OS out there that was on a rolling release (if you use the unstable
-    branch) which also had clean rollbacks (uninstalls) of packages. Sadly the
-    idea of functional package management hasn't really caught on enough, and as
-    of 2026 the only other purely functional OS out there is Guix, which is
-    itself based on Nix.
+  - [[https://nixos.org][NixOS]]: I started using this around 2015 as my daily driver, mainly because
+    it was the only OS out there that was on a rolling release (if you use the
+    unstable branch) which also had clean rollbacks (uninstalls) of packages.
+    Sadly the idea of functional package management hasn't really caught on
+    enough, and as of 2026 the only other purely functional OS out there is
+    Guix, which is itself based on Nix.
 
   - [[https://github.com/LnL7/nix-darwin][nix-darwin]]: Gives you NixOS-like configuration for your Mac. Basically this
     is the path of least resistance if you want to install a daemon (like
@@ -67,7 +67,7 @@ to date.
     features of XMonad (or any other window manager) moot.
 
   - [[https://github.com/emacs-mirror/emacs][Emacs]]: Ah, the one true text editor. I originally used Vim for a number of
-    years before moving to Emacs over a decade ago, pretty soon after the [[https://github.com/emacs-evil/evil][evil]]
+    years before moving to Emacs around 2011, pretty soon after the [[https://github.com/emacs-evil/evil][evil]]
     project became usable. Unlike most people I use Emacs inside a terminal, and
     because of my extensive modifications I'm able to use all of my keyboard's
     modifiers (just like in GUI emacs). I need to blog about this one day...
@@ -152,7 +152,7 @@ Historical artifacts:
 
 I originally started a blog about various programming-related things [[https://zuttobenkyou.wordpress.com/][here]] (late
 2000s), but I wanted more control over how the content is generated/stored, and
-so I created [[https://github.com/listx/listx_blog][here]] in 2013. This version used [[https://jaspervdj.be/hakyll/][Hakyll]] as the static site
+so I created [[https://github.com/listx/listx_blog][a different blog]] in 2013. This version used [[https://jaspervdj.be/hakyll/][Hakyll]] as the static site
 generator. In 2026, I switched away from Hakyll to Lilac, a custom literate
 programming tool I developed, while retaining most of the original content as
 is. The source code of the latest version is also hosted in SourceHut [[https://git.sr.ht/~listx/personal-website][here]]. See
