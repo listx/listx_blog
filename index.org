@@ -48,7 +48,7 @@ to date.
     Docker) cleanly on Mac.
 
   - [[https://github.com/eigilnikolajsen/commit-mono][Commit Mono]]: My favorite monospaced font. I used to use Terminus for a long
-    time, but with higher DPI screens needed something that looked reall nice.
+    time, but with higher DPI screens needed something that looked really nice.
     The main advantage of this font is it adjusts letters dynamically based on
     what other letters are nearby --- which does make a noticeable difference.
 
@@ -60,7 +60,7 @@ to date.
     configuration which makes using this super convenient when I'm SSH'ed into
     another (more powerful) remote machine.
 
-  - [[http://xmonad.org/][xmonad]]: I've used this for over a decade... but to be honest once I got my
+  - [[http://xmonad.org/][xmonad]]: I've used this since 2009... but to be honest once I got my
     tmux configuration up to speed (during Covid when I had to start working
     remotely), the window manager itself just started mattering less. That's
     because I spend most of my time inside tmux, which makes most of the
