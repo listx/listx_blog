@@ -5,6 +5,8 @@
 
 * Posts
 
+  - 2026-08-01 [[id:f7378ffb-383c-46e8-b498-84b3b7686d02][Lilac 0.1.0.8 released]]
+
   - 2026-07-07 [[id:b51c3b34-3b75-4643-996c-81ee70851bd1][Introducing Lilac]]
 
   - 2026-07-06 [[id:25c8faae-2213-497c-bcf7-f69e0dfe1792][New site]]

@@ -1,0 +1,97 @@
+:PROPERTIES:
+:ID:       f7378ffb-383c-46e8-b498-84b3b7686d02
+:END:
+#+title: Lilac 0.1.0.8 released
+
+It's been almost a month since I last spoke about [[id:b51c3b34-3b75-4643-996c-81ee70851bd1][Lilac]]. In that time I've made
+a fair number of updates/changes to it. This is just a reflection on Lilac and
+its software development process.
+
+* Nix is great, so is Cachix
+
+So I have 3 repos that all use Lilac. Lilac [[https://lilac.funloop.org/][itself]] (because it builds itself),
+my [[https://syscfg.funloop.org][dotfiles]], and this site. I've been heavily using Lilac for all of these, and
+needed a way to use it in a reliable way.
+
+I use Nix to build Lilac, and then use [[https://docs.cachix.org/][Cachix]] to store the binary builds. Then I
+pull it down for my dotfiles repo. It works quite well. All I need to do is just
+tweak the Lilac version number ([[https://git.sr.ht/~listx/syscfg/tree/6f3692c0530aee1ca138ce526847bbe6dcb22e34/item/doc/index.org#L358][example]]) and my Nix environment will just pull
+it down from Cachix, because Lilac pushes binary caches whenever the ~main~ branch
+gets updated (and ~main~ currently always follows the latest Git tag from a
+version bump).
+
+Anyway, it's just nice to be able to build and use the software using Nix,
+because everything is declarative. I plan on creating a Nix dev environment for
+the blog repository as well, just to make things consistent across my repos.
+
+* Literate Programming
+
+** Pros
+
+*Debugging*. So far, every time I've hit on a bug or some strange behavior of
+Lilac, I've been able to debug it within a few minutes. Because everything is
+documented and cross-linked, it's easy to find where I need to tweak things.
+
+*Navigational aids*. I don't know about you but I find it far, far easier to
+navigate (and remember!) a document with headings. So when I think about
+extending Lilac, it's easy to jump to the relevant area and refresh my memory
+about how the code works (because the code is right there next to the prose).
+
+** Cons
+
+*Refactors*. One time, I [[https://git.sr.ht/~listx/lilac/commit/67ab56e2d70269d34b4a2d1bb3787a2c22cede8e][refactored (renamed) something]]. Not just the naming of
+something in the code, but also the accompanying prose language. It was tough to
+hunt down the prose areas. I mean, it wasn't mentally difficult, but rather,
+just mundane and annoying. I suppose agentic AI could help here somewhat, but I
+don't use it yet (I'm too cheap to pay for it on my personal machines...). In a
+sense this isn't a con about LP per se (because how else would you update the
+language of documentation), but just something to keep in mind when you invest
+heavily in documentation.
+
+* The value of dogfooding
+
+There's nothing like actually *using* your own software. I've found a number of
+bugs this way. Lilac now has 201 unit tests (and over a thousand commits!).
+
+On the other hand, because I'm the only user I am biased when I dogfood Lilac.
+One area which is lacking is performance testing. I don't really have a good
+idea of how good or bad Lilac's performance is, because because I've only used
+it in a handful of repos, and for these cases it runs quickly enough. Still, it
+would be nice to have synthetic tests that simulate large-scale usage (we would
+almost certainly need to write property tests that can generate arbitrarily long
+or complex documents).
+
+* Document compilers?
+
+It's interesting to me that there aren't a huge number of ecosystems for
+preparing documents (unlike the huge number of ecosystems for writing software).
+I can think of a few formats:
+
+#+caption: A sample of some documentation preparation formats/ecosystems.
+| Format/ecosystem | Used primarily by           |
+|------------------+-----------------------------|
+| Markdown         | Programmers                 |
+| reST             | Programmers                 |
+| asciidoc         | Programmers                 |
+| manpage          | Programmers                 |
+| texinfo          | Programmers (GNU manuals)   |
+| Orgmode          | Programmers (Emacs)         |
+| [[https://en.wikipedia.org/wiki/MediaWiki][MediaWiki]]        | Wikipedia                   |
+| XML family       | Enterprise technical docs   |
+| TeX family       | Academia (esp. STEM fields) |
+
+Maybe I just haven't been exposed to this area much (because once I found
+Orgmode, I never looked back...). But it just seems to be under-developed than
+the plethora of programming languages and runtimes that exist. Maybe people are
+more interested in writing code for computers than documents for humans. But it
+would still be nice if there were more "document" compilers (automatic
+documentation preparation systems). This area appears to be still quite
+young/under-developed to me.
+
+* Closing thoughts
+
+With the latest round of features, Lilac is mostly feature-complete. So I expect
+the pace of development activity to slow down in the coming weeks and months. I
+do have some [[https://lilac.funloop.org/plan.html][ideas]] planned for it but most of it is in the backlog or icebox.
+
+Until next time, happy hacking!
