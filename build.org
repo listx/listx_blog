@@ -1,13 +1,22 @@
 :PROPERTIES:
 :ID:       3f5e36da-6bd8-4ed4-a5d2-86653847e87f
 :END:
-#+title: Publishing the site
+#+title: About this site
 
 * Overview
 
-This site used to be built with Hakyll; we would generate the site, then commit
-all of the generated HTML and other static artifacts to a separate Git repo, and
-then host that on GitHub Pages.
+I originally started a blog about various programming-related things [[https://zuttobenkyou.wordpress.com/][here]] (late
+2000s), but I wanted more control over how the content is generated/stored, and
+so I created [[https://github.com/listx/listx_blog][a different blog]] in 2013. This version used [[https://jaspervdj.be/hakyll/][Hakyll]] as the static site
+generator. In 2026, I switched away from Hakyll to [[https://lilac.funloop.org][Lilac]], a custom literate
+programming tool I developed, while retaining most of the original content as
+is. The source code of the latest version is also hosted in SourceHut [[https://git.sr.ht/~listx/personal-website][here]].
+
+** GitHub+Hakyll vs SourceHut+Lilac
+
+When we used Hakyll, we would generate the site, then commit all of the
+generated HTML and other static artifacts to a separate Git repo, and then host
+that on GitHub Pages.
 
 However, we've since moved to SourceHut for hosting. SourceHut's model is
 slightly different because it just hosts a tarball of content, which is uploaded

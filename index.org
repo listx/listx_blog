@@ -6,11 +6,13 @@
 #+name: index
 #+begin_src txt
 post
-build.org
 projects.org
+build.org
 #+end_src
 
-Hello! My name is Linus Arver and this is my personal website.
+Hello! My name is Linus Arver and this is my personal website. Most of this site
+is for my [[id:5178f8a3-b675-4fc3-9670-4ef213e5742b][Blog]]. However, there is also a [[id:bbd93f83-aec3-4349-b91b-e2831c141c8c][Projects]] page where you can navigate to
+other software projects that have their own set of documentation.
 
 * About me
 
@@ -90,35 +92,30 @@ to date.
 
 * Elsewhere on the Web
 
-** Git Rev News: Edition 109 (March 31st, 2024) Developer Spotlight
+  - [[https://git.github.io/rev_news/2024/03/31/edition-109/#developer-spotlight-linus-arver][Git Rev News: Edition 109 (March 31st, 2024) Developer Spotlight]]
 
-Some months after I started contributing to Git, the community kindly asked me
-for [[https://git.github.io/rev_news/2024/03/31/edition-109/#developer-spotlight-linus-arver][an interview]]. What an honor!
+    Some months after I started contributing to Git, the community kindly asked
+    me for an interview. What an honor!
 
-** The Great "k8s.gcr.io" Vanity Domain Flip (November 2020)
+  - [[https://www.youtube.com/watch?v=F2IFjz7sr9Q][The Great "k8s.gcr.io" Vanity Domain Flip (November 2020)]]
 
-*[[https://www.youtube.com/watch?v=F2IFjz7sr9Q][Video]]*
+    A tale about what happened behind the scenes in the Kubernetes community
+    infrastructure-wise in 2019-2020, while the rest of the world slept. Special
+    thanks to [[https://www.linkedin.com/in/stephenaugustus/][Stephen Augustus]] from VMware who pitched the idea for the talk
+    initially and helping with the recording as well.
 
-A tale about what happened behind the scenes in the Kubernetes community
-infrastructure-wise in 2019-2020, while the rest of the world slept.  Special
-thanks to [[https://www.linkedin.com/in/stephenaugustus/][Stephen Augustus]] from VMware who pitched the idea for the talk
-initially and helping with the recording as well.
+  - [[https://github.com/listx/listx_blog/blob/master/file/git.pdf][Git: Your Favorite Tool (July 2015)]] ([[https://github.com/listx/listx_blog/blob/master/file/git.org][Source]])
 
-** Git: Your Favorite Tool (July 2015)
+    These slides are from a talk I gave internally at [[https://twinprime.com/][Twin Prime]] (they were
+    later acquired by SalesForce). I designed the slides so that they are
+    readable as-is, without a real presentation. Last but not least, I hereby
+    release these slides into the Public Domain --- do whatever you like with
+    them!
 
-*[[https://github.com/listx/listx_blog/blob/master/file/git.org][Source]]*, *[[https://github.com/listx/listx_blog/blob/master/file/git.pdf][PDF]]*
+  - [[https://github.com/listx/listx_blog/blob/master/file/debruijn-sequence-tutorial.pdf][Bitscans and De Bruijn Sequences (2014)]]
 
-These slides are from a talk I gave internally at [[https://twinprime.com/][Twin Prime]] (they were later
-acquired by SalesForce).  I designed the slides so that they are readable as-is,
-without a real presentation.  Last but not least, I hereby release these slides
-into the Public Domain --- do whatever you like with them!
-
-** Bitscans and De Bruijn Sequences (2014)
-
-*[[https://github.com/listx/listx_blog/blob/master/file/debruijn-sequence-tutorial.pdf][PDF]]*
-
-I wrote this paper originally in 2011--2012, but it was not released until it
-was finally revised in 2014.
+    I wrote this paper originally in 2011--2012, but it was not released until
+    it was finally revised in 2014.
 
 * Contact
 
@@ -147,18 +144,3 @@ Historical artifacts:
   - [[https://twitter.com/linusarver][Twitter]]
 
   - [[https://zuttobenkyou.wordpress.com/][Wordpress (old blog)]]
-
-* About this site
-
-I originally started a blog about various programming-related things [[https://zuttobenkyou.wordpress.com/][here]] (late
-2000s), but I wanted more control over how the content is generated/stored, and
-so I created [[https://github.com/listx/listx_blog][a different blog]] in 2013. This version used [[https://jaspervdj.be/hakyll/][Hakyll]] as the static site
-generator. In 2026, I switched away from Hakyll to [[https://lilac.funloop.org][Lilac]], a custom literate
-programming tool I developed, while retaining most of the original content as
-is. The source code of the latest version is also hosted in SourceHut [[https://git.sr.ht/~listx/personal-website][here]]. See
-[[id:3f5e36da-6bd8-4ed4-a5d2-86653847e87f][Publishing the site]] for details around how the site is built with and published
-to SourceHut.
-
-Most of this site is for my [[id:5178f8a3-b675-4fc3-9670-4ef213e5742b][Blog]]. However, there is also a [[id:bbd93f83-aec3-4349-b91b-e2831c141c8c][Projects]] page where
-you can navigate to other software projects that have their own set of
-documentation.
