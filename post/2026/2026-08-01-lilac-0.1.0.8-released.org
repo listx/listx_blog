@@ -3,7 +3,7 @@
 :END:
 #+title: Lilac 0.1.0.8 released
 
-It's been almost a month since I last spoke about [[id:b51c3b34-3b75-4643-996c-81ee70851bd1][Lilac]]. In that time I've made
+It's been almost a month since I last [[id:b51c3b34-3b75-4643-996c-81ee70851bd1][spoke]] about [[https://lilac.funloop.org/][Lilac]]. Since then time I've made
 a fair number of updates/changes to it. This is just a reflection on Lilac and
 its software development process.
 
