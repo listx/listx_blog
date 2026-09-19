@@ -55,7 +55,7 @@ bugs this way. Lilac now has 201 unit tests (and over a thousand commits!).
 
 On the other hand, because I'm the only user I am biased when I dogfood Lilac.
 One area which is lacking is performance testing. I don't really have a good
-idea of how good or bad Lilac's performance is, because because I've only used
+idea of how good or bad Lilac's performance is, because I've only used
 it in a handful of repos, and for these cases it runs quickly enough. Still, it
 would be nice to have synthetic tests that simulate large-scale usage (we would
 almost certainly need to write property tests that can generate arbitrarily long
