@@ -1,0 +1,48 @@
+:PROPERTIES:
+:ID:       b1801250-2e03-474d-b699-f22cbb064d2c
+:END:
+#+title: Lilac 0.2.0.0 released
+
+It's been over two months since my last update --- anyway, Lilac 0.2.0.0 is
+here. Here's a summary of the changes.
+
+* Backlinks for line labels
+
+Line labels are labels for a particular line inside a code block. Below is an
+example:
+
+#+begin_src txt
+hello # (ref:foo)
+#+end_src
+
+[[(foo)]] is a line label. Lilac now adds a backlink just after it, so that clicking
+on that shows a popup of all areas that link back to this label. This is useful
+because oftentimes it's not obvious where exactly in the prose we refer to a
+particular line label, when we're looking at a code block.
+
+Working on this small feature took far more effort than I originally planned.
+I've come to the realization that I probably need to use better data structures
+here than what I'm currently using.
+
+* Multi-cell glossary items
+
+Glossary items can now have more than one paragraph associated with them. For
+example, the glossary item below has 2 paragraphs, such that clicking on the
+item highlights all two paragraphs.
+
+  - bar :: baz
+
+    This paragraph is part of "bar".
+
+This was far easier to implement than backlinks for line labels. I don't expect
+to use this feature all that often, but I can rest easy knowing that it's there
+when I need it.
+
+* Closing thoughts
+
+I still haven't posted this work on any link aggregator site like Reddit or
+Hacker News, because well, I am not sure if it is ready to gain new users. Not
+because it's not ready for every day use, but more because I am not sure I can
+handle the burden of maintaining it for anyone other than myself.
+
+Until next time, happy hacking!
