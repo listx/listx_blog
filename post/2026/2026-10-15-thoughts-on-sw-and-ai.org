@@ -1,0 +1,90 @@
+:PROPERTIES:
+:ID:       ed1f06ae-2cb0-4b0c-934d-cbdc6f02fac7
+:END:
+#+title: Thoughts on Software and AI
+
+So much has already been said about AI (LLMs), but here's my take.
+
+* Power tools, anyone?
+
+There's a woodworker named Paul Sellers (look him up). He's well-known as a
+longtime woodworker, famous for using hand tools.
+
+When you're working with wood, one of the first things you have to do is /square/
+it. That is, make it flat on all surfaces. Squaring it reduces your margin of
+error when making measurements and such.
+
+Now, you can square a piece of wood by hand. However, most (all?) modern
+woodworkers use power tools (you can use a jointer for this). Even Paul Sellers!
+
+* AI as a tool
+
+Like power tools for the woodworker, AI can be thought of as another tool. In
+the day-to-day tasks of the average software dev, there are many rather mundane,
+mechanical tasks. Below are some examples:
+
+  - Fixing simple merge conflicts. These can be rather annoying, but it's
+    something that can (and should) be automated away.
+
+  - Creating (even just half-decent) documentation. No one likes writing docs
+    after already having written the code, because it's oftentimes a very
+    mechanical, dry, mundane task. [fn:1]
+
+  - Doing some research on some technical area you're not familiar with.
+
+The last one hits hard --- in the pre-LLM era, I used to open up 10, 15 tabs on
+topics while searching the internet, just to get a quick glimpse into what
+<INSERT UNFAMILIAR TECHNICAL TOPIC> was about. This was really hard and such a
+huge drain --- you had to read blog posts and StackOverflow answers and random
+internet comments sometimes. I save so much time by asking LLMs, because about
+99.99% of the time, I am only interested in generic principles and well-lit
+paths.
+
+There is no doubt in my mind that AI usage, as heretical as it may seem to a lot
+of purists, is here to stay. Just like power tools though, AI has to be used
+very carefully.
+
+* Where do we draw the line?
+
+I don't think we should only rely on LLMs when writing software. There needs to
+be /some/ human input, somewhere, in the process. You just can't ask 1 prompt, let
+the LLM go crazy on something, and walk away from it. [fn:2] As a developer we
+have to direct the tool to do what we want it to do.
+
+You may think of the port of Bun from [[https://bun.com/blog/bun-in-rust][Zig to Rust]] by AI agents as a
+counter-example, but even in that case they had to be given very specific
+instructions by a human.
+
+* Inevitable doom for the job market?
+
+Do I think AI will render all software devs useless, in the long term? No. I
+don't think this will ever happen.
+
+Whhy? The simple reason is *trust*. Imagine if an airline said "hey, your plane is
+flown by our new AI model, there is no human pilot aboard the aircraft". I think
+they will lose many customers overnight.
+
+I think the software world will react similarly. If Microsoft said "yeah, we
+fired all of our engineers, we only have AI agents running the show from a
+technical standpoint" --- I think they will lose a lot of trust.
+
+You *must* understand how the software (written by AI or otherwise) works. If you
+don't, you're sort of rolling the dice.
+
+#+begin_note
+I will never use AI to generate blog post content on this site --- it crosses a
+line I am not comfortable with. However, I have no issues with writers using
+LLMs to proofread their drafts, especially where English is not their first
+language.
+#+end_note
+
+* Conclusion
+
+If you use AI, just make sure you fully understand what it's doing.
+
+* Footnotes
+
+[fn:1] OTOH, I personally enjoy writing docs at the same time I am writing code
+(or even before I write code) --- all as part of literate programming.
+
+[fn:2] Unless you're Anthropic and you literally have unlimited tokens to spend.
