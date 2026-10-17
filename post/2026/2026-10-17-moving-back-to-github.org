@@ -1,0 +1,12 @@
+:PROPERTIES:
+:ID:       b266a352-68eb-4997-8bda-0f34c2907f42
+:END:
+#+title: Moving back to GitHub
+
+So. SourceHut has announced that any [[https://sourcehut.org/blog/2026-08-27-tos-changes-and-llms/#changes][LLM-assisted code is unwelcome]] here.
+
+I plan on using AI more seriously sometime in the future (actually using local
+CLIs instead of web-based chat sessions). Because of this I will have to move
+back to GitHub.
+
+I will be working on the migration starting this weekend.
